@@ -7,16 +7,14 @@ use Livewire\Component;
 class FormLogin extends Component
 {
 
-  public $ip,$user,$pass;
+  public $user,$pass;
 
   protected $rules = [
-    'ip' => 'required',
     'user' => 'required',
     'pass' => 'required',
   ];
 
   protected $messages = [
-    'ip.required' => 'IP Address harus diisi!',
     'user.required' => 'Username harus diisi!',
     'pass.required' => 'Password harus diisi!',
   ];
@@ -52,7 +50,6 @@ class FormLogin extends Component
   {
     $this->validate();
     $data = [
-      'ip' => $this->ip,
       'user' => $this->user,
       'pass' => $this->pass,
     ];

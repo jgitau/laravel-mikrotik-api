@@ -15,14 +15,6 @@
     {{-- <p class="mb-4">Please sign-in to your account and start the adventure</p> --}}
 
     <form wire:submit.prevent="submit" class="mb-3" method="POST">
-      {{-- Input IP Address --}}
-      <div class="mb-3">
-        <label for="ip" class="form-label">IP Address</label>
-        <input type="text" class="form-control @error('ip') is-invalid @enderror" id="ip" name="ip"
-          placeholder="Enter your IP Adress" wire:model.lazy="ip" autofocus>
-        @error('ip') <small class="error text-danger">{{ $message }}</small> @enderror
-      </div>
-
       {{-- Input Username --}}
       <div class="mb-3">
         <label for="user" class="form-label">Username</label>

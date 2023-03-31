@@ -13,13 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('nas', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('nasname', 128);
+            $table->string('shortname', 32);
+            $table->string('type', 30);
+            $table->integer('ports');
+            $table->string('secret', 60);
+            $table->string('server', 64);
+            $table->string('community', 50);
+            $table->string('description', 200);
             $table->timestamps();
         });
     }
@@ -31,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('nas');
     }
 };

@@ -18,4 +18,7 @@ class RadGroupReply extends Model
     'op',
     'value',
   ];
+
+
+  public $timestamps = false;
 }

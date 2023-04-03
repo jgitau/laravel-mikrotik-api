@@ -41,6 +41,7 @@ class Services extends Model
         'bc_ul_br_time',
         'bc_dl_br_time',
         'bc_priority',
+        'simultaneous_use',
         'validity_type',
         'validity',
         'unit_validity',
@@ -49,14 +50,18 @@ class Services extends Model
         'time_limit_type',
         'enable_limit',
         'cost',
-        'currenct',
+        'currency',
         'for_purchase',
         'purchase_duration',
         'unit_time_purchase',
         'description',
+        'cron',
+        'cron_type',
         'volume_limit',
         'volume_limit_unit',
         'volume_limit_bytes',
         'validfrom',
     ];
+
+  public $timestamps = false;
 }

@@ -17,17 +17,20 @@ class GroupSeeder extends Seeder
   {
     $datas = [
       [
+        'id' => 1,
         'name' => 'Full Administrator',
       ],
       [
+        'id' => 2,
         'name' => 'Operator',
       ]
     ];
 
     foreach ($datas as $data) {
-      $data = new Group();
-      $data->name = $data['name'];
-      $data->save();
+      $group = new Group();
+      $group->id = $data['id'];
+      $group->name = $data['name'];
+      $group->save();
     }
   }
 }

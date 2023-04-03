@@ -28,15 +28,15 @@ $customizerHidden = 'customizer-hide';
 
 @section('content')
 <div class="container-xxl">
-  <div class="authentication-wrapper authentication-basic container-p-y">
-    <div class="authentication-inner py-4">
-      <!-- Login -->
+    <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner py-4">
+            <!-- Login -->
 
-      {{-- Start Form Login --}}
-      @livewire('home.form-login')
-      {{-- End Form Login --}}
+            {{-- Start Form Login --}}
+            @livewire('home.form-login')
+            {{-- End Form Login --}}
 
+        </div>
     </div>
-  </div>
 </div>
 @endsection

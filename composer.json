@@ -15,6 +15,7 @@
     "laravel/sanctum": "^2.14",
     "laravel/tinker": "^2.7",
     "livewire/livewire": "^2.12",
+    "predis/predis": "^2.1",
     "yaza/laravel-repository-service": "^3.2"
   },
   "require-dev": {

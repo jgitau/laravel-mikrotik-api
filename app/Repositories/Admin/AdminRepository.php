@@ -4,7 +4,13 @@ namespace App\Repositories\Admin;
 
 use LaravelEasyRepository\Repository;
 
-interface AdminRepository extends Repository{
+interface AdminRepository extends Repository
+{
 
-    // Write something awesome :)
+    /**
+     * validateAdmin
+     * @param  mixed $username
+     * @param  mixed $password
+     */
+    public function validateAdmin($username, $password);
 }

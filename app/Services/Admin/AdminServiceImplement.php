@@ -4,19 +4,35 @@ namespace App\Services\Admin;
 
 use LaravelEasyRepository\Service;
 use App\Repositories\Admin\AdminRepository;
+use Illuminate\Support\Facades\Log;
 
-class AdminServiceImplement extends Service implements AdminService{
+class AdminServiceImplement extends Service implements AdminService
+{
 
-     /**
+    /**
      * don't change $this->mainRepository variable name
      * because used in extends service class
      */
-     protected $mainRepository;
+    protected $mainRepository;
 
     public function __construct(AdminRepository $mainRepository)
     {
-      $this->mainRepository = $mainRepository;
+        $this->mainRepository = $mainRepository;
     }
 
-    // Define your custom methods :)
+    /**
+     * validateAdmin
+     * @param  mixed $username
+     * @param  mixed $password
+     */
+    public function validateAdmin($username, $password)
+    {
+        try {
+            return $this->mainRepository->validateAdmin($username, $password);
+        } catch (\Throwable $th) {
+            Log::debug($th->getMessage());
+            return [];
+            //throw $th;
+        }
+    }
 }

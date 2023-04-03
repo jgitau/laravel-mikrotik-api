@@ -4,7 +4,13 @@ namespace App\Services\Admin;
 
 use LaravelEasyRepository\BaseService;
 
-interface AdminService extends BaseService{
+interface AdminService extends BaseService
+{
 
-    // Write something awesome :)
+    /**
+     * validateAdmin
+     * @param  mixed $username
+     * @param  mixed $password
+     */
+    public function validateAdmin($username, $password);
 }

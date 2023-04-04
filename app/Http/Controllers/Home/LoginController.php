@@ -3,32 +3,42 @@
 namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
-use App\Models\RouterOsApi;
-use Illuminate\Http\Request;
+use App\Services\Admin\AdminService;
 
 class LoginController extends Controller
 {
-  public function index()
-  {
-    // $host = env('ROUTER_IP');
-    // $user = env('ROUTER_USER');
-    // $pass = env('ROUTER_PASS');
-    // $API = new RouterOsApi();
-    // $API->debug = false;
-    // if ($API->connect($host, $user, $pass)) {
-    //   // *** TODO: **
-    //   $identity = $API->comm('/system/identity/print');
-    //   $routerModel = $API->comm('/system/routerboard/print');
-    //   // $response = $API->comm('/ip/hotspot/user/print');
+    protected $adminService;
 
-    //   $API->write('/ip/address/print');
-    //   $READ = $API->read(false);
-    //   $ARRAY = $API->parseResponse($READ);
-    //   dd($ARRAY);
-    // } else {
-    //   dd('Gagal');
-    // }
-    $pageConfigs = ['myLayout' => 'blank'];
-    return view('home.login.index', ['pageConfigs' => $pageConfigs]);
-  }
+    /**
+     * __construct
+     *
+     * @param  mixed $adminService
+     * @return void
+     */
+    public function __construct(AdminService $adminService)
+    {
+        $this->adminService = $adminService;
+    }
+
+    /**
+     * index
+     */
+    public function index()
+    {
+        $pageConfigs = ['myLayout' => 'blank'];
+        return view('home.login.index', ['pageConfigs' => $pageConfigs]);
+    }
+
+    /**
+     * logout
+     */
+    public function logout()
+    {
+        // Call the logout method from the repository and get the forgotten cookie
+        $forgottenCookie = $this->adminService->logout();
+
+        // Redirect to the login page or home page with the forgotten cookie
+        return redirect('')->withCookie($forgottenCookie);
+    }
+
 }

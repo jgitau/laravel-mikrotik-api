@@ -13,4 +13,9 @@ interface AdminRepository extends Repository
      * @param  mixed $password
      */
     public function validateAdmin($username, $password);
+
+    /**
+     * logout
+     */
+    public function logout();
 }

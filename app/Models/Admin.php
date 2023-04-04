@@ -22,8 +22,6 @@ class Admin extends Model
         'status',
     ];
 
-
-
     /**
      * boot
      *
@@ -36,5 +34,14 @@ class Admin extends Model
         static::creating(function ($model) {
             $model->admin_uid = str()->uuid();
         });
+    }
+
+
+    /**
+     * group
+     */
+    public function group()
+    {
+        return $this->belongsTo(Group::class, 'group_id', 'id');
     }
 }

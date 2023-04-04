@@ -25,7 +25,6 @@ Route::get('/', [LoginController::class, 'index'])->name('index');
 // Dashboard
 Route::middleware(['check.session.cookie'])->name('backend.')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
     // Clients Routes
     Route::get('clients/list-clients', [ClientController::class, 'index'])->name('clients.list-clients');
 
@@ -33,3 +32,4 @@ Route::middleware(['check.session.cookie'])->name('backend.')->group(function ()
     Route::get('setup/config/list-configs', [ConfigController::class, 'index'])->name('setup.config.list-configs');
     Route::get('setup/admin/list-admins', [AdminController::class, 'index'])->name('setup.admin.list-admins');
 });
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

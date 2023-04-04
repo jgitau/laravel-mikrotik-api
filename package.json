@@ -78,14 +78,13 @@
     "shepherd.js": "10.0.1",
     "sortablejs": "1.15.0",
     "spinkit": "2.0.1",
-    "sweetalert2": "11.4.33",
+    "sweetalert2": "^11.4.33",
     "swiper": "8.4.2",
     "timepicker": "1.13.18",
     "toastr": "2.1.4",
     "typeahead.js": "0.11.1"
   },
   "devDependencies": {
-    "babel-loader": "8.2.4",
     "@babel/core": "7.15.8",
     "@babel/plugin-proposal-object-rest-spread": "7.15.6",
     "@babel/plugin-syntax-dynamic-import": "7.8.3",
@@ -93,6 +92,7 @@
     "@babel/preset-env": "7.15.8",
     "@prettier/plugin-php": "0.19.1",
     "axios": "0.27.2",
+    "babel-loader": "8.2.4",
     "browser-sync": "2.27.10",
     "browser-sync-webpack-plugin": "2.3.0",
     "cross-env": "7.0.3",

@@ -42,26 +42,38 @@ class FormLogin extends Component
         return view('livewire.home.form-login');
     }
 
-    // TODO:
     /**
      * submit
+     *
+     * @param  mixed $adminService
+     * @return void
      */
     public function submit(AdminService $adminService)
     {
+        // Validate the input fields
         $this->validate();
+
+        // Call the validateAdmin method from the AdminService to validate the credentials
         $validationResult = $adminService->validateAdmin($this->username, $this->password);
-        // dd($validationResult);
+
+        // If the validation is successful
         if ($validationResult) {
-            $sessionKey = $validationResult['session_key'];
+            // Get the session data from the validation result
             $sessionData = $validationResult['session_data'];
+
+            // Set the session data for the authenticated user
             session([
                 'fullname' => $sessionData['fullname'],
                 'login_status' => $sessionData['login_status'],
+                'role' => $sessionData['role'],
+                'username' => $sessionData['username'],
             ]);
 
+            // Redirect the user to the backend dashboard
             return redirect()->route('backend.dashboard');
         }
 
+        // If the validation fails, flash an error message
         return session()->flash('error', 'Invalid Username or Password!.');
     }
 }

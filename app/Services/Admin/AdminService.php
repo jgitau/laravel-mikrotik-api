@@ -13,4 +13,9 @@ interface AdminService extends BaseService
      * @param  mixed $password
      */
     public function validateAdmin($username, $password);
+
+    /**
+     * logout
+     */
+    public function logout();
 }

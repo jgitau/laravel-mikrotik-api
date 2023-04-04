@@ -35,4 +35,19 @@ class AdminServiceImplement extends Service implements AdminService
             //throw $th;
         }
     }
+
+
+    /**
+     * logout
+     */
+    public function logout()
+    {
+        try {
+            return $this->mainRepository->logout();
+        } catch (\Throwable $th) {
+            Log::debug($th->getMessage());
+            return [];
+            //throw $th;
+        }
+    }
 }

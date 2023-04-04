@@ -16,4 +16,12 @@ class Group extends Model
         'id',
         'name',
     ];
+
+    /**
+     * admins
+     */
+    public function admins()
+    {
+        return $this->hasMany(Admin::class, 'group_id', 'id');
+    }
 }

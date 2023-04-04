@@ -174,7 +174,7 @@ $navbarDetached = ($navbarDetached ?? '');
                 cancelButtonText: 'No!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.querySelector("#form-logout").submit();
+                    document.querySelector("#logout-form").submit();
                 }
             });
         }

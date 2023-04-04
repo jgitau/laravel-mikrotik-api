@@ -18,14 +18,18 @@ class CheckSessionCookie
      */
     public function handle(Request $request, Closure $next)
     {
-        // Check session cookie!
+        // Get all queued cookies
         $sessionKey = Cookie::get('session_key') ?? $this->getQueuedSessionKey();
         $redisKey = '_redis_key_prefix_' . $sessionKey;
+
+        // Check session cookie!
         if (!$sessionKey || !Redis::exists($redisKey)) {
+
             // Sesi or cookie not valid!
             return redirect('')->with('error', 'You are not logged in. Please log in to access the page.');
         }
 
+        // Sesi or cookie valid!
         return $next($request);
     }
 

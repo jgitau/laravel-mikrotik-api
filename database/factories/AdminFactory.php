@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class AdminFactory extends Factory
 {
+    protected $model = Admin::class;
+
     /**
      * Define the model's default state.
      *
@@ -17,7 +20,14 @@ class AdminFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'group_id' => $this->faker->numberBetween(1, 2),
+            'username' => $this->faker->unique()->userName,
+            'password' => bcrypt('password'),
+            'fullname' => $this->faker->name,
+            'email' => $this->faker->unique()->safeEmail,
+            'status' => $this->faker->randomElement([0, 1]),
+            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }

@@ -1,7 +1,7 @@
 <?php
-  // Variables
-  return [
-    "creatorName" => "MEGALOS",
+// Variables
+return [
+    "creatorName" => "PT. Varnion Technology Semesta",
     "creatorUrl" => "https://www.varnion.com/",
     "templateName" => "MEGALOS",
     "templateSuffix" => "Moch Azmi Iskandar",
@@ -26,4 +26,4 @@
     "githubUrl" => "https://github.com/pixinvent",
     "dribbbleUrl" => "https://dribbble.com/pixinvent",
     "instagramUrl" => "https://www.instagram.com/pixinvents/"
-  ];
+];

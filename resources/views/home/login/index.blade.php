@@ -15,7 +15,6 @@ $customizerHidden = 'customizer-hide';
 <!-- Page -->
 <link rel="stylesheet" href="{{asset('assets/vendor/css/pages/page-auth.css')}}">
 @endsection
-
 @section('vendor-script')
 <script src="{{asset('assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js')}}"></script>
 <script src="{{asset('assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js')}}"></script>

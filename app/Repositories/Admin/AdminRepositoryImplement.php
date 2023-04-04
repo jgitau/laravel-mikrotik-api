@@ -29,6 +29,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
      */
     public function validateAdmin($username, $password)
     {
+        // Logic Login is Here!
         $admin = $this->model->where('username', $username)->first();
         if ($admin && Hash::check($password , $admin->password) && $admin->status == 1) {
             $sessionData = [
@@ -41,11 +42,9 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
             $sessionKey = str()->random();
             $redisKey = '_redis_key_prefix_' . $sessionKey;
-
-            // *** TODO: REDIS ***
             Redis::hMSet($redisKey, $sessionData);
             Redis::expire($redisKey, 7200);
-            // Logika login log di sini
+
 
             return [
                 'session_key' => $sessionKey,

@@ -9,16 +9,16 @@ class RadGroupReply extends Model
 {
     use HasFactory;
 
-  protected $table = 'radgroupreply';
-  protected $primaryKey = 'id';
-  protected $guarded = [];
-  protected $fillable = [
-    'groupname',
-    'attribute',
-    'op',
-    'value',
-  ];
+    protected $table = 'radgroupreply';
+    protected $primaryKey = 'id';
+    protected $guarded = [];
+    protected $fillable = [
+        'groupname',
+        'attribute',
+        'op',
+        'value',
+    ];
 
 
-  public $timestamps = false;
+    public $timestamps = false;
 }

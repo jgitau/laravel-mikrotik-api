@@ -30,13 +30,13 @@ php artisan key:generate
 npm install
 ```
 6. To run the project you need to run following command in the project directory. It will compile the vue files & all the other project files. If you are making any changes in any of the .vue file then you need to run the given command again.
-    ```
-    # For yarn
-    yarn dev
+```bash
+# For yarn
+yarn dev
     
-    # For npm
-    npm run dev
-    ```
+# For npm
+npm run dev
+```
 7. To serve the application you need to run the following command in the project directory. (This will give you an address with port number 8000)
 Now navigate to the given address you will see your application is running 
 

@@ -54,13 +54,12 @@ class FormLogin extends Component
         if ($validationResult) {
             $sessionKey = $validationResult['session_key'];
             $sessionData = $validationResult['session_data'];
-            dd($sessionData);
-            // TODO: Set session Cookie
-            // Cookie::queue('sess_key', $sessionKey,0);
-            // Untuk info helpers
-            session(['fullname' => $sessionData['fullname']]);
+            session([
+                'fullname' => $sessionData['fullname'],
+                'login_status' => $sessionData['login_status'],
+            ]);
 
-            return response()->json(['message' => 'Login berhasil'], 200);
+            return redirect()->route('backend.dashboard');
         }
 
         return session()->flash('error', 'Invalid Username or Password!.');

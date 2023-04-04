@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [LoginController::class, 'index'])->name('index');
 
 // Dashboard
-Route::name('backend.')->group(function () {
+Route::middleware(['check.session.cookie'])->name('backend.')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Clients Routes

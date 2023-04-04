@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-  public function index()
-  {
-    return view('backend.setup.administrators.list-admins');
-  }
+    public function index()
+    {
+        return view('backend.setup.administrators.list-admins');
+    }
 }

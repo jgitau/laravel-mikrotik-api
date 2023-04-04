@@ -4,6 +4,7 @@ namespace App\Repositories\Admin;
 
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
 
@@ -44,11 +45,14 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
             $redisKey = '_redis_key_prefix_' . $sessionKey;
             Redis::hMSet($redisKey, $sessionData);
             Redis::expire($redisKey, 7200);
-
+            // Create a new cookie
+            $cookie = Cookie::make('session_key', $sessionKey, 120); // 120 minutes
+            Cookie::queue($cookie);
 
             return [
                 'session_key' => $sessionKey,
                 'session_data' => $sessionData,
+                'cookie' => $cookie
             ];
         }
 

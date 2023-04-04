@@ -20,6 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RadGroupReplySeeder::class);
         $this->call(ServicesSeeder::class);
 
-        Admin::factory(10)->create();
+        Admin::factory(50)->create();
     }
 }

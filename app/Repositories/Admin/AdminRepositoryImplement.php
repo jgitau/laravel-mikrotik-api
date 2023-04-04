@@ -108,7 +108,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
             })
             ->addColumn('action', function ($data) {
                 $button = '<button type="button" name="edit" id="' . $data->admin_uid . '" class="edit btn btn-warning btn-sm"> <i class="fas fa-edit"></i></button>';
-                $button .= '   <button type="button" name="edit" id="' . $data->admin_uid . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i></button>';
+                $button .= '&nbsp;&nbsp;<button type="button" name="edit" id="' . $data->admin_uid . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i></button>';
                 return $button;
             })
             ->make(true);

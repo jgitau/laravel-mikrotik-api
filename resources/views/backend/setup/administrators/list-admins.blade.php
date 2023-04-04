@@ -16,7 +16,10 @@ $configData = Helper::appClasses();
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h4 class="card-title">List Admin</h4>
-            <a href="" class="btn btn-primary"><i class="fa fa-plus"></i> &nbsp;Create</a>
+            {{-- <a href="" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> &nbsp;Create</a> --}}
+            <button type="button" class="btn btn-facebook waves-effect waves-light">
+                <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp;Create
+            </button>
             {{-- /Create Button for Add New Admin --}}
         </div>
     </div>

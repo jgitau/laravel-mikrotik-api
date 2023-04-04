@@ -8,6 +8,7 @@ use App\Models\Admin;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
+use Yajra\DataTables\DataTables;
 
 class AdminRepositoryImplement extends Eloquent implements AdminRepository
 {
@@ -90,6 +91,27 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
         // Redirect to the login page or home page
         return $cookie;
+    }
+
+    /**
+     * getDatatables
+     *
+     * @param  mixed $request
+     */
+    public function getDatatables($request)
+    {
+        $data = $this->model->with('group')->latest()->get();
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('status', function ($data) {
+                return $data->status == 1 ? 'Active' : 'Non Active';
+            })
+            ->addColumn('action', function ($data) {
+                $button = '<button type="button" name="edit" id="' . $data->admin_uid . '" class="edit btn btn-warning btn-sm"> <i class="fas fa-edit"></i></button>';
+                $button .= '   <button type="button" name="edit" id="' . $data->admin_uid . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i></button>';
+                return $button;
+            })
+            ->make(true);
     }
 
 }

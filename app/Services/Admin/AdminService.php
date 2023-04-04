@@ -18,4 +18,12 @@ interface AdminService extends BaseService
      * logout
      */
     public function logout();
+
+    /**
+     * getDatatables
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function getDatatables($request);
 }

@@ -17,18 +17,18 @@ return new class extends Migration
             $table->id();
             $table->uuid('admin_uid')->unique();
             $table->unsignedBigInteger('group_id');
-            $table->string('username',100);
-            $table->string('password',100);
-            $table->string('fullname',100);
+            $table->string('username', 100);
+            $table->string('password', 100);
+            $table->string('fullname', 100);
             $table->string('email')->unique();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
 
             $table->foreign('group_id')
-              ->references('group_id')
-              ->on('groups')
-              ->onDelete('cascade')
-              ->onUpdate('cascade');
+                ->references('group_id')
+                ->on('groups')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

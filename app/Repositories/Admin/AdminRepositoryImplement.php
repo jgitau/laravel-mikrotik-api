@@ -141,10 +141,8 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
     /**
      * getDatatables
-     *
-     * @param  mixed $request
      */
-    public function getDatatables($request)
+    public function getDatatables()
     {
         // Retrieve records from the database using the model, including the related 'group' records, and sort by the latest records
         $data = $this->model->with('group')->latest()->get();

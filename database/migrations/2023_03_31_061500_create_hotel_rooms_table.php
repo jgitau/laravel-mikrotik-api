@@ -23,9 +23,9 @@ return new class extends Migration
             $table->string('default_cron_type', 100);
             $table->enum('status', ['active', 'deactive'])->default("deactive");
             $table->tinyInteger('edit')->default(0);
-            $table->dateTime('change_service_end_time')->default("0000-00-00 00:00:00");
-            $table->dateTime('arrival')->default("0000-00-00 00:00:00");
-            $table->dateTime('departure')->default("0000-00-00 00:00:00");
+            $table->dateTime('change_service_end_time')->nullable();
+            $table->dateTime('arrival')->nullable();
+            $table->dateTime('departure')->nullable();
             $table->string('no_posting', 50)->default("N");
             $table->timestamps();
         });

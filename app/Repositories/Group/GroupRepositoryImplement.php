@@ -35,7 +35,7 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository{
             // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
             ->addColumn('action', function ($data) {
                 // Create an edit button with the record's 'id' as its ID and a 'fas fa-edit' icon
-                $button = '<button type="button" name="edit" id="' . $data->id . '" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i></button>';
+                $button = '<button type="button" name="edit" id="' . $data->id . '" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</button>';
 
                 // Add a delete button with the record's 'id' as its ID and a 'fas fa-trash' icon
                 // TODO: Button delete

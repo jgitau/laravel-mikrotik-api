@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('nas', function (Blueprint $table) {
             $table->id();
             $table->string('nasname', 128);
-            $table->string('shortname', 32);
-            $table->string('type', 30);
-            $table->integer('ports');
-            $table->string('secret', 60);
-            $table->string('server', 64);
-            $table->string('community', 50);
-            $table->string('description', 200);
+            $table->string('shortname', 32)->nullable();
+            $table->string('type', 30)->default("other");
+            $table->integer('ports')->default(0);
+            $table->string('secret', 60)->default("secret");
+            $table->string('server', 64)->nullable();
+            $table->string('community', 50)->nullable();
+            $table->string('description', 200)->default("RADIUS Client");
             $table->timestamps();
         });
     }

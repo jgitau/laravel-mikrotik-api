@@ -15,13 +15,13 @@ return new class extends Migration
     {
         Schema::create('guest_device_log', function (Blueprint $table) {
             $table->id();
-            $table->string('os_name', 200);
-            $table->string('os_version', 200);
-            $table->string('browser_name', 200);
-            $table->string('browser_version', 200);
-            $table->string('type', 100);
+            $table->string('os_name', 200)->nullable();
+            $table->string('os_version', 200)->nullable();
+            $table->string('browser_name', 200)->nullable();
+            $table->string('browser_version', 200)->nullable();
+            $table->string('type', 100)->nullable();
             $table->integer('time');
-            $table->string('mac', 50);
+            $table->string('mac', 50)->nullable();
             $table->timestamps();
         });
     }

@@ -20,14 +20,14 @@ return new class extends Migration
             $table->string('url', 100);
             $table->unsignedBigInteger('module_id');
             $table->text('allowed_groups');
-            $table->tinyInteger('show_menu');
-            $table->integer('show_to');
+            $table->tinyInteger('show_menu')->default(0);
+            $table->integer('show_to')->nullable();
             $table->timestamps();
             $table->foreign('module_id')
-              ->references('module_id')
-              ->on('modules')
-              ->onDelete('cascade')
-              ->onUpdate('cascade');
+                ->references('module_id')
+                ->on('modules')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

@@ -18,16 +18,16 @@ return new class extends Migration
             $table->uuid('user_data_uid')->unique();
             $table->string('name', 100);
             $table->string('email', 100);
-            $table->string('phone_number', 50);
-            $table->string('room_number', 50);
+            $table->string('phone_number', 50)->nullable();
+            $table->string('room_number', 50)->nullable();
             $table->dateTime('date');
-            $table->string('first_name', 50);
-            $table->string('last_name', 50);
-            $table->string('location', 50);
-            $table->string('gender', 50);
-            $table->string('birthday', 50);
-            $table->string('login_with', 50);
-            $table->string('mac', 50);
+            $table->string('first_name', 50)->nullable();
+            $table->string('last_name', 50)->nullable();
+            $table->string('location', 50)->nullable();
+            $table->string('gender', 50)->nullable();
+            $table->string('birthday', 50)->nullable();
+            $table->string('login_with', 50)->nullable();
+            $table->string('mac', 50)->nullable();
             $table->timestamps();
         });
     }

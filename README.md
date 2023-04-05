@@ -7,6 +7,7 @@ MEGALOS
 <p align="left">
 Here are the installation steps for this project:
 </p>
+
 1.Clone this repository to your local machine by running the following command in your terminal or command prompt:
 
 
@@ -31,6 +32,7 @@ php artisan key:generate
 npm install
 ```
 6. To run the project you need to run following command in the project directory. It will compile the vue files & all the other project files. If you are making any changes in any of the .vue file then you need to run the given command again.
+
 ```bash
 # For yarn
 yarn dev

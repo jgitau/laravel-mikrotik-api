@@ -16,12 +16,12 @@ return new class extends Migration
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
             $table->uuid('job_uid')->unique();
-            $table->string('command', 10);
+            $table->string('command', 10)->default("disconnect");
             $table->string('username', 100);
             $table->string('nasipaddress', 50);
             $table->string('framedipaddress', 50);
             $table->string('payload', 100);
-            $table->integer('attempts');
+            $table->integer('attempts')->default(0);
             $table->timestamps();
         });
     }

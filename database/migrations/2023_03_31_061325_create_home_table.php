@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('home', function (Blueprint $table) {
             $table->id();
-            $table->string('namae', 100);
+            $table->string('name', 100);
             $table->string('module', 100);
             $table->string('model', 100);
             $table->string('url', 200);

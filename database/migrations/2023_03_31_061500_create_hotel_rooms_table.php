@@ -17,16 +17,16 @@ return new class extends Migration
             $table->id();
             $table->uuid('hotel_room_uid')->unique();
             $table->string('room_number', 50);
-            $table->string('name', 100);
+            $table->string('name', 100)->default("Guest");
             $table->string('folio_number', 100);
-            $table->integer('service_id');
+            $table->integer('service_id')->default(0);
             $table->string('default_cron_type', 100);
-            $table->enum('status', ['active', 'deactive']);
-            $table->tinyInteger('edit');
-            $table->dateTime('change_service_end_time');
-            $table->dateTime('arrival');
-            $table->dateTime('departure');
-            $table->string('no_posting', 50);
+            $table->enum('status', ['active', 'deactive'])->default("deactive");
+            $table->tinyInteger('edit')->default(0);
+            $table->dateTime('change_service_end_time')->default("0000-00-00 00:00:00");
+            $table->dateTime('arrival')->default("0000-00-00 00:00:00");
+            $table->dateTime('departure')->default("0000-00-00 00:00:00");
+            $table->string('no_posting', 50)->default("N");
             $table->timestamps();
         });
     }

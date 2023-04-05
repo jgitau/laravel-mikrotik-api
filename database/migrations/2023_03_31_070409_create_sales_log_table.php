@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('cost');
             $table->string('currency', 3);
             $table->dateTime('date_of_sale');
-            $table->tinyInteger('backup');
+            $table->tinyInteger('backup')->default(0);
             $table->timestamps();
         });
     }

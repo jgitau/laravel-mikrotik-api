@@ -20,13 +20,13 @@ return new class extends Migration
             $table->integer('date');
             $table->string('operator', 50);
             $table->integer('quantity');
-            $table->string('service',200);
+            $table->string('service', 200);
             $table->timestamps();
             $table->foreign('voucher_batch_id')
-              ->references('voucher_batch_id')
-              ->on('voucher_batches')
-              ->onDelete('cascade')
-              ->onUpdate('cascade');
+                ->references('voucher_batch_id')
+                ->on('voucher_batches')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

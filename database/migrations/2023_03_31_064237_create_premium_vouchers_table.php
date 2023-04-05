@@ -19,17 +19,17 @@ return new class extends Migration
             $table->unsignedBigInteger('voucher_batch_id');
             $table->string('username', 100);
             $table->string('password', 100);
-            $table->integer('valid_until');
-            $table->integer('first_use');
-            $table->string('status',50);
-            $table->tinyInteger('clean_up');
-            $table->string('time_limit', 50);
+            $table->integer('valid_until')->default(0);
+            $table->integer('first_use')->default(0);
+            $table->string('status', 50)->default("active");
+            $table->tinyInteger('clean_up')->default(0);
+            $table->string('time_limit', 50)->nullable();
             $table->timestamps();
             $table->foreign('voucher_batch_id')
-              ->references('voucher_batch_id')
-              ->on('voucher_batches')
-              ->onDelete('cascade')
-              ->onUpdate('cascade');
+                ->references('voucher_batch_id')
+                ->on('voucher_batches')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

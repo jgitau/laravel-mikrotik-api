@@ -9,7 +9,7 @@ $configData = Helper::appClasses();
 @endpush
 
 @section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-warning fw-light">Administrators </span>/ List Admin</h4>
+<h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light">Administrators </span>/ List Admin</h4>
 
 <!-- DataTable with Buttons -->
 <div class="card">

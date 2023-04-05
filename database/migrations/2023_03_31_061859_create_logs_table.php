@@ -24,10 +24,10 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('voucher_batch_id')
-              ->references('voucher_batch_id')
-              ->on('voucher_batches')
-              ->onDelete('cascade')
-              ->onUpdate('cascade');
+                ->references('voucher_batch_id')
+                ->on('voucher_batches')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

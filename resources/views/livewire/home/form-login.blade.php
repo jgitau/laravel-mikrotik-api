@@ -1,9 +1,10 @@
-<div class="card" style="background-color: rgb(40, 40, 45,0.8)">
+{{-- Bacground Color for Dark Mode : style="background-color: rgb(40, 40, 45,0.8)" --}}
+<div class="card" >
     <div class="card-body">
         <!-- Logo -->
         <div class="app-brand justify-content-center mb-3">
             <a href="{{url('/')}}" class="app-brand-link gap-2">
-                <img src="{{ asset('assets/images/logo/new-megalos-logo-yellow-2.png') }}" alt="" width="250">
+                <img src="{{ asset('assets/images/logo/new-megalos-logo-blue2.png') }}" alt="" width="250">
             </a>
         </div>
         <!-- /Logo -->
@@ -41,7 +42,7 @@
             </div>
             {{-- Button Sign In --}}
             <div class="mb-5">
-                <button class="btn btn-warning d-grid w-100" type="submit">Sign in</button>
+                <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
             </div>
         </form>
     </div>

@@ -15,17 +15,17 @@ return new class extends Migration
     {
         Schema::create('root_activities', function (Blueprint $table) {
             $table->id();
-            $table->string('username', 200);
-            $table->string('module', 200);
-            $table->string('page', 200);
-            $table->string('timestamp', 200);
-            $table->string('browser_name', 200);
+            $table->string('username', 200)->nullable();
+            $table->string('module', 200)->nullable();
+            $table->string('page', 200)->nullable();
+            $table->string('timestamp', 200)->nullable();
+            $table->string('browser_name', 200)->nullable();
             $table->integer('browser_version');
-            $table->string('os_name', 50);
-            $table->string('os_version', 50);
-            $table->string('device_type', 50);
-            $table->text('params');
-            $table->string('ip', 25);
+            $table->string('os_name', 50)->nullable();
+            $table->string('os_version', 50)->nullable();
+            $table->string('device_type', 50)->nullable();
+            $table->text('params')->nullable();
+            $table->string('ip', 25)->nullable();
             $table->timestamps();
         });
     }

@@ -18,11 +18,12 @@ return new class extends Migration
             $table->string('name', 200);
             $table->string('title', 200);
             $table->string('max_height', 100);
-            $table->string('max_size', 100);
-            $table->string('mobile_max_height', 100);
-            $table->string('mobile_max_width', 100);
-            $table->string('mobile_max_size', 100);
-            $table->tinyInteger('single_image');
+            $table->string('max_width', 100)->nullable();
+            $table->string('max_size', 100)->nullable();
+            $table->string('mobile_max_height', 100)->nullable();
+            $table->string('mobile_max_width', 100)->nullable();
+            $table->string('mobile_max_size', 100)->nullable();
+            $table->tinyInteger('single_image')->default(0);
             $table->timestamps();
         });
     }

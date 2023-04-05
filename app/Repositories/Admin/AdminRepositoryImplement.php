@@ -36,7 +36,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
         $admin = $this->model->where('username', $username)->first();
 
         // Check if admin data is found, password is correct, and admin status is active
-        if ($admin && Hash::check($password , $admin->password) && $admin->status == 1) {
+        if ($admin && Hash::check($password, $admin->password) && $admin->status == 1) {
 
             // Generate session data
             $sessionData = [
@@ -60,6 +60,9 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
             // Queue the cookie to be sent with the next response
             Cookie::queue($cookie);
 
+            // Save login log
+            $this->saveLoginLog($username);
+
             // Return session key, session data, and cookie for further use
             return [
                 'session_key' => $sessionKey,
@@ -70,6 +73,49 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
         // Return false if the login credentials are not valid
         return false;
+    }
+
+
+    /**
+     * saveLoginLog
+     * @param  mixed $username
+     * @return void
+     */
+    private function saveLoginLog($username)
+    {
+        // Create key login log for daily, monthly, and total login
+        $logKeys = ['daily_login', 'monthly_login', 'total_login'];
+        $privateRedisLog = "mglanalytic|";
+
+        // Loop through each log key to process daily, monthly, and total login logs
+        foreach ($logKeys as $logKey) {
+            $setDate = '';
+
+            // If the log key is for daily login, set the date format as YYYY-MM-DD
+            if ($logKey == 'daily_login') {
+                $setDate = date('|Y-m-d', time());
+            }
+
+            // If the log key is for monthly login, set the date format as YYYY-MM
+            if ($logKey == 'monthly_login') {
+                $setDate = date('|Y-m', time());
+            }
+
+            // Combine the private Redis log key, log key, username, and date to create a unique Redis log entry
+            $redisLog = $privateRedisLog . $logKey . '|' . $username . $setDate;
+            // Prepare the data to be stored in the log entry
+            $data = [
+                'username' => $username,
+                'time' => time()
+            ];
+
+            // Create a Redis key for incrementing the count of log entries
+            $redisInc = $redisLog . '|count';
+            // Increment the count of log entries by 1
+            Redis::incrBy($redisInc, 1);
+            // Add the log entry data to a sorted set in Redis with a score of 1
+            Redis::zAdd($redisLog, 1, json_encode($data));
+        }
     }
 
     /**
@@ -100,18 +146,30 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
      */
     public function getDatatables($request)
     {
+        // Retrieve records from the database using the model, including the related 'group' records, and sort by the latest records
         $data = $this->model->with('group')->latest()->get();
-        return DataTables::of($data)
+
+        // Initialize the DataTables library using the fetched data
+        $dataTables = DataTables::of($data)
+            // Add an index column to the DataTable for easier reference
             ->addIndexColumn()
+            // Add a new 'status' column to the DataTable, displaying 'Active' if status is 1, and 'Non Active' otherwise
             ->addColumn('status', function ($data) {
                 return $data->status == 1 ? 'Active' : 'Non Active';
             })
+            // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
             ->addColumn('action', function ($data) {
-                $button = '<button type="button" name="edit" id="' . $data->admin_uid . '" class="edit btn btn-warning btn-sm"> <i class="fas fa-edit"></i></button>';
+                // Create an edit button with the record's 'admin_uid' as its ID and a 'fas fa-edit' icon
+                $button = '<button type="button" name="edit" id="' . $data->admin_uid . '" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i></button>';
+                // Add a delete button with the record's 'admin_uid' as its ID and a 'fas fa-trash' icon
                 $button .= '&nbsp;&nbsp;<button type="button" name="edit" id="' . $data->admin_uid . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i></button>';
+                // Return the concatenated button HTML string
                 return $button;
             })
+            // Create and return the DataTables response as a JSON object
             ->make(true);
-    }
 
+        // Return the DataTables JSON response
+        return $dataTables;
+    }
 }

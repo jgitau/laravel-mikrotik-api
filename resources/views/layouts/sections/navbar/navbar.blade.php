@@ -168,7 +168,7 @@ $navbarDetached = ($navbarDetached ?? '');
                 text: "You will no longer be able to access the data!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#cc9200',
+                confirmButtonColor: '#7367f0',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Ya, Logout!',
                 cancelButtonText: 'No!'

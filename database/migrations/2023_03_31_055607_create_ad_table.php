@@ -18,10 +18,10 @@ return new class extends Migration
             $table->string('file_name', 100);
             $table->string('thumb_file_name', 100);
             $table->string('title', 200);
-            $table->text('short_description');
-            $table->date('promo_date');
-            $table->string('url_for_image', 200);
-            $table->string('url_for_read_more', 200);
+            $table->text('short_description')->nullable();
+            $table->date('promo_date')->nullable();
+            $table->string('url_for_image', 200)->nullable();
+            $table->string('url_for_read_more', 200)->nullable();
             $table->integer('time_to_show');
             $table->integer('time_to_hide');
             $table->string('device_type', 50);

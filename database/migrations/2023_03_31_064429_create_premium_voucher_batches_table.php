@@ -20,16 +20,16 @@ return new class extends Migration
             $table->integer('quantity');
             $table->integer('created');
             $table->string('created_by', 100);
-            $table->text('note');
-            $table->dateTime('premium_service_end_time');
-            $table->enum('status', ['active', 'expired']);
-            $table->string('type', 50);
+            $table->text('note')->nullable();
+            $table->dateTime('premium_service_end_time')->nullable();
+            $table->enum('status', ['active', 'expired'])->default("active");
+            $table->string('type', 50)->nullable();
             $table->timestamps();
             $table->foreign('service_id')
-              ->references('service_id')
-              ->on('services')
-              ->onDelete('cascade')
-              ->onUpdate('cascade');
+                ->references('service_id')
+                ->on('services')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

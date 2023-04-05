@@ -20,14 +20,14 @@ return new class extends Migration
             $table->integer('quantity');
             $table->integer('created');
             $table->string('created_by', 200);
-            $table->text('note');
-            $table->string('type',50);
+            $table->text('note')->nullable();
+            $table->string('type', 50);
             $table->timestamps();
             $table->foreign('service_id')
-              ->references('service_id')
-              ->on('services')
-              ->onDelete('cascade')
-              ->onUpdate('cascade');
+                ->references('service_id')
+                ->on('services')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

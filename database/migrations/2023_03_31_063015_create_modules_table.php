@@ -17,13 +17,13 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->string('title', 100);
-            $table->tinyInteger('is_parent');
-            $table->integer('show_to');
-            $table->string('url',200);
+            $table->tinyInteger('is_parent')->default(0);
+            $table->integer('show_to')->nullable();
+            $table->string('url',200)->nullable();
             $table->tinyInteger('extensible');
             $table->tinyInteger('active');
-            $table->string('icon_class',50);
-            $table->string('root',100);
+            $table->string('icon_class',50)->nullable();
+            $table->string('root',100)->default(0);
             $table->timestamps();
         });
     }

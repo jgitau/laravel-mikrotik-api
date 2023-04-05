@@ -10,7 +10,7 @@ $configData = Helper::appClasses();
     <a href="{{url('/')}}" class="app-brand-link">
       <span class="app-brand-logo demo">
         {{-- @include('_partials.macros',["height"=>20]) --}}
-        <img src="{{ asset('assets/images/logo/icon_megalos.png') }}" alt="" width="30">
+        <img src="{{ asset('assets/images/logo/icon_megalos-blue.png') }}" alt="" width="30">
       </span>
       <span class="app-brand-text demo menu-text fw-bold">{{config('variables.templateName')}}</span>
     </a>

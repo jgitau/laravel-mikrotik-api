@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('groupname',64);
             $table->string('attribute', 64);
-            $table->string('op', 2);
+            $table->string('op', 2)->default("=");
             $table->string('value', 253);
         });
     }

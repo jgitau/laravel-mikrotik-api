@@ -22,7 +22,7 @@
     <!-- Canonical SEO -->
     <link rel="canonical" href="{{ config('variables.productPage') ? config('variables.productPage') : '' }}">
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/logo/icon_megalos.png') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/logo/icon_megalos-blue.png') }}" />
     @livewireStyles
 
 

@@ -18,14 +18,14 @@ return new class extends Migration
             $table->unsignedBigInteger('module_id');
             $table->string('setting', 255);
             $table->string('value', 255);
-            $table->string('flag_module', 100);
+            $table->string('flag_module', 100)->nullable();
             $table->timestamps();
 
             $table->foreign('module_id')
-              ->references('module_id')
-              ->on('modules')
-              ->onDelete('cascade')
-              ->onUpdate('cascade');
+                ->references('module_id')
+                ->on('modules')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

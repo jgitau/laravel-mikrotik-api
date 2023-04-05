@@ -17,12 +17,12 @@ return new class extends Migration
             $table->id();
             $table->string('mac_address', 100);
             $table->string('password', 100);
-            $table->string('mikrotik_group', 100);
-            $table->string('validfrom', 100);
-            $table->string('validto', 100);
-            $table->enum('status', ['bypassed', 'blocked']);
-            $table->text('description');
-            $table->string('server', 100);
+            $table->string('mikrotik_group', 100)->nullable();
+            $table->string('validfrom', 100)->nullable();
+            $table->string('validto', 100)->nullable();
+            $table->enum('status', ['bypassed', 'blocked'])->default("bypassed");
+            $table->text('description')->nullable();
+            $table->string('server', 100)->default("all");
             $table->string('mikrotik_id', 50);
             $table->timestamps();
         });

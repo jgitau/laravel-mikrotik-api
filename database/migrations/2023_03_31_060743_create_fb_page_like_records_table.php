@@ -17,21 +17,21 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('page_id');
             $table->unsignedBigInteger('user_id');
-            $table->dateTime('action_time');
-            $table->string('email', 200);
+            $table->dateTime('action_time')->nullable();
+            $table->string('email', 200)->nullable();
             $table->timestamps();
 
             $table->foreign('page_id')
-              ->references('page_id')
-              ->on('pages')
-              ->onDelete('cascade')
-              ->onUpdate('cascade');
+                ->references('page_id')
+                ->on('pages')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 
             $table->foreign('user_id')
-              ->references('user_id')
-              ->on('users_data')
-              ->onDelete('cascade')
-              ->onUpdate('cascade');
+                ->references('user_id')
+                ->on('users_data')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

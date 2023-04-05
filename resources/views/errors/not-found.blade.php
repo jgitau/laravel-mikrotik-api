@@ -13,7 +13,7 @@
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/logo/icon_megalos.png') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/logo/icon_megalos-blue.png') }}" />
     <!-- Core CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-default.css') }}" class="template-customizer-theme-css" />
@@ -27,11 +27,11 @@
     <!-- Error -->
     <div class="container-xxl container-p-y">
         <div class="misc-wrapper">
-            <h2 class="mb-1 mt-4">Page Not Found :(</h2>
+            <h2 class="mb-1 mt-4">Page Not Found 😞</h2>
             <p class="mb-4 mx-2">Oops! 😖 The requested URL was not found on this server.</p>
-            <a href="{{ route('index') }}" class="btn btn-warning mb-4">Back to Home</a>
+            <a href="#" class="btn btn-primary mb-4" onclick="javascript:window.history.back(-1);return false;"> Back</a>
             <div class="mt-4">
-                <img src="{{ asset('assets/img/illustrations/page-misc-error-2.png') }}" alt="page-misc-error" width="225"
+                <img src="{{ asset('assets/img/illustrations/page-misc-error.png') }}" alt="page-misc-error" width="225"
                     class="img-fluid" />
             </div>
         </div>

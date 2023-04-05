@@ -15,11 +15,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(AdminSeeder::class);
-        // $this->call(GroupSeeder::class);
-        // $this->call(RadGroupReplySeeder::class);
-        // $this->call(ServicesSeeder::class);
+        $this->call(AdminSeeder::class);
+        $this->call(GroupSeeder::class);
+        $this->call(RadGroupReplySeeder::class);
+        $this->call(ServicesSeeder::class);
 
-        Admin::factory(500)->create();
+        Admin::factory(50)->create();
     }
 }

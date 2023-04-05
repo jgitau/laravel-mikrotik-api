@@ -51,10 +51,13 @@ class AdminServiceImplement extends Service implements AdminService
         }
     }
 
-    public function getDatatables($request)
+    /**
+     * getDatatables
+     */
+    public function getDatatables()
     {
         try {
-            return $this->mainRepository->getDatatables($request);
+            return $this->mainRepository->getDatatables();
         } catch (\Throwable $th) {
             Log::debug($th->getMessage());
             return [];

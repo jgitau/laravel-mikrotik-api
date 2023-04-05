@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Backend\Setup\Admin;
+namespace App\Http\Livewire\Backend\Setup\Administrator\Admin;
 
 use App\Services\Admin\AdminService;
 use Livewire\Component;
@@ -13,7 +13,7 @@ class DataTable extends Component
      */
     public function render()
     {
-        return view('livewire.backend.setup.admin.data-table');
+        return view('livewire.backend.setup.administrator.admin.data-table');
     }
 
     /**

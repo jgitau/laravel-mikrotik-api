@@ -24,7 +24,7 @@ $configData = Helper::appClasses();
     </div>
 
     {{-- Start List DataTable --}}
-    @livewire('backend.setup.admin.data-table')
+    @livewire('backend.setup.administrator.admin.data-table')
     {{-- End List DataTable --}}
 
 </div>

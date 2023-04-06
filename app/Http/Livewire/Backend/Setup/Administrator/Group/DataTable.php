@@ -7,6 +7,14 @@ use Livewire\Component;
 
 class DataTable extends Component
 {
+    // Define public variable
+
+    // Listeners
+    protected $listeners = [
+        'createdGroup' => 'handleStored',
+        'updatedGroup' => 'handleUpdated',
+    ];
+
     /**
      * render
      */
@@ -22,5 +30,24 @@ class DataTable extends Component
     public function getDataTable(GroupService $groupService)
     {
         return $groupService->getDatatables();
+    }
+
+    /**
+     * handleStored
+     *
+     * @return void
+     */
+    public function handleStored()
+    {
+        $this->dispatchBrowserEvent('groupStored');
+    }
+    /**
+     * handleUpdated
+     *
+     * @return void
+     */
+    public function handleUpdated()
+    {
+        //
     }
 }

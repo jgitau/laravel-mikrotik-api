@@ -13,24 +13,24 @@ class GroupSeeder extends Seeder
      *
      * @return void
      */
-  public function run()
-  {
-    $datas = [
-      [
-        'id' => 1,
-        'name' => 'Full Administrator',
-      ],
-      [
-        'id' => 2,
-        'name' => 'Operator',
-      ]
-    ];
+    public function run()
+    {
+        $datas = [
+            [
+                'id' => 1,
+                'name' => 'Full Administrator',
+            ],
+            [
+                'id' => 2,
+                'name' => 'Operator',
+            ]
+        ];
 
-    foreach ($datas as $data) {
-      $group = new Group();
-      $group->id = $data['id'];
-      $group->name = $data['name'];
-      $group->save();
+        foreach ($datas as $data) {
+            $group = new Group();
+            $group->id = $data['id'];
+            $group->name = $data['name'];
+            $group->save();
+        }
     }
-  }
 }

@@ -15,12 +15,15 @@ $configData = Helper::appClasses();
 
 <div class="row">
     <!-- DataTable with Buttons -->
-    <div class="col-md-8">
+    <div class="col-md-12">
         <div class="card">
             {{-- Card Header --}}
             <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <h4 class="card-title">Table Groups</h4>
+                    <button type="button" class="btn btn-sm btn-facebook waves-effect waves-light">
+                        <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp;Create
+                    </button>
                 </div>
             </div>
 

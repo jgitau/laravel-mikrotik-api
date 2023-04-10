@@ -30,14 +30,14 @@ class ModuleSeeder extends Seeder
             ],
             [
                 'id' => 2,
-                'name' => 'home',
-                'title' => 'Home',
+                'name' => 'dashboard',
+                'title' => 'Dashboard',
                 'is_parent' => 0,
                 'show_to' => NULL,
-                'url' => NULL,
+                'url' => "dashboard",
                 'extensible' => 1,
                 'active' => 1,
-                'icon_class' => "icon-home",
+                'icon_class' => "tf-icons ti ti-dashboard",
                 'root' => 0
             ],
             [

@@ -35,6 +35,16 @@ class MenuHelper
     {
         $menuData = [];
 
+        // Find and add the Home menu item
+        $dashboardModule = Module::where('name', 'dashboard')->first();
+        if ($dashboardModule) {
+            $menuData[] = [
+                'name' => $dashboardModule->title,
+                'slug' => $dashboardModule->url,
+                'icon' => $dashboardModule->icon_class,
+                'url' => '/' . $dashboardModule->url
+            ];
+        }
         // Fetch all active parent modules
         $parentModules = Module::where('is_parent', true)->where('active', true)->get();
 
@@ -49,7 +59,6 @@ class MenuHelper
 
             // Fetch all active child modules that belong to the parent module
             $childModules = Module::where('show_to', $parentModule->id)->where('active', true)->get();
-
             // Loop through child modules and create submenu items
             foreach ($childModules as $childModule) {
                 $subMenuItem = [
@@ -80,10 +89,12 @@ class MenuHelper
                     }
                 }
 
+
                 if (!empty($subMenuItem['submenu'])) {
                     $menuItem['submenu'][] = $subMenuItem;
                 }
             }
+
 
             if (!empty($menuItem['submenu'])) {
                 $menuData[] = $menuItem;

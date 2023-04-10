@@ -3,7 +3,7 @@ $configData = Helper::appClasses();
 @endphp
 
 @extends('layouts/layoutMaster')
-@section('title', 'List Administrators')
+@section('title', 'List Admins')
 @push('styles')
 <link rel="stylesheet" href="{{ asset('assets/datatable/datatables.min.css') }}" />
 @endpush

@@ -23,4 +23,17 @@ class Module extends Model
         'icon_class',
         'root',
     ];
+
+    public $timestamps = false;
+
+    public function pages()
+    {
+        return $this->hasMany(Page::class, 'module_id', 'id');
+    }
+
+
+    public function parent()
+    {
+        return $this->belongsTo(Module::class, 'root', 'id');
+    }
 }

@@ -41,6 +41,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
             // Generate session data
             $sessionData = [
                 'user_uid' => $admin->admin_uid,
+                'group_id' => $admin->group_id,
                 'role' => $admin->group->name,
                 'login_status' => 'Active',
                 'fullname' => $admin->fullname,

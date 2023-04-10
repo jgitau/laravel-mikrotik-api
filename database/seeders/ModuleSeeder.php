@@ -49,7 +49,7 @@ class ModuleSeeder extends Seeder
                 'url' => NULL,
                 'extensible' => 1,
                 'active' => 1,
-                'icon_class' => "icon-user",
+                'icon_class' => "tf-icons ti ti-users",
                 'root' => 0
             ],
             [
@@ -121,7 +121,7 @@ class ModuleSeeder extends Seeder
                 'url' => NULL,
                 'extensible' => 1,
                 'active' => 1,
-                'icon_class' => 'icon-wrench',
+                'icon_class' => 'tf-icons ti ti-settings',
                 'root' => 0
             ],
             [

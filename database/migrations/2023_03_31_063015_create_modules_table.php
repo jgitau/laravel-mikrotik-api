@@ -24,7 +24,6 @@ return new class extends Migration
             $table->tinyInteger('active');
             $table->string('icon_class',50)->nullable();
             $table->string('root',100)->default(0);
-            $table->timestamps();
         });
     }
 

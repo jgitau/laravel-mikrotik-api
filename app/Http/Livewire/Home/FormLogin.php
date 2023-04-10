@@ -63,6 +63,7 @@ class FormLogin extends Component
 
             // Set the session data for the authenticated user
             session([
+                'user_uid' => $sessionData['user_uid'],
                 'fullname' => $sessionData['fullname'],
                 'login_status' => $sessionData['login_status'],
                 'role' => $sessionData['role'],

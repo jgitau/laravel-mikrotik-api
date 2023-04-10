@@ -22,7 +22,6 @@ return new class extends Migration
             $table->text('allowed_groups');
             $table->tinyInteger('show_menu')->default(0);
             $table->integer('show_to')->nullable();
-            $table->timestamps();
             $table->foreign('module_id')
                 ->references('module_id')
                 ->on('modules')

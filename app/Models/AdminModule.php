@@ -5,27 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Page extends Model
+class AdminModule extends Model
 {
     use HasFactory;
 
-    protected $table = 'pages';
+    protected $table = 'admin_module';
     protected $primaryKey = 'id';
     protected $guarded = [];
     protected $fillable = [
-        'page',
-        'title',
-        'url',
+        'admin_id',
         'module_id',
-        'allowed_groups',
-        'show_menu',
-        'show_to',
     ];
 
     public $timestamps = false;
 
-    public function module()
+
+    public function modules()
     {
-        return $this->belongsTo(Module::class, 'module_id', 'id');
+        return $this->belongsToMany(Module::class, 'admin_module', 'admin_id', 'module_id');
     }
+
 }

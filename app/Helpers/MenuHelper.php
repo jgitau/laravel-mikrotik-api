@@ -47,7 +47,7 @@ class MenuHelper
         }
         // Fetch all active parent modules
         $parentModules = Module::where('is_parent', true)->where('active', true)->get();
-
+        // dd($parentModules);
         // Loop through parent modules and create menu items
         foreach ($parentModules as $parentModule) {
             $menuItem = [
@@ -57,8 +57,30 @@ class MenuHelper
                 'submenu' => []
             ];
 
+            // Fetch all pages that belong to the parent module and are visible to the user's group
+            $pages = Page::where('module_id', $parentModule->id)
+                ->where(function ($query) use ($user) {
+                    $query->where('allowed_groups', 'like', '%' . $user->group_id . '%')
+                        ->orWhere('allowed_groups', null);
+                })
+                ->where('show_menu', true)
+                ->get();
+
+            // Loop through the pages and add them to the parent menu
+            foreach ($pages as $page) {
+                $allowedGroups = explode(',', $page->allowed_groups);
+                if (in_array($user->group_id, $allowedGroups) || empty($page->allowed_groups)) {
+                    $menuItem['submenu'][] = [
+                        'url' => $page->url,
+                        'name' => $page->title,
+                        'slug' => $page->url
+                    ];
+                }
+            }
+
             // Fetch all active child modules that belong to the parent module
             $childModules = Module::where('show_to', $parentModule->id)->where('active', true)->get();
+
             // Loop through child modules and create submenu items
             foreach ($childModules as $childModule) {
                 $subMenuItem = [
@@ -88,7 +110,6 @@ class MenuHelper
                         ];
                     }
                 }
-
 
                 if (!empty($subMenuItem['submenu'])) {
                     $menuItem['submenu'][] = $subMenuItem;
@@ -162,7 +183,7 @@ class MenuHelper
             $html .= '>';
 
             if (isset($menuItem['icon'])) {
-                $html .= '<i class="menu-icon ' . $menuItem['icon'] . '"></i>';
+                $html .= '<i class="menu-icon tf-icons ' . $menuItem['icon'] . '"></i>';
             }
 
             $html .= '<div data-i18n="' . $menuItem['name'] . '">' . $menuItem['name'] . '</div>';

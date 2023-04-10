@@ -106,16 +106,17 @@ class PageSeeder extends Seeder
                 'show_menu' => 0,
                 'show_to' => NULL
             ],
-            [
-                'id' => 11,
-                'page' => 'my_account',
-                'title' => 'My Account',
-                'url' => 'administrators/pg/my_account',
-                'module_id' => 10,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => 2
-            ],
+            // TODO: MY ACCOUNT
+            // [
+            //     'id' => 11,
+            //     'page' => 'my_account',
+            //     'title' => 'My Account',
+            //     'url' => 'administrators/pg/my_account',
+            //     'module_id' => 10,
+            //     'allowed_groups' => '1',
+            //     'show_menu' => 1,
+            //     'show_to' => NULL
+            // ],
             [
                 'id' => 12,
                 'page' => 'list_admins',
@@ -271,10 +272,10 @@ class PageSeeder extends Seeder
                 'page' => 'set_url_redirect',
                 'title' => 'Set URL Redirect',
                 'url' => 'services/pg/set_url_redirect',
-                'module_id' => 4,
+                'module_id' => 9,
                 'allowed_groups' => '1,2',
                 'show_menu' => 1,
-                'show_to' => 9
+                'show_to' => NULL
             ],
 
             [
@@ -624,10 +625,10 @@ class PageSeeder extends Seeder
                 'page' => 'vouchers_print_setup',
                 'title' => 'Vouchers Print Setup',
                 'url' => 'clients/pg/vouchers_print_setup',
-                'module_id' => 12,
+                'module_id' => 9,
                 'allowed_groups' => '1',
                 'show_menu' => 1,
-                'show_to' => 9
+                'show_to' => NULL
             ],
             [
                 'id' => 76,
@@ -635,7 +636,7 @@ class PageSeeder extends Seeder
                 'title' => 'List Configs',
                 'url' => 'configs/pg/list_config',
                 'module_id' => 19,
-                'allowed_groups' => '0',
+                'allowed_groups' => '1',
                 'show_menu' => 1,
                 'show_to' => 19
             ],

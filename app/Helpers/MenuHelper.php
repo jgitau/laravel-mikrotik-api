@@ -66,6 +66,7 @@ class MenuHelper
                 ->where('show_menu', true)
                 ->get();
 
+
             // Loop through the pages and add them to the parent menu
             foreach ($pages as $page) {
                 $allowedGroups = explode(',', $page->allowed_groups);

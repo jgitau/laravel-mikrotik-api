@@ -3,7 +3,7 @@ $configData = Helper::appClasses();
 @endphp
 
 @extends('layouts/layoutMaster')
-@section('title', 'List Administrators')
+@section('title', 'List Admins')
 @push('styles')
 <link rel="stylesheet" href="{{ asset('assets/datatable/datatables.min.css') }}" />
 @endpush
@@ -15,7 +15,7 @@ $configData = Helper::appClasses();
 <div class="card">
     <div class="card-header">
         <div class="d-flex justify-content-between">
-            <h4 class="card-title">List</h4>
+            <h4 class="card-title">Table Admins</h4>
             <button type="button" class="btn btn-facebook waves-effect waves-light">
                 <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp;Create
             </button>

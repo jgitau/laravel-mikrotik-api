@@ -24,4 +24,14 @@ class Group extends Model
     {
         return $this->hasMany(Admin::class, 'group_id', 'id');
     }
+
+    /**
+     * modules
+     */
+    public function modules()
+    {
+        return $this->belongsToMany(Module::class, 'pages', 'allowed_groups', 'module_id')
+        ->distinct()
+            ->with('pages');
+    }
 }

@@ -30,14 +30,14 @@ class ModuleSeeder extends Seeder
             ],
             [
                 'id' => 2,
-                'name' => 'home',
-                'title' => 'Home',
+                'name' => 'dashboard',
+                'title' => 'Dashboard',
                 'is_parent' => 0,
                 'show_to' => NULL,
-                'url' => NULL,
+                'url' => "dashboard",
                 'extensible' => 1,
                 'active' => 1,
-                'icon_class' => "icon-home",
+                'icon_class' => "ti ti-dashboard",
                 'root' => 0
             ],
             [
@@ -49,7 +49,7 @@ class ModuleSeeder extends Seeder
                 'url' => NULL,
                 'extensible' => 1,
                 'active' => 1,
-                'icon_class' => "tf-icons ti ti-users",
+                'icon_class' => "ti ti-users",
                 'root' => 0
             ],
             [
@@ -61,7 +61,7 @@ class ModuleSeeder extends Seeder
                 'url' => NULL,
                 'extensible' => 1,
                 'active' => 1,
-                'icon_class' => "icon-folder-open",
+                'icon_class' => "ti ti-package",
                 'root' => 0
             ],
             [
@@ -97,7 +97,7 @@ class ModuleSeeder extends Seeder
                 'url' => NULL,
                 'extensible' => 0,
                 'active' => 1,
-                'icon_class' => 'icon-doc-text-inv',
+                'icon_class' => 'ti ti-chart-pie',
                 'root' => 0
             ],
             [
@@ -121,7 +121,7 @@ class ModuleSeeder extends Seeder
                 'url' => NULL,
                 'extensible' => 1,
                 'active' => 1,
-                'icon_class' => 'tf-icons ti ti-settings',
+                'icon_class' => 'ti ti-settings',
                 'root' => 0
             ],
             [
@@ -230,7 +230,7 @@ class ModuleSeeder extends Seeder
                 'extensible' => 0,
                 'active' => 1,
                 'icon_class' => NULL,
-                'root' => 1
+                'root' => 0
             ]
         ];
 

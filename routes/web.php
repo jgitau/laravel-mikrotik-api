@@ -9,7 +9,6 @@ use App\Http\Controllers\Home\LoginController;
 use App\Http\Livewire\Backend\Setup\Administrator\Admin\DataTable as DataTableAdmin;
 use App\Http\Livewire\Backend\Setup\Administrator\Group\DataTable as DataTableGroup;
 use App\Http\Livewire\Backend\Setup\Config\DataTable as DataTableConfig;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 
 // Home/Login Page

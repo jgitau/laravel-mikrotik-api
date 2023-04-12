@@ -212,4 +212,50 @@ class MenuHelper
 
         return $html;
     }
+
+    /**
+     * getRoutesFromDatabase
+     *
+     * @return void
+     */
+    // *** TODO: ROUTES FROM DB ***
+    // public static function getRoutesFromDatabase()
+    // {
+    //     $routes = [];
+
+    //     // Ambil data admin bersama relasi grup, modul, dan halaman
+    //     $admin = Admin::with(['group.modules.pages'])->where('admin_uid', session('user_uid'))->first();
+
+    //     // Bangun data menu berdasarkan data admin yang diambil
+    //     $menuData = self::buildMenuData($admin);
+
+    //     // Iterasi melalui setiap item menu dan submenu
+    //     foreach ($menuData as $menuItem) {
+    //         if (isset($menuItem['submenu'])) {
+    //             foreach ($menuItem['submenu'] as $subMenuItem) {
+    //                 if (isset($subMenuItem['submenu'])) {
+    //                     foreach ($subMenuItem['submenu'] as $subSubMenuItem) {
+    //                         $routes[] = [
+    //                             'url' => $subSubMenuItem['url'],
+    //                             'controller' => $subSubMenuItem['controller_class'],
+    //                             'method' => $subSubMenuItem['controller_method'],
+    //                             'name' => $subSubMenuItem['route_name']
+    //                         ];
+    //                     }
+    //                 } else {
+    //                     $routes[] = [
+    //                         'url' => $subMenuItem['url'],
+    //                         'controller' => $subMenuItem['controller_class'],
+    //                         'method' => $subMenuItem['controller_method'],
+    //                         'name' => $subMenuItem['route_name']
+    //                     ];
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     return $routes;
+    // }
+
+
 }

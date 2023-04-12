@@ -140,6 +140,9 @@ class MenuHelper
         // Set the opening tag for the menu or submenu list
         $html = $isSubmenu ? '<ul class="menu-sub">' : '<ul class="menu-inner py-1">';
 
+        // Base URL
+        $baseUrl = url('/');
+
         // Iterate through each menu item
         foreach ($menu as $menuItem) {
             $activeClass = '';
@@ -162,7 +165,6 @@ class MenuHelper
                                 $isCurrentUrl = true;
                                 break;
                             }
-
                         }
                     } else {
 
@@ -171,7 +173,6 @@ class MenuHelper
                             $isCurrentUrl = true;
                             break;
                         }
-
                     }
                 }
             }
@@ -187,7 +188,7 @@ class MenuHelper
 
             // Build the menu item's HTML structure
             $html .= '<li class="menu-item ' . $activeClass . '" style="">';
-            $html .= '<a href="' . (isset($menuItem['url']) ? $menuItem['url'] : 'javascript:void(0);') . '"';
+            $html .= '<a href="' . (isset($menuItem['url']) ? $baseUrl . '/' . ltrim($menuItem['url'], '/') : 'javascript:void(0);') . '"';
             $html .= isset($menuItem['submenu']) ? ' class="menu-link menu-toggle"' : ' class="menu-link"';
             $html .= '>';
 
@@ -211,6 +212,4 @@ class MenuHelper
 
         return $html;
     }
-
-
 }

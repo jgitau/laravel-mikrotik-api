@@ -20,18 +20,25 @@ Route::middleware(['check.session.cookie'])->name('backend.')->group(function ()
     // Clients Routes
     Route::get('clients/list-clients', [ClientController::class, 'index'])->name('clients.list-clients');
 
-    // Setup Routes
+    // Administrator Group
+    Route::prefix('setup/admin/')->name('setup.admin.')->group(function () {
+        // List Admin Routes
+        Route::get('list-admins', [AdminController::class, 'index'])->name('list-admins');
+        // List Group Routes
+        Route::get('list-groups', [GroupController::class, 'index'])->name('list-groups');
+    });
 
-    // Config Routes
-    Route::get('setup/config/list-configs', [ConfigController::class, 'index'])->name('setup.config.list-configs');
-    // Admin Routes
-    Route::get('setup/admin/list-admins', [AdminController::class, 'index'])->name('setup.admin.list-admins');
-    // Group Routes
-    Route::get('setup/admin/list-groups', [GroupController::class, 'index'])->name('setup.admin.list-groups');
+
+    // Config Group
+    Route::prefix('setup/config/')->name('setup.config.')->group(function () {
+        // List Config Routes
+        Route::get('list-configs', [ConfigController::class, 'index'])->name('list-config');
+    });
 
 });
-// Get DataTable Admin
+// Get DataTable List Admin
 Route::get('livewire/backend/setup/administrator/admin/getDataTable', [DataTableAdmin::class, 'getDataTable'])->name('admin.getDataTable');
+// Get DataTable List Group
 Route::get('livewire/backend/setup/administrator/group/getDataTable', [DataTableGroup::class, 'getDataTable'])->name('group.getDataTable');
 
 // Logout

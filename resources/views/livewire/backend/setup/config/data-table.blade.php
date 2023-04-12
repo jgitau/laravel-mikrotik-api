@@ -15,16 +15,16 @@
         $(document).ready(function() {
             $('#myTable').DataTable({
                 // TODO:
-                // "processing": true,
-                // "serverSide": true,
-                // "responsive": true,
-                // "autoWidth": false,
-                // ajax: "{{ route('group.getDataTable') }}",
-                // columns: [
-                //     {data: 'DT_RowIndex', name: 'DT_RowIndex',width:'10px', orderable: false, searchable: false},
-                //     {data: 'name', name: 'name'},
-                //     {data: 'action', name: 'action', orderable: false, searchable: false},
-                // ]
+                "processing": true,
+                "serverSide": true,
+                "responsive": true,
+                "autoWidth": false,
+                ajax: "{{ route('config.getDataTable') }}",
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex',width:'10px', orderable: false, searchable: false},
+                    {data: 'title', name: 'title'},
+                    {data: 'action', name: 'action', orderable: false, searchable: false},
+                ]
             });
         });
     </script>

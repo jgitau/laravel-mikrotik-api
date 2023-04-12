@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\Setup\Administrator\GroupController;
 use App\Http\Controllers\Home\LoginController;
 use App\Http\Livewire\Backend\Setup\Administrator\Admin\DataTable as DataTableAdmin;
 use App\Http\Livewire\Backend\Setup\Administrator\Group\DataTable as DataTableGroup;
+use App\Http\Livewire\Backend\Setup\Config\DataTable as DataTableConfig;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +41,7 @@ Route::middleware(['check.session.cookie'])->name('backend.')->group(function ()
 Route::get('livewire/backend/setup/administrator/admin/getDataTable', [DataTableAdmin::class, 'getDataTable'])->name('admin.getDataTable');
 // Get DataTable List Group
 Route::get('livewire/backend/setup/administrator/group/getDataTable', [DataTableGroup::class, 'getDataTable'])->name('group.getDataTable');
+Route::get('livewire/backend/setup/config/getDataTable', [DataTableConfig::class, 'getDataTable'])->name('config.getDataTable');
 
 // Logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

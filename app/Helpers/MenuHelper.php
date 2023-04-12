@@ -45,9 +45,10 @@ class MenuHelper
                 'url' => '/' . $dashboardModule->url
             ];
         }
+
         // Fetch all active parent modules
         $parentModules = Module::where('is_parent', true)->where('active', true)->get();
-        // dd($parentModules);
+
         // Loop through parent modules and create menu items
         foreach ($parentModules as $parentModule) {
             $menuItem = [
@@ -146,24 +147,31 @@ class MenuHelper
 
             // Check if the current menu item has a submenu
             if (isset($menuItem['submenu'])) {
+
                 // Iterate through the submenu items
                 foreach ($menuItem['submenu'] as $subMenuItem) {
+
                     // Check if the submenu item has its own submenu (sub-submenu)
                     if (isset($subMenuItem['submenu'])) {
+
                         // Iterate through the sub-submenu items
                         foreach ($subMenuItem['submenu'] as $subSubMenuItem) {
+
                             // Set the current URL flag if the current path matches the sub-submenu item's URL or slug
                             if (request()->path() === trim($subSubMenuItem['slug'], '/') || request()->path() === trim($subSubMenuItem['url'], '/')) {
                                 $isCurrentUrl = true;
                                 break;
                             }
+
                         }
                     } else {
+
                         // Set the current URL flag if the current path matches the submenu item's URL or slug
                         if (isset($subMenuItem['slug']) && request()->path() === trim($subMenuItem['slug'], '/') || isset($subMenuItem['url']) && request()->path() === trim($subMenuItem['url'], '/')) {
                             $isCurrentUrl = true;
                             break;
                         }
+
                     }
                 }
             }

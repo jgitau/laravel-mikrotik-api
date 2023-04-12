@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ServicesSeeder::class);
         $this->call(ModuleSeeder::class);
         $this->call(PageSeeder::class);
+        $this->call(SettingSeeder::class);
 
         Admin::factory(50)->create();
     }

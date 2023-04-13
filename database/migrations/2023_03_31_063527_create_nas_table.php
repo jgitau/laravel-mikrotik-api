@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('server', 64)->nullable();
             $table->string('community', 50)->nullable();
             $table->string('description', 200)->default("RADIUS Client");
-            $table->timestamps();
         });
     }
 

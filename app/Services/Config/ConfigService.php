@@ -6,5 +6,8 @@ use LaravelEasyRepository\BaseService;
 
 interface ConfigService extends BaseService{
 
-    // Write something awesome :)
+    /**
+     * getDatatables
+     */
+    public function getDatatables();
 }

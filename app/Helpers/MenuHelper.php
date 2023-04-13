@@ -45,9 +45,10 @@ class MenuHelper
                 'url' => '/' . $dashboardModule->url
             ];
         }
+
         // Fetch all active parent modules
         $parentModules = Module::where('is_parent', true)->where('active', true)->get();
-        // dd($parentModules);
+
         // Loop through parent modules and create menu items
         foreach ($parentModules as $parentModule) {
             $menuItem = [
@@ -139,6 +140,9 @@ class MenuHelper
         // Set the opening tag for the menu or submenu list
         $html = $isSubmenu ? '<ul class="menu-sub">' : '<ul class="menu-inner py-1">';
 
+        // Base URL
+        $baseUrl = url('/');
+
         // Iterate through each menu item
         foreach ($menu as $menuItem) {
             $activeClass = '';
@@ -146,12 +150,16 @@ class MenuHelper
 
             // Check if the current menu item has a submenu
             if (isset($menuItem['submenu'])) {
+
                 // Iterate through the submenu items
                 foreach ($menuItem['submenu'] as $subMenuItem) {
+
                     // Check if the submenu item has its own submenu (sub-submenu)
                     if (isset($subMenuItem['submenu'])) {
+
                         // Iterate through the sub-submenu items
                         foreach ($subMenuItem['submenu'] as $subSubMenuItem) {
+
                             // Set the current URL flag if the current path matches the sub-submenu item's URL or slug
                             if (request()->path() === trim($subSubMenuItem['slug'], '/') || request()->path() === trim($subSubMenuItem['url'], '/')) {
                                 $isCurrentUrl = true;
@@ -159,6 +167,7 @@ class MenuHelper
                             }
                         }
                     } else {
+
                         // Set the current URL flag if the current path matches the submenu item's URL or slug
                         if (isset($subMenuItem['slug']) && request()->path() === trim($subMenuItem['slug'], '/') || isset($subMenuItem['url']) && request()->path() === trim($subMenuItem['url'], '/')) {
                             $isCurrentUrl = true;
@@ -179,7 +188,7 @@ class MenuHelper
 
             // Build the menu item's HTML structure
             $html .= '<li class="menu-item ' . $activeClass . '" style="">';
-            $html .= '<a href="' . (isset($menuItem['url']) ? $menuItem['url'] : 'javascript:void(0);') . '"';
+            $html .= '<a href="' . (isset($menuItem['url']) ? $baseUrl . '/' . ltrim($menuItem['url'], '/') : 'javascript:void(0);') . '"';
             $html .= isset($menuItem['submenu']) ? ' class="menu-link menu-toggle"' : ' class="menu-link"';
             $html .= '>';
 
@@ -203,6 +212,50 @@ class MenuHelper
 
         return $html;
     }
+
+    /**
+     * getRoutesFromDatabase
+     *
+     * @return void
+     */
+    // *** TODO: ROUTES FROM DB ***
+    // public static function getRoutesFromDatabase()
+    // {
+    //     $routes = [];
+
+    //     // Ambil data admin bersama relasi grup, modul, dan halaman
+    //     $admin = Admin::with(['group.modules.pages'])->where('admin_uid', session('user_uid'))->first();
+
+    //     // Bangun data menu berdasarkan data admin yang diambil
+    //     $menuData = self::buildMenuData($admin);
+
+    //     // Iterasi melalui setiap item menu dan submenu
+    //     foreach ($menuData as $menuItem) {
+    //         if (isset($menuItem['submenu'])) {
+    //             foreach ($menuItem['submenu'] as $subMenuItem) {
+    //                 if (isset($subMenuItem['submenu'])) {
+    //                     foreach ($subMenuItem['submenu'] as $subSubMenuItem) {
+    //                         $routes[] = [
+    //                             'url' => $subSubMenuItem['url'],
+    //                             'controller' => $subSubMenuItem['controller_class'],
+    //                             'method' => $subSubMenuItem['controller_method'],
+    //                             'name' => $subSubMenuItem['route_name']
+    //                         ];
+    //                     }
+    //                 } else {
+    //                     $routes[] = [
+    //                         'url' => $subMenuItem['url'],
+    //                         'controller' => $subMenuItem['controller_class'],
+    //                         'method' => $subMenuItem['controller_method'],
+    //                         'name' => $subMenuItem['route_name']
+    //                     ];
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     return $routes;
+    // }
 
 
 }

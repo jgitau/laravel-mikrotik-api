@@ -6,5 +6,9 @@ use LaravelEasyRepository\Repository;
 
 interface ConfigRepository extends Repository{
 
-    // Write something awesome :)
+
+    /**
+     * getDatatables
+     */
+    public function getDatatables();
 }

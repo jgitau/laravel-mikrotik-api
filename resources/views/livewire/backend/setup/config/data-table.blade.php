@@ -9,12 +9,40 @@
         </thead>
     </table>
 
+    <!-- Add the modal placeholder here -->
+    <div id="modal-placeholder"></div>
+
     @push('scripts')
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
     <script>
+        // Add the showModalByName function here
+        function showModalByName(name) {
+            let livewireComponentName = '';
+
+            switch (name) {
+                case 'exampleName1':
+                    livewireComponentName = 'example-name1-form';
+                    break;
+                case 'exampleName2':
+                    livewireComponentName = 'example-name2-form';
+                    break;
+                // Add more cases for other names here...
+                default:
+                    livewireComponentName = 'default-form';
+            }
+
+            // Insert the Livewire component into the modal placeholder
+            $('#modal-placeholder').html(`<livewire:${livewireComponentName}>`);
+
+            // Initialize the Livewire component
+            Livewire.init();
+
+            // Show the modal
+            $('#modal-placeholder .modal').modal('show');
+        }
+
         $(document).ready(function() {
             $('#myTable').DataTable({
-                // TODO:
                 "processing": true,
                 "serverSide": true,
                 "responsive": true,

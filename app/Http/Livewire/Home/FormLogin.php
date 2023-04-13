@@ -9,16 +9,19 @@ use Livewire\Component;
 class FormLogin extends Component
 {
 
+    // Declare public variables for username and password
     public $username, $password;
 
+    // Define an array of validation rules for the variables
     protected $rules = [
-        'username' => 'required',
-        'password' => 'required',
+        'username' => 'required', // The username is required
+        'password' => 'required', // The password is required
     ];
 
+    // Define an array of custom error messages for validation failures
     protected $messages = [
-        'username.required' => 'Username harus diisi!',
-        'password.required' => 'Password harus diisi!',
+        'username.required' => 'Username is required!', // Error message if the username is not provided
+        'password.required' => 'Password is required!', // Error message if the password is not provided
     ];
 
     /**

@@ -45,7 +45,7 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
 
         // Add the 'Router' row to the end of the rawData array
         $rawData[] = [
-            'id' => - 1, // Set an arbitrary negative ID to distinguish it from real records
+            'id' => -1, // Set an arbitrary negative ID to distinguish it from real records
             'title' => 'Router',
             'name' => ''
         ];
@@ -57,11 +57,10 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
             // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
             ->addColumn('action', function ($data) {
                 if ($data['id'] > 0) {
-                    // For non-Router rows, use the edit and delete buttons with IDs and classes
-                    $button = '<button type="button" aria-label="Edit Button" name="edit" id="' . $data['id'] . '" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i></button>';
+                    // For non-Router rows, use the edit and delete buttons with Names and classes
+                    $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
                 } else {
-                    // For the Router row, use the edit button with the specific href
-                    $button = '<a href="configs/pg/edit_router/" title="Edit Button" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i></a>';
+                    $button = '<button type="button" aria-label="Edit Button" name="configs/pg/edit_router/" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'configs/pg/edit_router/\')"> <i class="fas fa-edit"></i></button>';
                 }
                 return $button;
             })

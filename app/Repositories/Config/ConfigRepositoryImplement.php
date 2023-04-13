@@ -58,7 +58,12 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
             ->addColumn('action', function ($data) {
                 if ($data['id'] > 0) {
                     // For non-Router rows, use the edit and delete buttons with Names and classes
-                    $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
+                    if($data['name'] == 'hotel_rooms') {
+                        $button = '<button type="button" aria-label="Detail Button" name="' . $data['name'] . '" class="edit btn btn-info btn-sm" onclick="showModalDetailHotelRooms(\'' . $data['name'] . '\')"> <i class="fas fa-eye"></i></button>';
+                        $button .= '&nbsp;&nbsp;<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
+                    }else{
+                        $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
+                    }
                 } else {
                     $button = '<button type="button" aria-label="Edit Button" name="edit_router" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'edit_router\')"> <i class="fas fa-edit"></i></button>';
                 }

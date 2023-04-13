@@ -9,8 +9,6 @@
         </thead>
     </table>
 
-    <!-- Add the modal placeholder here -->
-    <div id="modal-placeholder"></div>
 
     @push('scripts')
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
@@ -18,27 +16,34 @@
         // Add the showModalByName function here
         function showModalByName(name) {
             let livewireComponentName = '';
-
             switch (name) {
-                case 'exampleName1':
-                    livewireComponentName = 'example-name1-form';
-                    break;
-                case 'exampleName2':
-                    livewireComponentName = 'example-name2-form';
-                    break;
+                // Router
+                case 'edit_router':
+                    livewireComponentName = 'form.edit-router';
+                break;
+                // Clients
+                case 'clients':
+                    livewireComponentName = 'form.clients';
+                break;
+                // Hotel Rooms
+                case 'hotel_rooms':
+                    livewireComponentName = 'form.hotel_rooms';
+                break;
+                // Users Data
+                case 'users_data':
+                    livewireComponentName = 'form.users_data';
+                break;
+                // Social Plugins
+                case 'social_plugins':
+                livewireComponentName = 'form.social_plugins';
+                break;
                 // Add more cases for other names here...
                 default:
-                    livewireComponentName = 'default-form';
+                    livewireComponentName = 'form.edit-router';
             }
 
-            // Insert the Livewire component into the modal placeholder
-            $('#modal-placeholder').html(`<livewire:${livewireComponentName}>`);
-
-            // Initialize the Livewire component
-            Livewire.init();
-
-            // Show the modal
-            $('#modal-placeholder .modal').modal('show');
+            // Emit an event to show the modal with the given Livewire component name
+            Livewire.emit('showModal', livewireComponentName);
         }
 
         $(document).ready(function() {
@@ -57,4 +62,6 @@
         });
     </script>
     @endpush
+
+
 </div>

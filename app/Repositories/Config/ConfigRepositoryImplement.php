@@ -47,7 +47,7 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
         $rawData[] = [
             'id' => -1, // Set an arbitrary negative ID to distinguish it from real records
             'title' => 'Router',
-            'name' => ''
+            'name' => 'edit_router'
         ];
 
         // Initialize DataTables using the rawData array
@@ -60,7 +60,7 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
                     // For non-Router rows, use the edit and delete buttons with Names and classes
                     $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
                 } else {
-                    $button = '<button type="button" aria-label="Edit Button" name="configs/pg/edit_router/" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'configs/pg/edit_router/\')"> <i class="fas fa-edit"></i></button>';
+                    $button = '<button type="button" aria-label="Edit Button" name="edit_router" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'edit_router\')"> <i class="fas fa-edit"></i></button>';
                 }
                 return $button;
             })

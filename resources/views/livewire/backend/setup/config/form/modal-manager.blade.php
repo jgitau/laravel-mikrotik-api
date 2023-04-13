@@ -2,7 +2,7 @@
     <!-- Modal -->
     <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
         data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <!-- Livewire component will be rendered here -->
 
             <div class="modal-content">

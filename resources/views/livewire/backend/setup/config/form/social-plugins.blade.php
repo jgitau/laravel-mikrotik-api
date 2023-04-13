@@ -1,7 +1,7 @@
 <div class="modal-content">
     <div class="modal-header">
         <h5 class="modal-title" id="modalCenterTitle">
-            Edit Social Plugins
+            Config - Edit Social Plugins
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
@@ -27,6 +27,6 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             Close
         </button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary">Save Changes</button>
     </div>
 </div>

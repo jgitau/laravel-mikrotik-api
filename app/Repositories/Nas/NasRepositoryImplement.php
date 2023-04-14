@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Nas;
 
+use App\Libraries\Tiny;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Nas;
 use App\Models\Setting;
@@ -15,11 +16,37 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
     */
     protected $model;
     protected $setting;
+    protected $tiny;
 
-    public function __construct(Nas $model, Setting $setting)
+    public function __construct(Nas $model, Setting $setting, Tiny $tiny) // Tambahkan parameter Tiny $tiny
     {
         $this->model = $model;
         $this->setting = $setting;
+        $this->tiny = $tiny; // Simpan instance Tiny
+    }
+
+    public function setupProcess($record, $data)
+    {
+        if ($record->server_ip_address != $data['serverIP'] && !empty($record->server_ip_address)) {
+            $reset = $data;
+            $reset['serverIP'] = $record->server_ip_address;
+            $rep = $this->tiny->postJson('/system/reset_radius', json_encode($reset)); // Ganti post_json dengan postJson
+            if (!empty($rep['error'])) {
+                return $rep['error'];
+            }
+        }
+
+        $body = json_encode($data);
+        $reply = $this->tiny->postJson('/system/setup', $body); // Ganti post_json dengan postJson
+        if (!empty($reply['status_code']) && $reply['status_code'] == 201) {
+            return true;
+        }
+
+        if (!empty($reply['error'])) {
+            return $reply['error'];
+        }
+
+        return json_decode($reply['body']);
     }
 
     /**
@@ -52,7 +79,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
         $record->mikrotik_ip_address = $mikrotik_ip;
         $record->mikrotik_api_port = $mikrotik_api_port;
         $record->server_ip_address = $server_ip;
-
         return $record;
     }
 
@@ -64,10 +90,14 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
      */
     public function editNasProcess($data)
     {
-        $this->_updateNasTable($data);
-        $this->_editMikrotikApiParameters($data);
+        try {
+            $this->_updateNasTable($data);
+            $this->_editMikrotikApiParameters($data);
+        } catch (\Exception $e) {
+            return $e->getMessage(); // Return the error message on failure
+        }
 
-        return true; // as there's no transaction support in Eloquent
+        return true; // Return true on success
     }
 
     /**

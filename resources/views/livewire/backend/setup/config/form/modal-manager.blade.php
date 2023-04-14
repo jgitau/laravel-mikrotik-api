@@ -1,7 +1,7 @@
 <div>
     <!-- Modal -->
     <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
-        data-bs-keyboard="false">
+        data-bs-keyboard="false" wire:ignore.self>
             {{-- Router Form Edit --}}
             @if($livewireComponentName == 'form.hotel_rooms')
             <div class="modal-dialog modal-dialog-centered" role="document">

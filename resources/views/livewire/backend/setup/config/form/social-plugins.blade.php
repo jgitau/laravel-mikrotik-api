@@ -8,7 +8,7 @@
     <div class="modal-body">
 
         {{-- Form Input FB App ID and FB App Secret --}}
-        <div class="row g-2">
+        <div class="row g-2 mb-3">
             <div class="col mb-0">
                 <label for="fbAppId" class="form-label">FB App ID</label>
                 <input type="text" id="fbAppId" class="form-control" placeholder="FB App ID" />
@@ -20,7 +20,7 @@
         </div>
 
         {{-- Form Input TW API Key, TW API Secret and Google API Client ID  --}}
-        <div class="row g-2">
+        <div class="row g-2 mb-3">
             <div class="col mb-0">
                 <label for="twApiKey" class="form-label">TW API Key</label>
                 <input type="text" id="twApiKey" class="form-control" placeholder="TW API Key" />
@@ -36,7 +36,7 @@
         </div>
 
         {{-- Form Input Login With Facebook On, Login With Twitter On and Login With Google On  --}}
-        <div class="row g-2">
+        <div class="row g-2 mb-3">
             <div class="col mb-0">
                 <label for="loginWithFacebookOn" class="form-label">Login With Facebook On</label>
                 <input type="text" id="loginWithFacebookOn" class="form-control" placeholder="Login With Facebook On" />
@@ -52,7 +52,7 @@
         </div>
 
         {{-- Form Input Login With Linkedin On and Google Api Secret  --}}
-        <div class="row g-2">
+        <div class="row g-2 mb-3">
             <div class="col mb-0">
                 <label for="loginWithLinkedinOn" class="form-label">Login With Linkedin On</label>
                 <input type="text" id="loginWithLinkedinOn" class="form-control" placeholder="Login With Linkedin On" />

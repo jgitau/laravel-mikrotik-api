@@ -58,6 +58,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
             // Create a new cookie with session key and set expiration time
             $cookie = Cookie::make('session_key', $sessionKey, 120); // 120 minutes
+
             // Queue the cookie to be sent with the next response
             Cookie::queue($cookie);
 

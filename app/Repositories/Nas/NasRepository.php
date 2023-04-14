@@ -45,4 +45,14 @@ interface NasRepository extends Repository{
      * @return void
      */
     public function updateSetting($settingName, $moduleId, $value);
+
+
+    /**
+     * setupProcess
+     *
+     * @param  mixed $record
+     * @param  mixed $data
+     * @return void
+     */
+    public function setupProcess($record, $data);
 }

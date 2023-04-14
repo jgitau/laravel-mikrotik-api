@@ -100,4 +100,20 @@ class NasServiceImplement extends Service implements NasService
             return [];
         }
     }
+
+    /**
+     * setupProcess
+     *
+     * @param  mixed $record
+     * @param  mixed $data
+     * @return void
+     */
+    public function setupProcess($record, $data)
+    {
+        try {
+            return $this->mainRepository->setupProcess($record, $data);
+        } catch (\Throwable $th) {
+            return Log::debug($th->getMessage());
+        }
+    }
 }

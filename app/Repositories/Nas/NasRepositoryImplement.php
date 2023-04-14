@@ -18,26 +18,30 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
     protected $setting;
     protected $tiny;
 
-    public function __construct(Nas $model, Setting $setting, Tiny $tiny) // Tambahkan parameter Tiny $tiny
+    public function __construct(Nas $model, Setting $setting, Tiny $tiny)
     {
         $this->model = $model;
         $this->setting = $setting;
-        $this->tiny = $tiny; // Simpan instance Tiny
+        $this->tiny = $tiny; // Save instance Tiny
     }
 
     public function setupProcess($record, $data)
     {
-        if ($record->server_ip_address != $data['serverIP'] && !empty($record->server_ip_address)) {
+
+        if ($record->server_ip_address != $data['serverIP']) {
             $reset = $data;
             $reset['serverIP'] = $record->server_ip_address;
-            $rep = $this->tiny->postJson('/system/reset_radius', json_encode($reset)); // Ganti post_json dengan postJson
+
+            // dd(json_encode($reset));
+            $rep = $this->tiny->postJson('/system/reset_radius', json_encode($reset));
             if (!empty($rep['error'])) {
                 return $rep['error'];
             }
         }
 
         $body = json_encode($data);
-        $reply = $this->tiny->postJson('/system/setup', $body); // Ganti post_json dengan postJson
+        $reply = $this->tiny->postJson('/system/setup', $body);
+
         if (!empty($reply['status_code']) && $reply['status_code'] == 201) {
             return true;
         }
@@ -143,7 +147,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
             ->where('module_id', $moduleId)
             ->where('setting', $settingName)
             ->first();
-        return (!empty($query->value)) ? $query->value : FALSE;
+        return (!empty($query->value)) ? $query->value : "";
     }
 
     /**

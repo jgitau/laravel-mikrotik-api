@@ -110,6 +110,7 @@ class EditRouter extends Component
         $this->validate();
 
         // Create an array of data to be updated
+        $nas = $nasService->getNasParameters();
         $data = [
             'id' => $this->nas_id,
             'mikrotikIP' => $this->mikrotik_ip_address,
@@ -117,18 +118,34 @@ class EditRouter extends Component
             'serverIP' => $this->server_ip_address,
             'radiusPort' => $this->ports,
             'radiusSecret' => $this->secret,
-            'username' => $this->temporary_username,
-            'password' => $this->temporary_password
+            'tempUsername' => $this->temporary_username,
+            'tempPassword' => $this->temporary_password,
+
+            'username' => 'megalos',
+            'password' => str()->random(10),
+            'groupname' => 'megalos',
+            'serverDomain' => env('MGL_SPLASH_DOMAIN'),
         ];
         // TODO: for insert to API Mikrotik
 
-        dd($data);
+        $mikrotikStatus = $nasService->setupProcess($nas, $data);
+        dd($mikrotikStatus,'tet');
+        if ($mikrotikStatus === NULL) {
+            // Call the editNasProcess method from NasService to update the NAS record and settings
+            $status= $nasService->editNasProcess($data);
+            if ($status == NULL) {
+                // Emit an event to close the modal and show a success message
+                // Set Flash Message
+                session()->flash('success', 'Success!');
+                $this->closeModal();
+            } else {
+                // Set Flash Message
+                session()->flash('error', 'An error occured!');
+            }
+        } else {
+            // Set Flash Message
+            session()->flash('error', 'An error occured!');
+        }
 
-        // Call the editNasProcess method from NasService to update the NAS record and settings
-        $nasService->editNasProcess($data);
-
-        // Emit an event to close the modal and show a success message
-        $this->emit('closeModal');
-        $this->emit('success', 'Router configuration has been updated successfully.');
     }
 }

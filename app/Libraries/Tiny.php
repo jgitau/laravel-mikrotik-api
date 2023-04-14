@@ -7,7 +7,7 @@ use App\Models\Setting;
 
 class Tiny
 {
-    private $tinyHost = "http://localhost";
+    private $tinyHost = "http://192.168.189.189";
     private $tinyPort;
     private $url;
 
@@ -33,15 +33,15 @@ class Tiny
 
     public function postJson($endpoint, $data)
     {
+        dd($this->url . $endpoint);
         $response = Http::withHeaders($this->headers)->post($this->url . $endpoint, $data, $this->options);
-
+        dd($response);
         return $this->processReply($response);
     }
 
     public function putJson($endpoint, $data)
     {
         $response = Http::withHeaders($this->headers)->put($this->url . $endpoint, $data, $this->options);
-
         return $this->processReply($response);
     }
 
@@ -76,10 +76,10 @@ class Tiny
 
     private function buildHeaders()
     {
-        $mikrotikIp = Setting::where('key', 'mikrotik_ip')->first()->value ?? '0';
-        $mikrotikApiPort = Setting::where('key', 'mikrotik_api_port')->first()->value ?? '0';
-        $mikrotikApiUsername = Setting::where('key', 'mikrotik_api_username')->first()->value ?? '0';
-        $mikrotikApiPassword = Setting::where('key', 'mikrotik_api_password')->first()->value ?? '0';
+        $mikrotikIp = Setting::where('setting', 'mikrotik_ip')->first()->value ?? '0';
+        $mikrotikApiPort = Setting::where('setting', 'mikrotik_api_port')->first()->value ?? '0';
+        $mikrotikApiUsername = Setting::where('setting', 'mikrotik_api_username')->first()->value ?? '0';
+        $mikrotikApiPassword = Setting::where('setting', 'mikrotik_api_password')->first()->value ?? '0';
 
         return [
             'Mikrotik-IP' => $mikrotikIp,

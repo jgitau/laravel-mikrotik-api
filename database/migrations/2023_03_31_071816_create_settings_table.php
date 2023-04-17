@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('flag_module', 100)->nullable();
 
             $table->foreign('module_id')
-                ->references('module_id')
+                ->references('id')
                 ->on('modules')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');

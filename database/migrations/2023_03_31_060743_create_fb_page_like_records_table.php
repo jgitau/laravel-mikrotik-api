@@ -22,13 +22,13 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('page_id')
-                ->references('page_id')
+                ->references('id')
                 ->on('pages')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
             $table->foreign('user_id')
-                ->references('user_id')
+                ->references('id')
                 ->on('users_data')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');

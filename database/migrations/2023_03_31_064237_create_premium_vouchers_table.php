@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('time_limit', 50)->nullable();
             $table->timestamps();
             $table->foreign('voucher_batch_id')
-                ->references('voucher_batch_id')
+                ->references('id')
                 ->on('voucher_batches')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');

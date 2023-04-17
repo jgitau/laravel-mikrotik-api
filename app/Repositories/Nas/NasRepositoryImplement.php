@@ -17,17 +17,15 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
     */
     protected $model;
     protected $setting;
-    protected $tiny;
     protected $routerOsApi;
     const AUTHENTICATION_PORT = 1812;
     const ACCOUNTING_PORT = 1813;
     const TIMEOUT = 30;
 
-    public function __construct(Nas $model, Setting $setting, Tiny $tiny,RouterOsApi $routerOsApi)
+    public function __construct(Nas $model, Setting $setting,RouterOsApi $routerOsApi)
     {
         $this->model = $model;
         $this->setting = $setting;
-        $this->tiny = $tiny; // Save instance Tiny
         $this->routerOsApi = $routerOsApi;
     }
 
@@ -72,9 +70,9 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
                         "secret" => $radiusSecret,
                         "domain" => "megalos",
                         "service" => "hotspot",
-                        "authentication-port" => 1812,
-                        "accounting-port" => 1813,
-                        "timeout" => 30,
+                        "authentication-port" => self::AUTHENTICATION_PORT,
+                        "accounting-port" => self::ACCOUNTING_PORT,
+                        "timeout" => self::TIMEOUT,
                         "comment" => "managed by AZMI. DO NOT EDIT!!!"
                     ));
 

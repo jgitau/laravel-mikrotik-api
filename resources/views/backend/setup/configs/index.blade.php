@@ -28,5 +28,14 @@ $configData = Helper::appClasses();
     <!-- Add the ModalManager Livewire component -->
     @livewire('backend.setup.config.form.modal-manager')
 
+    @push('scripts')
+    <script>
+        window.addEventListener('closeModal', event =>{
+            $('#modalCenter').modal('hide');
+        });
+    </script>
+
+    @endpush
+
 </div>
 @endsection

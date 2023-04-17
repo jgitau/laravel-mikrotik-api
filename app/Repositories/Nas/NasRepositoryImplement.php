@@ -19,6 +19,9 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
     protected $setting;
     protected $tiny;
     protected $routerOsApi;
+    const AUTHENTICATION_PORT = 1812;
+    const ACCOUNTING_PORT = 1813;
+    const TIMEOUT = 30;
 
     public function __construct(Nas $model, Setting $setting, Tiny $tiny,RouterOsApi $routerOsApi)
     {
@@ -28,8 +31,21 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
         $this->routerOsApi = $routerOsApi;
     }
 
+    /**
+     * setupProcess
+     *
+     * @param  mixed $record
+     * @param  mixed $data
+     * @return void
+     */
     public function setupProcess($record, $data)
     {
+        // Initialize the result array
+        $result = [
+            'status' => false,
+            'message' => ''
+        ];
+
         // Check if the server IP address has changed
         if ($record->server_ip_address != $data['serverIP']) {
             // Extract required data from the input
@@ -39,50 +55,56 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
             $radiusServer = $data['mikrotikIP'];
             $radiusSecret = $data['radiusSecret'];
 
-            // Attempt to connect to the Mikrotik device
-            if ($this->routerOsApi->connect($ipAdress, $username, $password)) {
-                // Fetch existing RADIUS configurations
-                $radiusConfigs = $this->routerOsApi->comm("/radius/print");
+            try {
+                // Attempt to connect to the Mikrotik device
+                if ($this->routerOsApi->connect($ipAdress, $username, $password)) {
+                    // Fetch existing RADIUS configurations
+                    $radiusConfigs = $this->routerOsApi->comm("/radius/print");
 
-                // Remove each RADIUS configuration found
-                foreach ($radiusConfigs as $config) {
-                    $this->routerOsApi->comm("/radius/remove", array(".id" => $config[".id"]));
-                }
-
-                // Add new RADIUS configuration
-                $addResult = $this->routerOsApi->comm("/radius/add", array(
-                    "address" => $radiusServer,
-                    "secret" => $radiusSecret,
-                    "domain" => "megalos",
-                    "service" => "hotspot",
-                    "authentication-port" => 1812,
-                    "accounting-port" => 1813,
-                    "timeout" => 30,
-                    "comment" => "managed by AZMI. DO NOT EDIT!!!"
-                ));
-
-                // Check if the RADIUS configuration addition was successful
-                if (isset($addResult['!re']) && $addResult['!re'] === 0) {
-                    $result = "success";
-                } else {
-                    // Check if there is an error message
-                    if (isset($addResult['!trap'])) {
-                        // Set the result to error if there is an error message
-                        $result = "error";
-                    } else {
-                        // If there is no error message, consider the operation successful
-                        $result = "success";
+                    // Remove each RADIUS configuration found
+                    foreach ($radiusConfigs as $config) {
+                        $this->routerOsApi->comm("/radius/remove", array(".id" => $config[".id"]));
                     }
+
+                    // Add new RADIUS configuration
+                    $addResult = $this->routerOsApi->comm("/radius/add", array(
+                        "address" => $radiusServer,
+                        "secret" => $radiusSecret,
+                        "domain" => "megalos",
+                        "service" => "hotspot",
+                        "authentication-port" => 1812,
+                        "accounting-port" => 1813,
+                        "timeout" => 30,
+                        "comment" => "managed by AZMI. DO NOT EDIT!!!"
+                    ));
+
+                    // Check if the RADIUS configuration addition was successful
+                    if (isset($addResult['!re']) && $addResult['!re'] === 0) {
+                        $result['status'] = true;
+                    } else {
+                        // Check if there is an error message
+                        if (isset($addResult['!trap'])) {
+                            // Set the result to error if there is an error message
+                            $result['message'] = "Error in adding RADIUS configuration: " . $addResult['!trap'][0]['message'];
+                        } else {
+                            // If there is no error message, consider the operation successful
+                            $result['status'] = true;
+                        }
+                    }
+                } else {
+                    // If the connection to the Mikrotik device fails, set the result to error
+                    $result['message'] = "Unable to connect to the Mikrotik device.";
                 }
-            } else {
-                // If the connection to the Mikrotik device fails, set the result to error
-                $result = "error";
+            } catch (\Exception $e) {
+                // Set the result to error if an exception occurs
+                $result['message'] = "Error: " . $e->getMessage();
             }
         }
 
         // Return the result of the operation
         return $result;
     }
+
 
 
     /**
@@ -192,10 +214,12 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
      */
     public function updateSetting($settingName, $moduleId, $value)
     {
-        $this->setting->where('module_id', $moduleId)
+        $affectedRows = $this->setting->where('module_id', $moduleId)
             ->where('setting', $settingName)
             ->update(['value' => $value]);
-        return $this->setting->getAffectedRows();
+
+        return $affectedRows;
     }
+
 
 }

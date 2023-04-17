@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Backend\Setup\Config\Form;
 
 use App\Services\Nas\NasService;
 use Livewire\Component;
+use Termwind\Components\Dd;
 
 class EditRouter extends Component
 {
@@ -12,7 +13,9 @@ class EditRouter extends Component
     // Livewire properties
     protected $listeners = [
         'nasUpdated' => '$refresh',
+        'resetForm' => 'resetForm',
     ];
+
 
     // Validation rules
     protected $rules = [
@@ -52,20 +55,9 @@ class EditRouter extends Component
      */
     public function mount(NasService $nasService)
     {
-        // Get the NAS parameters using the NasService
-        /**
-         * @var Nas $nas
-         */
-        $nas = $nasService->getNasParameters();
-
-        // Assign the NAS properties to the Livewire properties
-        $this->nas_id = $nas->id ? $nas->id : 1;
-        $this->server_ip_address = $nas->server_ip_address ? $nas->server_ip_address : '';
-        $this->mikrotik_ip_address = $nas->mikrotik_ip_address ? $nas->mikrotik_ip_address : '';
-        $this->mikrotik_api_port = $nas->mikrotik_api_port ? $nas->mikrotik_api_port : '8728';
-        $this->ports = $nas->ports;
-        $this->secret = $nas->secret;
+        $this->resetForm($nasService);
     }
+
 
     /**
      * updated
@@ -82,7 +74,6 @@ class EditRouter extends Component
 
     public function render()
     {
-
         // Render the edit-router view
         return view('livewire.backend.setup.config.form.edit-router');
     }
@@ -95,7 +86,7 @@ class EditRouter extends Component
      */
     public function closeModal()
     {
-        $this->emit('closeModal');
+        $this->dispatchBrowserEvent('closeModal');
     }
 
     /**
@@ -106,10 +97,10 @@ class EditRouter extends Component
      */
     public function updateRouter(NasService $nasService)
     {
-        // Validate the input fields
+        // Validate the input fields to ensure they meet the specified rules
         $this->validate();
 
-        // Create an array of data to be updated
+        // Create an array of data to be updated based on the form inputs
         $nas = $nasService->getNasParameters();
         $data = [
             'id' => $this->nas_id,
@@ -120,32 +111,92 @@ class EditRouter extends Component
             'radiusSecret' => $this->secret,
             'tempUsername' => $this->temporary_username,
             'tempPassword' => $this->temporary_password,
-
             'username' => 'megalos',
             'password' => str()->random(10),
             'groupname' => 'megalos',
             'serverDomain' => env('MGL_SPLASH_DOMAIN'),
         ];
-        // TODO: for insert to API Mikrotik
 
+        // Call the setupProcess method from NasService to configure the Mikrotik router
         $mikrotikStatus = $nasService->setupProcess($nas, $data);
-        dd($mikrotikStatus);
-        if ($mikrotikStatus === NULL) {
+
+        // Check if the Mikrotik setup was successful
+        if ($mikrotikStatus['status']) {
             // Call the editNasProcess method from NasService to update the NAS record and settings
-            $status= $nasService->editNasProcess($data);
-            if ($status == NULL) {
-                // Emit an event to close the modal and show a success message
-                // Set Flash Message
-                session()->flash('success', 'Success!');
-                $this->closeModal();
+            $status = $nasService->editNasProcess($data);
+
+            // If the NAS update is successful, dispatch the success event
+            if ($status) {
+                $this->dispatchSuccessEvent('Success!');
             } else {
-                // Set Flash Message
-                session()->flash('error', 'An error occured!');
+                // If the NAS update is not successful, dispatch the error event with a message
+                $this->dispatchErrorEvent($mikrotikStatus['message']);
             }
         } else {
-            // Set Flash Message
-            session()->flash('error', 'An error occured!');
+            // If the Mikrotik setup is not successful, dispatch the error event
+            $this->dispatchErrorEvent('An error occurred!');
         }
+    }
 
+    /**
+     * Dispatch a success event with the given message
+     *
+     * @param string $message Success message to be displayed
+     */
+    private function dispatchSuccessEvent($message)
+    {
+        // Dispatch the browser event with the success message
+        $this->dispatchBrowserEvent('message', ['success' => $message]);
+        // Close the modal
+        $this->closeModal();
+        // Reset the form fields
+        $this->resetFields();
+        // Emit the 'nasUpdated' event with a true status
+        $this->emitUp('nasUpdated', true);
+    }
+
+    /**
+     * Dispatch an error event with the given message
+     *
+     * @param string $message Error message to be displayed
+     */
+    private function dispatchErrorEvent($message)
+    {
+        // Dispatch the browser event with the error message
+        $this->dispatchBrowserEvent('message', ['error' => $message]);
+        // Close the modal
+        $this->closeModal();
+    }
+
+    /**
+     * Retrieves the NAS parameters using the NasService and stores them
+     * in the corresponding Livewire properties. Renders the edit-router view.
+     * @param  mixed $nasService
+     * @return void
+     */
+    public function resetForm(NasService $nasService)
+    {
+        // Get the NAS parameters using the NasService
+        /**
+         * @var Nas $nas
+         */
+        $nas = $nasService->getNasParameters();
+
+        // Assign the NAS properties to the Livewire properties
+        $this->nas_id = $nas->id ? $nas->id : 1;
+        $this->server_ip_address = $nas->server_ip_address ? $nas->server_ip_address : '';
+        $this->mikrotik_ip_address = $nas->mikrotik_ip_address ? $nas->mikrotik_ip_address : '';
+        $this->mikrotik_api_port = $nas->mikrotik_api_port ? $nas->mikrotik_api_port : '8728';
+        $this->ports = $nas->ports;
+        $this->secret = $nas->secret;
+    }
+
+
+    public function resetFields()
+    {
+        $this->server_ip_address = '';
+        $this->mikrotik_ip_address = '';
+        $this->temporary_username = '';
+        $this->temporary_password = '';
     }
 }

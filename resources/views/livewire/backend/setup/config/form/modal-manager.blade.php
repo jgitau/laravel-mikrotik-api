@@ -44,13 +44,15 @@
             </div>
             @push('scripts')
             <script>
+                // Listen for the showModalByName event
                 window.addEventListener('show-modal', () => {
-                $('#modalCenter').modal('show');
-            });
-            window.addEventListener('hide-modal', () => {
-            $('#modalCenter').modal('hide');
-            });
+                    $('#modalCenter').modal('show');
+                });
+                window.addEventListener('hide-modal', () => {
+                    $('#modalCenter').modal('hide');
+                });
             </script>
+
             @endpush
         </div>
     </div>

@@ -12,14 +12,43 @@
 
     @push('scripts')
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
+
     <script>
-        // Add the showModalByName function here
+        // Listen for 'message' event from the window
+        window.addEventListener('message', event => {
+            // Check if the event contains an error detail
+            if (event.detail && event.detail.error) {
+                const error = event.detail.error;
+                // Display an error message using Swal.fire
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: error,
+                });
+            }
+            // Check if the event contains a success detail
+            if (event.detail && event.detail.success) {
+                const success = event.detail.success;
+                // Display an success message using Swal.fire
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: success,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        });
+
+        // Function to show a modal based on a given name
         function showModalByName(name) {
             let livewireComponentName = '';
+            let resetFormFunctionName = '';
             switch (name) {
                 // Router
                 case 'edit_router':
                     livewireComponentName = 'form.edit-router';
+                    resetFormFunctionName = 'resetForm';
                 break;
                 // Clients
                 case 'clients':
@@ -44,14 +73,28 @@
                 // Add more cases for other names here...
                 default:
                     livewireComponentName = 'form.edit-router';
+                    resetFormFunctionName = 'resetForm';
+            }
+            // Call the resetForm method before showing the modal
+            if (resetFormFunctionName) {
+                Livewire.emit(resetFormFunctionName);
             }
 
             // Emit an event to show the modal with the given Livewire component name
             Livewire.emit('showModal', livewireComponentName);
         }
 
-        $(document).ready(function() {
-            $('#myTable').DataTable({
+
+        // Listen for the refreshDatatable event
+        Livewire.on('refreshDatatable', () => {
+            $('#myTable').DataTable().ajax.reload(null, false);
+        });
+
+        let dataTable;
+
+        // Function to initialize the DataTable
+        function initializeDataTable() {
+            dataTable = $('#myTable').DataTable({
                 "processing": true,
                 "serverSide": true,
                 "responsive": true,
@@ -63,6 +106,16 @@
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
+        }
+
+        // Initialize the DataTable when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeDataTable();
+        });
+        Livewire.on('refreshDatatable', () => {
+            setTimeout(() => {
+                dataTable.ajax.reload(null, false);
+            }, 500);
         });
     </script>
     @endpush

@@ -5,6 +5,7 @@ namespace App\Repositories\Nas;
 use App\Libraries\Tiny;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Nas;
+use App\Models\RouterOsApi;
 use App\Models\Setting;
 
 class NasRepositoryImplement extends Eloquent implements NasRepository{
@@ -16,42 +17,93 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
     */
     protected $model;
     protected $setting;
-    protected $tiny;
+    protected $routerOsApi;
+    const AUTHENTICATION_PORT = 1812;
+    const ACCOUNTING_PORT = 1813;
+    const TIMEOUT = 30;
 
-    public function __construct(Nas $model, Setting $setting, Tiny $tiny)
+    public function __construct(Nas $model, Setting $setting,RouterOsApi $routerOsApi)
     {
         $this->model = $model;
         $this->setting = $setting;
-        $this->tiny = $tiny; // Save instance Tiny
+        $this->routerOsApi = $routerOsApi;
     }
 
+    /**
+     * setupProcess
+     *
+     * @param  mixed $record
+     * @param  mixed $data
+     * @return void
+     */
     public function setupProcess($record, $data)
     {
+        // Initialize the result array
+        $result = [
+            'status' => false,
+            'message' => ''
+        ];
 
+        // Check if the server IP address has changed
         if ($record->server_ip_address != $data['serverIP']) {
-            $reset = $data;
-            $reset['serverIP'] = $record->server_ip_address;
+            // Extract required data from the input
+            $username = $data['tempUsername'];
+            $password = $data['tempPassword'];
+            $ipAdress = $data['mikrotikIP'];
+            $radiusServer = $data['mikrotikIP'];
+            $radiusSecret = $data['radiusSecret'];
 
-            // dd(json_encode($reset));
-            $rep = $this->tiny->postJson('/system/reset_radius', json_encode($reset));
-            if (!empty($rep['error'])) {
-                return $rep['error'];
+            try {
+                // Attempt to connect to the Mikrotik device
+                if ($this->routerOsApi->connect($ipAdress, $username, $password)) {
+                    // Fetch existing RADIUS configurations
+                    $radiusConfigs = $this->routerOsApi->comm("/radius/print");
+
+                    // Remove each RADIUS configuration found
+                    foreach ($radiusConfigs as $config) {
+                        $this->routerOsApi->comm("/radius/remove", array(".id" => $config[".id"]));
+                    }
+
+                    // Add new RADIUS configuration
+                    $addResult = $this->routerOsApi->comm("/radius/add", array(
+                        "address" => $radiusServer,
+                        "secret" => $radiusSecret,
+                        "domain" => "megalos",
+                        "service" => "hotspot",
+                        "authentication-port" => self::AUTHENTICATION_PORT,
+                        "accounting-port" => self::ACCOUNTING_PORT,
+                        "timeout" => self::TIMEOUT,
+                        "comment" => "managed by AZMI. DO NOT EDIT!!!"
+                    ));
+
+                    // Check if the RADIUS configuration addition was successful
+                    if (isset($addResult['!re']) && $addResult['!re'] === 0) {
+                        $result['status'] = true;
+                    } else {
+                        // Check if there is an error message
+                        if (isset($addResult['!trap'])) {
+                            // Set the result to error if there is an error message
+                            $result['message'] = "Error in adding RADIUS configuration: " . $addResult['!trap'][0]['message'];
+                        } else {
+                            // If there is no error message, consider the operation successful
+                            $result['status'] = true;
+                        }
+                    }
+                } else {
+                    // If the connection to the Mikrotik device fails, set the result to error
+                    $result['message'] = "Unable to connect to the Mikrotik device.";
+                }
+            } catch (\Exception $e) {
+                // Set the result to error if an exception occurs
+                $result['message'] = "Error: " . $e->getMessage();
             }
         }
 
-        $body = json_encode($data);
-        $reply = $this->tiny->postJson('/system/setup', $body);
-
-        if (!empty($reply['status_code']) && $reply['status_code'] == 201) {
-            return true;
-        }
-
-        if (!empty($reply['error'])) {
-            return $reply['error'];
-        }
-
-        return json_decode($reply['body']);
+        // Return the result of the operation
+        return $result;
     }
+
+
 
     /**
      * Get NAS by its shortname
@@ -160,10 +212,12 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
      */
     public function updateSetting($settingName, $moduleId, $value)
     {
-        $this->setting->where('module_id', $moduleId)
+        $affectedRows = $this->setting->where('module_id', $moduleId)
             ->where('setting', $settingName)
             ->update(['value' => $value]);
-        return $this->setting->getAffectedRows();
+
+        return $affectedRows;
     }
+
 
 }

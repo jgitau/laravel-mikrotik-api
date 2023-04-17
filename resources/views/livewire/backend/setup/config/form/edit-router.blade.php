@@ -58,7 +58,31 @@
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="closeModal">
                 Close
             </button>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="submit" class="btn btn-primary">Save Changes {{ session('error') }}</button>
         </div>
     </form>
+    {{-- @push('scripts')
+    <script>
+        window.addEventListener('showToast', function () {
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": false,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+            toastr.success('Success!');
+        });
+    </script>
+    @endpush --}}
 </div>

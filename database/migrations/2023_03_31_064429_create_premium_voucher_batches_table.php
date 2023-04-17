@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('type', 50)->nullable();
             $table->timestamps();
             $table->foreign('service_id')
-                ->references('service_id')
+                ->references('id')
                 ->on('services')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');

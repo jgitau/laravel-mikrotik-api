@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('group_id')
-                ->references('group_id')
+                ->references('id')
                 ->on('groups')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');

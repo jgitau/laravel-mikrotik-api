@@ -25,7 +25,7 @@ return new class extends Migration
             $table->tinyInteger('clean_up')->default(0);
             $table->timestamps();
             $table->foreign('voucher_batch_id')
-                ->references('voucher_batch_id')
+                ->references('id')
                 ->on('voucher_batches')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');

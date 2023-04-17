@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('client_uid')->unique();
             $table->unsignedBigInteger('service_id');
-            $table->string('customer_id',50);
+            $table->string('customer_id', 50);
             $table->string('username', 50);
             $table->string('password', 100);
             $table->tinyInteger('enable_user')->default(0);
@@ -41,15 +41,15 @@ return new class extends Migration
             $table->integer('valid_until')->default(0);
             $table->integer('first_use')->default(0);
             $table->text('note')->nullable();
-            $table->string('status',100)->default("active");
+            $table->string('status', 100)->default("active");
             $table->integer('validfrom')->default(0);
             $table->timestamps();
 
             $table->foreign('service_id')
-              ->references('service_id')
-              ->on('services')
-              ->onDelete('cascade')
-              ->onUpdate('cascade');
+                ->references('id')
+                ->on('services')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

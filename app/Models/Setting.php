@@ -18,4 +18,6 @@ class Setting extends Model
         'value',
         'flag_module',
     ];
+
+    public $timestamps = false;
 }

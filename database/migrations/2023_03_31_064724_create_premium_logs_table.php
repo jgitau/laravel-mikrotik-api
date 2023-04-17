@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('service', 200);
             $table->timestamps();
             $table->foreign('voucher_batch_id')
-                ->references('voucher_batch_id')
+                ->references('id')
                 ->on('voucher_batches')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');

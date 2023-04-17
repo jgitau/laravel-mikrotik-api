@@ -129,7 +129,7 @@ class EditRouter extends Component
         // TODO: for insert to API Mikrotik
 
         $mikrotikStatus = $nasService->setupProcess($nas, $data);
-        dd($mikrotikStatus,'tet');
+        dd($mikrotikStatus);
         if ($mikrotikStatus === NULL) {
             // Call the editNasProcess method from NasService to update the NAS record and settings
             $status= $nasService->editNasProcess($data);

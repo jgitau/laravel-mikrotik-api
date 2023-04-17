@@ -7,7 +7,7 @@ use App\Models\Setting;
 
 class Tiny
 {
-    private $tinyHost = "http://192.168.189.189";
+    private $tinyHost = "http://localhost";
     private $tinyPort;
     private $url;
 
@@ -33,9 +33,9 @@ class Tiny
 
     public function postJson($endpoint, $data)
     {
-        dd($this->url . $endpoint);
+        dd($this->url . $endpoint, $data, $this->options);
         $response = Http::withHeaders($this->headers)->post($this->url . $endpoint, $data, $this->options);
-        dd($response);
+        // dd($response);
         return $this->processReply($response);
     }
 

@@ -53,10 +53,12 @@
                 // Clients
                 case 'clients':
                     livewireComponentName = 'form.clients';
+                    resetFormFunctionName = 'resetForm';
                 break;
                 // Hotel Rooms
                 case 'hotel_rooms':
                     livewireComponentName = 'form.hotel_rooms';
+                    resetFormFunctionName = 'resetForm';
                 break;
                 // Users Data
                 case 'users_data':

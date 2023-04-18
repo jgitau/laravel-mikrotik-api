@@ -20,13 +20,17 @@ class HotelRooms extends Component
     // Validation rules
     protected $rules = [
         // Required fields
-        'hmsConnect'  => 'required',
+        'hmsConnect' => 'required|numeric|min:1|max:10',
     ];
 
     // Validation messages
     protected $messages = [
-        'hmsConnect.required'   => 'HMS Connect cannot be empty!',
+        'hmsConnect.required' => 'HMS Connect cannot be empty!',
+        'hmsConnect.numeric' => 'HMS Connect must be numeric!',
+        'hmsConnect.min' => 'HMS Connect must have a minimum length of 1!',
+        'hmsConnect.max' => 'HMS Connect must have a maximum length of 1!',
     ];
+
 
     /**
      * Retrieves the HOTEL ROOM parameters using the HotelRoomService and stores them

@@ -117,26 +117,35 @@ class EditRouter extends Component
             'serverDomain' => env('MGL_SPLASH_DOMAIN'),
         ];
 
-        // Call the setupProcess method from NasService to configure the Mikrotik router
-        $mikrotikStatus = $nasService->setupProcess($nas, $data);
+        try {
+            // Call the setupProcess method from NasService to configure the Mikrotik router
+            $mikrotikStatus = $nasService->setupProcess($nas, $data);
 
-        // Check if the Mikrotik setup was successful
-        if ($mikrotikStatus['status']) {
-            // Call the editNasProcess method from NasService to update the NAS record and settings
-            $status = $nasService->editNasProcess($data);
+            // Check if the Mikrotik setup was successful
+            if ($mikrotikStatus['status']) {
+                // Call the editNasProcess method from NasService to update the NAS record and settings
+                $status = $nasService->editNasProcess($data);
 
-            // If the NAS update is successful, dispatch the success event
-            if ($status) {
-                $this->dispatchSuccessEvent('Success!');
+                // If the NAS update is successful, dispatch the success event
+                if ($status) {
+                    $this->dispatchSuccessEvent('Router settings updated successfully.');
+                } else {
+                    // If the NAS update is not successful, dispatch the error event with a message
+                    $this->dispatchErrorEvent('An error occurred while updating router settings.');
+                }
             } else {
-                // If the NAS update is not successful, dispatch the error event with a message
-                $this->dispatchErrorEvent($mikrotikStatus['message']);
+                // If the Mikrotik setup is not successful, dispatch the error event
+                $this->dispatchErrorEvent('An error occurred during the Mikrotik setup process.');
             }
-        } else {
-            // If the Mikrotik setup is not successful, dispatch the error event
-            $this->dispatchErrorEvent('An error occurred!');
+        } catch (\Throwable $th) {
+            // Show Message Error
+            $this->dispatchErrorEvent('An error occurred while updating router settings: ' . $th->getMessage());
         }
+
+        // Close Modal
+        $this->closeModal();
     }
+
 
     /**
      * Dispatch a success event with the given message

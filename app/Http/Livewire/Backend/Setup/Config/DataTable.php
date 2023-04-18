@@ -9,7 +9,9 @@ class DataTable extends Component
 {
     // Listen for the 'nasUpdated' event from other Livewire components
     protected $listeners = [
-        'nasUpdated' => 'handleUpdated',
+        'nasUpdated'                => 'handleUpdatedNas',
+        'clientUpdated'             => 'handleUpdatedClient',
+        'hotelRoomUpdatedUpdated'   => 'handleUpdatedHotelRoom',
     ];
 
 
@@ -29,12 +31,34 @@ class DataTable extends Component
     }
 
     /**
-     * handleUpdated
+     * handleUpdatedNas
      * Called when the 'nasUpdated' event is received
      * Dispatches the 'refreshDatatable' browser event to reload the DataTable
      * @return void
      */
-    public function handleUpdated()
+    public function handleUpdatedNas()
+    {
+        $this->dispatchBrowserEvent('refreshDatatable');
+    }
+
+    /**
+     * handleUpdatedClient
+     * Called when the 'clientUpdated' event is received
+     * Dispatches the 'refreshDatatable' browser event to reload the DataTable
+     * @return void
+     */
+    public function handleUpdatedClient()
+    {
+        $this->dispatchBrowserEvent('refreshDatatable');
+    }
+
+    /**
+     * handleUpdatedHotelRoom
+     * Called when the 'hotelRoomUpdatedUpdated' event is received
+     * Dispatches the 'refreshDatatable' browser event to reload the DataTable
+     * @return void
+     */
+    public function handleUpdatedHotelRoom()
     {
         $this->dispatchBrowserEvent('refreshDatatable');
     }

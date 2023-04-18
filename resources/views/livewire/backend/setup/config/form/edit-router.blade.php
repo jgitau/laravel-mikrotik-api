@@ -5,7 +5,7 @@
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="closeModal"></button>
     </div>
-    <form wire:submit.prevent="updateRouter">
+    <form wire:submit.prevent="updateRouter" method="POST">
         <div class="modal-body">
             {{-- Form Input Server IP Address, Mikrotik IP Address and API Port --}}
             <div class="row g-2 mb-3">

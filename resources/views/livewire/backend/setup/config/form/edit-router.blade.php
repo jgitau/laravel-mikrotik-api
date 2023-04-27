@@ -30,8 +30,8 @@
             <div class="row g-2 mb-3">
                 <div class="col-6">
                     <label for="temporaryUsername" class="form-label">Temporary Username</label>
-                    <input type="text" id="temporaryUsername" class="form-control" placeholder="Temporary Username" wire:model='temporary_username'  />
-
+                    <input type="text" id="temporaryUsername" class="form-control @error('temporary_username') is-invalid @enderror" placeholder="Temporary Username" wire:model='temporary_username'  />
+                    @error('temporary_username') <small class="error text-danger">{{ $message }}</small> @enderror
                 </div>
                 <div class="col-6">
                     <label for="temporaryPassword" class="form-label">Temporary Password</label>

@@ -127,11 +127,13 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
         $record = $this->getNasByShortname('megalos');
 
         // Get settings for mikrotik_ip, mikrotik_api_port, and server_ip
+        $mikrotik_api_username = $this->getSetting('mikrotik_api_username', '0');
         $mikrotik_ip = $this->getSetting('mikrotik_ip', '0');
         $mikrotik_api_port = $this->getSetting('mikrotik_api_port', '0');
         $server_ip = $this->getSetting('server_ip', '0');
 
         // Assign the retrieved settings to the NAS record properties
+        $record->mikrotik_api_username = $mikrotik_api_username;
         $record->mikrotik_ip_address = $mikrotik_ip;
         $record->mikrotik_api_port = $mikrotik_api_port;
         $record->server_ip_address = $server_ip;

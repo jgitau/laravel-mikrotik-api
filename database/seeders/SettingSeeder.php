@@ -82,7 +82,7 @@ class SettingSeeder extends Seeder
             ['id' => 72, 'module_id' => 3, 'setting' => 'voucher_logo_filename', 'value' => NULL, 'flag_module' => NULL],
             ['id' => 73, 'module_id' => 0, 'setting' => 'mikrotik_ip', 'value' => NULL, 'flag_module' => NULL],
             ['id' => 74, 'module_id' => 0, 'setting' => 'mikrotik_api_port', 'value' => '8728', 'flag_module' => NULL],
-            ['id' => 75, 'module_id' => 0, 'setting' => 'mikrotik_api_username', 'value' => 'megalos', 'flag_module' => NULL],
+            ['id' => 75, 'module_id' => 0, 'setting' => 'mikrotik_api_username', 'value' => 'admin', 'flag_module' => NULL],
             ['id' => 76, 'module_id' => 0, 'setting' => 'mikrotik_api_password', 'value' => 'megalos', 'flag_module' => NULL],
             ['id' => 77, 'module_id' => 0, 'setting' => 'server_ip', 'value' => NULL, 'flag_module' => NULL],
             ['id' => 78, 'module_id' => 17, 'setting' => 'google_api_client_secret', 'value' => 'social_plugins', 'flag_module' => NULL],

@@ -22,13 +22,13 @@ class EditRouter extends Component
         // Nullable fields
         'server_ip_address'     => 'nullable|ip',
         'mikrotik_ip_address'   => 'nullable|ip',
-        'temporary_username'    => 'nullable',
         'temporary_password'    => 'nullable',
 
         // Required fields
         'mikrotik_api_port'     => 'required|integer|min:1|max:99999',
         'ports'                 => 'required|integer|min:1|max:99999',
         'secret'                => 'required',
+        'temporary_username'    => 'required',
     ];
 
     // Validation messages
@@ -44,6 +44,7 @@ class EditRouter extends Component
         'ports.min'                     => 'Radius Port must be at least 1!',
         'ports.max'                     => 'Radius Port must be no more than 99999!',
         'secret.required'               => 'Radius Secret cannot be empty!',
+        'temporary_username.required'   => 'Temporary Username cannot be empty!',
     ];
 
     /**
@@ -193,6 +194,7 @@ class EditRouter extends Component
 
         // Assign the NAS properties to the Livewire properties
         $this->nas_id = $nas->id ? $nas->id : 1;
+        $this->temporary_username = $nas->mikrotik_api_username ? $nas->mikrotik_api_username : '';
         $this->server_ip_address = $nas->server_ip_address ? $nas->server_ip_address : '';
         $this->mikrotik_ip_address = $nas->mikrotik_ip_address ? $nas->mikrotik_ip_address : '';
         $this->mikrotik_api_port = $nas->mikrotik_api_port ? $nas->mikrotik_api_port : '8728';

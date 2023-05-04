@@ -78,10 +78,11 @@
     "shepherd.js": "10.0.1",
     "sortablejs": "1.15.0",
     "spinkit": "2.0.1",
-    "sweetalert2": "^11.4.33",
+    "sweetalert2": "^11.4.8",
     "swiper": "8.4.2",
     "timepicker": "1.13.18",
     "toastr": "2.1.4",
+    "turbolinks": "^5.2.0",
     "typeahead.js": "0.11.1"
   },
   "devDependencies": {
@@ -93,7 +94,7 @@
     "@prettier/plugin-php": "0.19.1",
     "axios": "0.27.2",
     "babel-loader": "8.2.4",
-    "browser-sync": "2.27.10",
+    "browser-sync": "^2.29.1",
     "browser-sync-webpack-plugin": "2.3.0",
     "cross-env": "7.0.3",
     "laravel-mix": "6.0.49",

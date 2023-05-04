@@ -66,11 +66,11 @@
                 break;
                 // Social Plugins
                 case 'social_plugins':
-                livewireComponentName = 'form.social_plugins';
+                    livewireComponentName = 'form.social_plugins';
                 break;
                 // Ads
                 case 'ads':
-                livewireComponentName = 'form.ads';
+                    livewireComponentName = 'form.ads';
                 break;
                 // Add more cases for other names here...
                 default:

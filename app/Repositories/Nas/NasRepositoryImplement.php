@@ -50,8 +50,8 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
             $username = $data['tempUsername'];
             $password = $data['tempPassword'];
             $ipAdress = $data['mikrotikIP'];
-            $radiusServer = $data['mikrotikIP'];
-            $radiusSecret = $data['radiusSecret'];
+            $radiusServer   = $data['mikrotikIP'];
+            $radiusSecret   = $data['radiusSecret'];
 
             try {
                 // Attempt to connect to the Mikrotik device
@@ -66,14 +66,14 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
 
                     // Add new RADIUS configuration
                     $addResult = $this->routerOsApi->comm("/radius/add", array(
-                        "address" => $radiusServer,
-                        "secret" => $radiusSecret,
-                        "domain" => "megalos",
-                        "service" => "hotspot",
-                        "authentication-port" => self::AUTHENTICATION_PORT,
-                        "accounting-port" => self::ACCOUNTING_PORT,
-                        "timeout" => self::TIMEOUT,
-                        "comment" => "managed by AZMI. DO NOT EDIT!!!"
+                        "address"               => $radiusServer,
+                        "secret"                => $radiusSecret,
+                        "domain"                => "megalos",
+                        "service"               => "hotspot",
+                        "authentication-port"   => self::AUTHENTICATION_PORT,
+                        "accounting-port"       => self::ACCOUNTING_PORT,
+                        "timeout"               => self::TIMEOUT,
+                        "comment"               => "managed by AZMI. DO NOT EDIT!!!"
                     ));
 
                     // Check if the RADIUS configuration addition was successful

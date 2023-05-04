@@ -30,6 +30,7 @@ $configData = Helper::appClasses();
 
     @push('scripts')
     <script>
+
         window.addEventListener('closeModal', event =>{
             $('#modalCenter').modal('hide');
         });

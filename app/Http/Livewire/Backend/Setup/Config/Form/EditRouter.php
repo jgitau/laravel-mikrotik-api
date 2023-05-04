@@ -203,6 +203,11 @@ class EditRouter extends Component
     }
 
 
+    /**
+     * resetFields
+     *
+     * @return void
+     */
     public function resetFields()
     {
         $this->server_ip_address = '';

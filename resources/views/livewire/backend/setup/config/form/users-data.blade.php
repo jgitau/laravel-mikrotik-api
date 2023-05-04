@@ -3,7 +3,7 @@
         <h5 class="modal-title" id="modalCenterTitle">
             Config - Edit Users Data
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="closeModal"></button>
     </div>
     <div class="modal-body">
         {{-- Form Input ID Column, Name Column and Email Column --}}
@@ -149,7 +149,7 @@
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="closeModal">
             Close
         </button>
         <button type="button" class="btn btn-primary">Save Changes</button>

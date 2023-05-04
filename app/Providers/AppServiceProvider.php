@@ -3,11 +3,15 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
+
+// Repositories
+use App\Repositories\Config\Ads\AdsRepository;
+use App\Repositories\Config\Ads\AdsRepositoryImplement;
 use App\Repositories\Config\Client\ClientRepository;
 use App\Repositories\Config\Client\ClientRepositoryImplement;
 use App\Repositories\Config\HotelRoom\HotelRoomRepository;
 use App\Repositories\Config\HotelRoom\HotelRoomRepositoryImplement;
-use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             HotelRoomRepository::class,
             HotelRoomRepositoryImplement::class
+        );
+        $this->app->bind(
+            AdsRepository::class,
+            AdsRepositoryImplement::class
         );
     }
 

@@ -143,16 +143,16 @@ class UsersData extends Component
         }
 
         try {
-            // Update the ads settings
+            // Update the user Data settings
             $userDataService->updateUserDataSettings($settings);
 
             // Show Message Success
-            $this->dispatchSuccessEvent('Ads settings updated successfully.');
-            // Emit the 'adsUpdated' event with a true status
+            $this->dispatchSuccessEvent('User Data settings updated successfully.');
+            // Emit the 'userDataUpdated' event with a true status
             $this->emitUp('userDataUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
-            $this->dispatchErrorEvent('An error occurred while updating ads settings: ' . $th->getMessage());
+            $this->dispatchErrorEvent('An error occurred while updating user Data settings: ' . $th->getMessage());
         }
 
         // Close Modal

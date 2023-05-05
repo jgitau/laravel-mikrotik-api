@@ -3,10 +3,13 @@
 namespace App\Http\Livewire\Backend\Setup\Config\Form;
 
 use App\Services\Config\Client\ClientService;
+use App\Traits\LivewireMessageEvents;
 use Livewire\Component;
 
 class Clients extends Component
 {
+    use LivewireMessageEvents;
+
     // Declare public variables
     public $clientsVouchersPrinter = null, $createVouchersType = null;
 
@@ -54,54 +57,30 @@ class Clients extends Component
      */
     public function updateClient(ClientService $clientService)
     {
+
+        // Validate the form
         $this->validate();
 
+        // Declare the public variable names
         $settings = [
             'clients_vouchers_printer' => $this->clientsVouchersPrinter,
             'create_vouchers_type' => $this->createVouchersType,
         ];
 
         try {
+            // Update the client settings
             $clientService->updateClientSettings($settings);
 
             // Show Message Success
             $this->dispatchSuccessEvent('Client settings updated successfully.');
+            // Emit the 'clientUpdated' event with a true status
+            $this->emitUp('clientUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating client settings: ' . $th->getMessage());
         }
 
         // Close Modal
-        $this->closeModal();
-    }
-
-    /**
-     * Dispatch a success event with the given message
-     *
-     * @param string $message Success message to be displayed
-     */
-    private function dispatchSuccessEvent($message)
-    {
-        // Dispatch the browser event with the success message
-        $this->dispatchBrowserEvent('message', ['success' => $message]);
-        // Close the modal
-        $this->closeModal();
-        // Reset the form fields
-        $this->resetFields();
-        // Emit the 'clientUpdated' event with a true status
-        $this->emitUp('clientUpdated', true);
-    }
-
-    /**
-     * Dispatch an error event with the given message
-     *
-     * @param string $message Error message to be displayed
-     */
-    private function dispatchErrorEvent($message)
-    {
-        // Dispatch the browser event with the error message
-        $this->dispatchBrowserEvent('message', ['error' => $message]);
-        // Close the modal
         $this->closeModal();
     }
 

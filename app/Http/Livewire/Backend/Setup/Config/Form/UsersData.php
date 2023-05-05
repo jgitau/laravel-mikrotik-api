@@ -84,7 +84,7 @@ class UsersData extends Component
     }
 
     /**
-     * Retrieves the USERDATA parameters using the UserDataService and stores them
+     * Retrieves the UserData parameters using the UserDataService and stores them
      * in the corresponding Livewire properties. Renders the edit-router view.
      *
      * @param  UserDataService $userDataService
@@ -160,7 +160,7 @@ class UsersData extends Component
     }
 
     /**
-     * Retrieves the USERDATA parameters using the UserDataService and stores them
+     * Retrieves the UserData parameters using the UserDataService and stores them
      * in the corresponding Livewire properties. Renders the edit-router view.
      * @param  mixed $userDataService
      * @return void
@@ -186,11 +186,6 @@ class UsersData extends Component
         $this->emit('closeModal');
     }
 
-    /**
-     * resetFields
-     *
-     * @return void
-     */
     /**
      * resetFields
      *

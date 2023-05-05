@@ -13,8 +13,6 @@ class ModalManager extends Component
 
     public $livewireComponentName = '';
 
-
-
     /**
      * render
      */

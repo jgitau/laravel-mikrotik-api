@@ -3,7 +3,8 @@
 namespace App\Services\Config\UserData;
 
 use LaravelEasyRepository\Service;
-use App\Repositories\UserData\UserDataRepository;
+use App\Repositories\Config\UserData\UserDataRepository;
+use Illuminate\Support\Facades\Log;
 
 class UserDataServiceImplement extends Service implements UserDataService
 {
@@ -19,5 +20,30 @@ class UserDataServiceImplement extends Service implements UserDataService
         $this->mainRepository = $mainRepository;
     }
 
-    // Define your custom methods :)
+    /**
+     * getUserDataParameters
+     */
+    public function getUserDataParameters()
+    {
+        try {
+            return $this->mainRepository->getUserDataParameters();
+        } catch (\Throwable $th) {
+            Log::debug($th->getMessage());
+        }
+    }
+
+    /**
+     * updateUserDataSettings
+     *
+     * @param  mixed $settings
+     * @return void
+     */
+    public function updateUserDataSettings($settings)
+    {
+        try {
+            return $this->mainRepository->updateUserDataSettings($settings);
+        } catch (\Throwable $th) {
+            Log::debug($th->getMessage());
+        }
+    }
 }

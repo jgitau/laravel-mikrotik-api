@@ -6,5 +6,18 @@ use LaravelEasyRepository\Repository;
 
 interface UserDataRepository extends Repository{
 
-    // Write something awesome :)
+    /**
+     * getUserDataParameters
+     *
+     * @return void
+     */
+    public function getUserDataParameters();
+
+    /**
+     * updateUserDataSettings
+     *
+     * @param  mixed $settings
+     * @return void
+     */
+    public function updateUserDataSettings($settings);
 }

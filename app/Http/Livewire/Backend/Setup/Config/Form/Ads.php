@@ -51,21 +51,17 @@ class Ads extends Component
         return array_merge($defaultMessages, $customMessages);
     }
 
-
-
-    // /**
-    //  * Retrieves the ADS parameters using the AdsService and stores them
-    //  * in the corresponding Livewire properties. Renders the edit-router view.
-    //  *
-    //  * @param  AdsService $adsService
-    //  * @return \Illuminate\View\View
-    //  */
+    /**
+     * Retrieves the ADS parameters using the AdsService and stores them
+     * in the corresponding Livewire properties. Renders the edit-router view.
+     *
+     * @param  AdsService $adsService
+     * @return \Illuminate\View\View
+     */
     public function mount(AdsService $adsService)
     {
         $this->resetForm($adsService);
     }
-
-
 
     /**
      * updated

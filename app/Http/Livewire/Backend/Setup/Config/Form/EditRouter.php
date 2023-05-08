@@ -174,7 +174,6 @@ class EditRouter extends Component
 
         // Assign the NAS properties to the Livewire properties
         $this->nas_id = $nas->id ? $nas->id : 1;
-        // $this->temporary_username = $nas->mikrotik_api_username ? $nas->mikrotik_api_username : '';
         $this->server_ip_address = $nas->server_ip_address ? $nas->server_ip_address : '';
         $this->mikrotik_ip_address = $nas->mikrotik_ip_address ? $nas->mikrotik_ip_address : '';
         $this->mikrotik_api_port = $nas->mikrotik_api_port ? $nas->mikrotik_api_port : '8728';

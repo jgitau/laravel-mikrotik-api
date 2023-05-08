@@ -19,10 +19,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
     protected $model;
     protected $setting;
     protected $routerOsApi;
-    const AUTHENTICATION_PORT = 1812;
-    const ACCOUNTING_PORT = 1813;
-    const TIMEOUT = 30;
-    const NAME = 'megalos';
 
     public function __construct(Nas $model, Setting $setting, RouterOsApi $routerOsApi)
     {
@@ -136,11 +132,11 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         $addResult = $this->routerOsApi->comm("/radius/add", array(
             "address"               => $radiusServer,
             "secret"                => $radiusSecret,
-            "domain"                => self::NAME,
+            "domain"                => env('MIKROTIK_NAME'),
             "service"               => "hotspot",
-            "authentication-port"   => self::AUTHENTICATION_PORT,
-            "accounting-port"       => self::ACCOUNTING_PORT,
-            "timeout"               => self::TIMEOUT,
+            "authentication-port"   => env('MIKROTIK_AUTHENTICATION_PORT'),
+            "accounting-port"       => env('MIKROTIK_ACCOUNTING_PORT'),
+            "timeout"               => env('MIKROTIK_TIMEOUT'),
             "comment"               => "managed by AZMI. DO NOT EDIT!!!"
         ));
 
@@ -179,7 +175,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
         // Create the new group with the required policies
         $groupResult = $this->routerOsApi->comm("/user/group/add", array(
-            "name"     => self::NAME,
+            "name"     => env('MIKROTIK_NAME'),
             "policy"   => "write,policy,read,test,api",
             "comment"  => "managed by AZMI. DO NOT EDIT!!!"
         ));
@@ -217,9 +213,9 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
         // Add the new user with the specified username, password, and group
         $userResult = $this->routerOsApi->comm("/user/add", array(
-            "name"     => self::NAME,
-            "password" => self::NAME,
-            "group"    => self::NAME,
+            "name"     => env('MIKROTIK_NAME'),
+            "password" => env('MIKROTIK_NAME'),
+            "group"    => env('MIKROTIK_NAME'),
             "comment"  => "managed by AZMI. DO NOT EDIT!!!"
         ));
 

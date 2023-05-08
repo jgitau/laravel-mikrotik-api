@@ -8,13 +8,14 @@ use App\Models\Nas;
 use App\Models\RouterOsApi;
 use App\Models\Setting;
 
-class NasRepositoryImplement extends Eloquent implements NasRepository{
+class NasRepositoryImplement extends Eloquent implements NasRepository
+{
 
     /**
-    * Model class to be used in this repository for the common methods inside Eloquent
-    * Don't remove or change $this->model variable name
-    * @property Model|mixed $model;
-    */
+     * Model class to be used in this repository for the common methods inside Eloquent
+     * Don't remove or change $this->model variable name
+     * @property Model|mixed $model;
+     */
     protected $model;
     protected $setting;
     protected $routerOsApi;
@@ -22,19 +23,27 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
     const ACCOUNTING_PORT = 1813;
     const TIMEOUT = 30;
 
-    public function __construct(Nas $model, Setting $setting,RouterOsApi $routerOsApi)
+    public function __construct(Nas $model, Setting $setting, RouterOsApi $routerOsApi)
     {
         $this->model = $model;
         $this->setting = $setting;
         $this->routerOsApi = $routerOsApi;
     }
 
+
     /**
-     * setupProcess
+     * The function sets up a process by connecting to a Mikrotik device, adding RADIUS configuration,
+     * creating a user group and user, and returning the result of the operation.
      *
-     * @param  mixed $record
-     * @param  mixed $data
-     * @return void
+     * @param record It is a variable that contains the current record or data of a user in the system.
+     * It is used to check if the server IP address has changed or not.
+     * @param data The  parameter is an array that contains input data required for the setup
+     * process. It includes the temporary username and password, Mikrotik IP address, RADIUS server IP
+     * address, and RADIUS secret.
+     *
+     * @return an array with two keys: 'status' and 'message'. The 'status' key indicates whether the
+     * setup process was successful or not, and the 'message' key provides additional information about
+     * the status of the process.
      */
     public function setupProcess($record, $data)
     {
@@ -56,45 +65,35 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
             try {
                 // Attempt to connect to the Mikrotik device
                 if ($this->routerOsApi->connect($ipAdress, $username, $password)) {
-                    // Fetch existing RADIUS configurations
-                    $radiusConfigs = $this->routerOsApi->comm("/radius/print");
-
-                    // Remove each RADIUS configuration found
-                    foreach ($radiusConfigs as $config) {
-                        $this->routerOsApi->comm("/radius/remove", array(".id" => $config[".id"]));
-                    }
-
-                    // Add new RADIUS configuration
-                    $addResult = $this->routerOsApi->comm("/radius/add", array(
-                        "address"               => $radiusServer,
-                        "secret"                => $radiusSecret,
-                        "domain"                => "megalos",
-                        "service"               => "hotspot",
-                        "authentication-port"   => self::AUTHENTICATION_PORT,
-                        "accounting-port"       => self::ACCOUNTING_PORT,
-                        "timeout"               => self::TIMEOUT,
-                        "comment"               => "managed by AZMI. DO NOT EDIT!!!"
-                    ));
-
-                    // Check if the RADIUS configuration addition was successful
-                    if (isset($addResult['!re']) && $addResult['!re'] === 0) {
-                        $result['status'] = true;
-                    } else {
-                        // Check if there is an error message
-                        if (isset($addResult['!trap'])) {
-                            // Set the result to error if there is an error message
-                            $result['message'] = "Error in adding RADIUS configuration: " . $addResult['!trap'][0]['message'];
+                    // Add RADIUS configuration and check if successful
+                    $radiusResult = $this->addRadiusConfiguration($radiusServer, $radiusSecret);
+                    if ($radiusResult['status']) {
+                        // Create user group and check if successful
+                        $groupResult = $this->createUserGroup();
+                        if ($groupResult['status']) {
+                            // Create user and check if successful
+                            $userResult = $this->createUser();
+                            if ($userResult['status']) {
+                                // If all operations are successful, update the result status
+                                $result['status'] = true;
+                            } else {
+                                // Set error message for user creation
+                                $result['message'] = $userResult['message'];
+                            }
                         } else {
-                            // If there is no error message, consider the operation successful
-                            $result['status'] = true;
+                            // Set error message for group creation
+                            $result['message'] = $groupResult['message'];
                         }
+                    } else {
+                        // Set error message for RADIUS configuration
+                        $result['message'] = $radiusResult['message'];
                     }
                 } else {
-                    // If the connection to the Mikrotik device fails, set the result to error
+                    // Set error message if unable to connect to Mikrotik device
                     $result['message'] = "Unable to connect to the Mikrotik device.";
                 }
             } catch (\Exception $e) {
-                // Set the result to error if an exception occurs
+                // Set error message if an exception occurs
                 $result['message'] = "Error: " . $e->getMessage();
             }
         }
@@ -103,6 +102,140 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
         return $result;
     }
 
+
+    /**
+     * The function adds a RADIUS configuration to a router using the RouterOS API.
+     *
+     * @param radiusServer The IP address or hostname of the RADIUS server to be added as a
+     * configuration.
+     * @param radiusSecret The secret key used for RADIUS authentication between the router and the
+     * RADIUS server.
+     *
+     * @return An array with two keys: 'status' and 'message'. The 'status' key indicates whether the
+     * operation was successful or not, and the 'message' key contains an error message if the
+     * operation was not successful.
+     */
+    public function addRadiusConfiguration($radiusServer, $radiusSecret)
+    {
+        // Initialize the result array
+        $result = [
+            'status' => false,
+            'message' => ''
+        ];
+
+        // Fetch existing RADIUS configurations
+        $radiusConfigs = $this->routerOsApi->comm("/radius/print");
+
+        // Remove each RADIUS configuration found
+        foreach ($radiusConfigs as $config) {
+            $this->routerOsApi->comm("/radius/remove", array(".id" => $config[".id"]));
+        }
+
+        // Add new RADIUS configuration
+        $addResult = $this->routerOsApi->comm("/radius/add", array(
+            "address"               => $radiusServer,
+            "secret"                => $radiusSecret,
+            "domain"                => "megalos",
+            "service"               => "hotspot",
+            "authentication-port"   => self::AUTHENTICATION_PORT,
+            "accounting-port"       => self::ACCOUNTING_PORT,
+            "timeout"               => self::TIMEOUT,
+            "comment"               => "managed by AZMI. DO NOT EDIT!!!"
+        ));
+
+        // Check if the RADIUS configuration addition was successful
+        if (isset($addResult['!re']) && $addResult['!re'] === 0) {
+            $result['status'] = true;
+        } else {
+            // Check if there is an error message
+            if (isset($addResult['!trap'])) {
+                // Set the result to error if there is an error message
+                $result['message'] = "Error in adding RADIUS configuration: " . $addResult['!trap'][0]['message'];
+            } else {
+                // If there is no error message, consider the operation successful
+                $result['status'] = true;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * The function creates a new user group with specific policies and returns a result indicating
+     * success or failure.
+     *
+     * @return an array with two keys: 'status' and 'message'. The 'status' key indicates whether the
+     * user group creation was successful or not, and the 'message' key contains an error message if
+     * the creation was not successful.
+     */
+    public function createUserGroup()
+    {
+        // Initialize the result array
+        $result = [
+            'status' => false,
+            'message' => ''
+        ];
+
+        // Create the new group with the required policies
+        $groupResult = $this->routerOsApi->comm("/user/group/add", array(
+            "name"     => "megalos",
+            "policy"   => "write,policy,read,test,api",
+            "comment"  => "managed by AZMI. DO NOT EDIT!!!"
+        ));
+
+        // Check if the group creation was successful
+        if (isset($groupResult['!re']) && $groupResult['!re'] === 0) {
+            $result['status'] = true;
+        } else {
+            // Handle errors during group creation
+            if (isset($groupResult['!trap'])) {
+                $result['message'] = "Error in adding user group: " . $groupResult['!trap'][0]['message'];
+            } else {
+                $result['status'] = true;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * The function creates a new user with a specified username, password, and group, and returns a
+     * result array indicating whether the creation was successful or not.
+     *
+     * @return an array with two keys: 'status' and 'message'. The 'status' key indicates whether the
+     * user creation was successful or not, and the 'message' key contains an error message if the user
+     * creation was not successful.
+     */
+    public function createUser()
+    {
+        // Initialize the result array
+        $result = [
+            'status' => false,
+            'message' => ''
+        ];
+
+        // Add the new user with the specified username, password, and group
+        $userResult = $this->routerOsApi->comm("/user/add", array(
+            "name"     => "megalos",
+            "password" => "megalos",
+            "group"    => "megalos",
+            "comment"  => "managed by AZMI. DO NOT EDIT!!!"
+        ));
+
+        // Check if the user creation was successful
+        if (isset($userResult['!re']) && $userResult['!re'] === 0) {
+            $result['status'] = true;
+        } else {
+            // Handle errors during user creation
+            if (isset($userResult['!trap'])) {
+                $result['message'] = "Error in adding user: " . $userResult['!trap'][0]['message'];
+            } else {
+                $result['status'] = true;
+            }
+        }
+
+        return $result;
+    }
 
 
     /**
@@ -220,6 +353,4 @@ class NasRepositoryImplement extends Eloquent implements NasRepository{
 
         return $affectedRows;
     }
-
-
 }

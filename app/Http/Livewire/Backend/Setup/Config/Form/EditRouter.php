@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Backend\Setup\Config\Form;
 
 use App\Services\Nas\NasService;
 use App\Traits\LivewireMessageEvents;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Termwind\Components\Dd;
 
@@ -115,7 +116,7 @@ class EditRouter extends Component
             'tempUsername' => $this->temporary_username,
             'tempPassword' => $this->temporary_password,
             'username' => 'megalos',
-            'password' => str()->random(10),
+            'password' => Hash::make('megalos'),
             'groupname' => 'megalos',
             'serverDomain' => env('MGL_SPLASH_DOMAIN'),
         ];
@@ -137,14 +138,20 @@ class EditRouter extends Component
                 } else {
                     // If the NAS update is not successful, dispatch the error event with a message
                     $this->dispatchErrorEvent('An error occurred while updating router settings.');
+                    // Reset the form fields
+                    $this->resetFields();
                 }
             } else {
                 // If the Mikrotik setup is not successful, dispatch the error event
                 $this->dispatchErrorEvent('An error occurred during the Mikrotik setup process.');
+                // Reset the form fields
+                $this->resetFields();
             }
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating router settings: ' . $th->getMessage());
+            // Reset the form fields
+            $this->resetFields();
         }
 
         // Close Modal

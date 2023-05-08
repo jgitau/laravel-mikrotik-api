@@ -22,6 +22,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
     const AUTHENTICATION_PORT = 1812;
     const ACCOUNTING_PORT = 1813;
     const TIMEOUT = 30;
+    const NAME = 'megalos';
 
     public function __construct(Nas $model, Setting $setting, RouterOsApi $routerOsApi)
     {
@@ -135,7 +136,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         $addResult = $this->routerOsApi->comm("/radius/add", array(
             "address"               => $radiusServer,
             "secret"                => $radiusSecret,
-            "domain"                => "megalos",
+            "domain"                => self::NAME,
             "service"               => "hotspot",
             "authentication-port"   => self::AUTHENTICATION_PORT,
             "accounting-port"       => self::ACCOUNTING_PORT,
@@ -178,7 +179,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
         // Create the new group with the required policies
         $groupResult = $this->routerOsApi->comm("/user/group/add", array(
-            "name"     => "megalos",
+            "name"     => self::NAME,
             "policy"   => "write,policy,read,test,api",
             "comment"  => "managed by AZMI. DO NOT EDIT!!!"
         ));
@@ -216,9 +217,9 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
         // Add the new user with the specified username, password, and group
         $userResult = $this->routerOsApi->comm("/user/add", array(
-            "name"     => "megalos",
-            "password" => "megalos",
-            "group"    => "megalos",
+            "name"     => self::NAME,
+            "password" => self::NAME,
+            "group"    => self::NAME,
             "comment"  => "managed by AZMI. DO NOT EDIT!!!"
         ));
 

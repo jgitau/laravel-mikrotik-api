@@ -12,6 +12,10 @@ use App\Repositories\Config\Client\ClientRepository;
 use App\Repositories\Config\Client\ClientRepositoryImplement;
 use App\Repositories\Config\HotelRoom\HotelRoomRepository;
 use App\Repositories\Config\HotelRoom\HotelRoomRepositoryImplement;
+use App\Repositories\Config\UserData\UserDataRepository;
+use App\Repositories\Config\UserData\UserDataRepositoryImplement;
+use App\Repositories\Config\SocialPlugin\SocialPluginRepository;
+use App\Repositories\Config\SocialPlugin\SocialPluginRepositoryImplement;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,12 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // Instantiable class binding
+        // Instantiable Repositories in Sub-Folders
         $this->app->bind(
             ClientRepository::class,
             ClientRepositoryImplement::class
         );
-
         $this->app->bind(
             HotelRoomRepository::class,
             HotelRoomRepositoryImplement::class
@@ -35,6 +38,14 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             AdsRepository::class,
             AdsRepositoryImplement::class
+        );
+        $this->app->bind(
+            UserDataRepository::class,
+            UserDataRepositoryImplement::class
+        );
+        $this->app->bind(
+            SocialPluginRepository::class,
+            SocialPluginRepositoryImplement::class
         );
     }
 

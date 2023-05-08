@@ -3,11 +3,14 @@
 namespace App\Http\Livewire\Backend\Setup\Config\Form;
 
 use App\Services\Nas\NasService;
+use App\Traits\LivewireMessageEvents;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Termwind\Components\Dd;
 
 class EditRouter extends Component
 {
+    use LivewireMessageEvents;
     public $nas_id, $server_ip_address, $mikrotik_ip_address, $mikrotik_api_port, $ports, $secret, $temporary_username, $temporary_password;
 
     // Livewire properties
@@ -113,7 +116,7 @@ class EditRouter extends Component
             'tempUsername' => $this->temporary_username,
             'tempPassword' => $this->temporary_password,
             'username' => 'megalos',
-            'password' => str()->random(10),
+            'password' => Hash::make('megalos'),
             'groupname' => 'megalos',
             'serverDomain' => env('MGL_SPLASH_DOMAIN'),
         ];
@@ -130,51 +133,28 @@ class EditRouter extends Component
                 // If the NAS update is successful, dispatch the success event
                 if ($status) {
                     $this->dispatchSuccessEvent('Router settings updated successfully.');
+                    // Emit the 'nasUpdated' event with a true status
+                    $this->emitUp('nasUpdated', true);
                 } else {
                     // If the NAS update is not successful, dispatch the error event with a message
                     $this->dispatchErrorEvent('An error occurred while updating router settings.');
+                    // Reset the form fields
+                    $this->resetFields();
                 }
             } else {
                 // If the Mikrotik setup is not successful, dispatch the error event
                 $this->dispatchErrorEvent('An error occurred during the Mikrotik setup process.');
+                // Reset the form fields
+                $this->resetFields();
             }
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating router settings: ' . $th->getMessage());
+            // Reset the form fields
+            $this->resetFields();
         }
 
         // Close Modal
-        $this->closeModal();
-    }
-
-
-    /**
-     * Dispatch a success event with the given message
-     *
-     * @param string $message Success message to be displayed
-     */
-    private function dispatchSuccessEvent($message)
-    {
-        // Dispatch the browser event with the success message
-        $this->dispatchBrowserEvent('message', ['success' => $message]);
-        // Close the modal
-        $this->closeModal();
-        // Reset the form fields
-        $this->resetFields();
-        // Emit the 'nasUpdated' event with a true status
-        $this->emitUp('nasUpdated', true);
-    }
-
-    /**
-     * Dispatch an error event with the given message
-     *
-     * @param string $message Error message to be displayed
-     */
-    private function dispatchErrorEvent($message)
-    {
-        // Dispatch the browser event with the error message
-        $this->dispatchBrowserEvent('message', ['error' => $message]);
-        // Close the modal
         $this->closeModal();
     }
 
@@ -186,15 +166,14 @@ class EditRouter extends Component
      */
     public function resetForm(NasService $nasService)
     {
-        // Get the NAS parameters using the NasService
         /**
+         * Get the NAS parameters using the NasService
          * @var Nas $nas
          */
         $nas = $nasService->getNasParameters();
 
         // Assign the NAS properties to the Livewire properties
         $this->nas_id = $nas->id ? $nas->id : 1;
-        $this->temporary_username = $nas->mikrotik_api_username ? $nas->mikrotik_api_username : '';
         $this->server_ip_address = $nas->server_ip_address ? $nas->server_ip_address : '';
         $this->mikrotik_ip_address = $nas->mikrotik_ip_address ? $nas->mikrotik_ip_address : '';
         $this->mikrotik_api_port = $nas->mikrotik_api_port ? $nas->mikrotik_api_port : '8728';

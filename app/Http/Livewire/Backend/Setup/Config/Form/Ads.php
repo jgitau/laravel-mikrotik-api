@@ -3,13 +3,16 @@
 namespace App\Http\Livewire\Backend\Setup\Config\Form;
 
 use App\Services\Config\Ads\AdsService;
+use App\Traits\LivewireMessageEvents;
 use Livewire\Component;
 
 class Ads extends Component
 {
+    use LivewireMessageEvents;
 
     // Declare Public Variables
-    public $ads_max_width, $ads_max_height, $ads_max_size, $ads_upload_folder, $ads_thumb_width, $ads_thumb_height, $mobile_ads_max_width, $mobile_ads_max_height, $mobile_ads_max_size;
+    public $ads_max_width, $ads_max_height, $ads_max_size, $ads_upload_folder, $ads_thumb_width,
+            $ads_thumb_height, $mobile_ads_max_width, $mobile_ads_max_height, $mobile_ads_max_size;
 
     // Livewire properties
     protected $listeners = [
@@ -51,21 +54,17 @@ class Ads extends Component
         return array_merge($defaultMessages, $customMessages);
     }
 
-
-
-    // /**
-    //  * Retrieves the ADS parameters using the AdsService and stores them
-    //  * in the corresponding Livewire properties. Renders the edit-router view.
-    //  *
-    //  * @param  AdsService $adsService
-    //  * @return \Illuminate\View\View
-    //  */
+    /**
+     * Retrieves the ADS parameters using the AdsService and stores them
+     * in the corresponding Livewire properties. Renders the edit-router view.
+     *
+     * @param  AdsService $adsService
+     * @return \Illuminate\View\View
+     */
     public function mount(AdsService $adsService)
     {
         $this->resetForm($adsService);
     }
-
-
 
     /**
      * updated
@@ -98,18 +97,19 @@ class Ads extends Component
         // Validate the form
         $this->validate();
 
-        // Declare the ads settings
-        $settings = [
-            'ads_max_width' => $this->ads_max_width,
-            'ads_max_height' => $this->ads_max_height,
-            'ads_max_size' => $this->ads_max_size,
-            'ads_upload_folder' => $this->ads_upload_folder,
-            'ads_thumb_width' => $this->ads_thumb_width,
-            'ads_thumb_height' => $this->ads_thumb_height,
-            'mobile_ads_max_width' => $this->mobile_ads_max_width,
-            'mobile_ads_max_height' => $this->mobile_ads_max_height,
-            'mobile_ads_max_size' => $this->mobile_ads_max_size
+        // Declare the public variable names
+        $variables = [
+            'ads_max_width', 'ads_max_height', 'ads_max_size', 'ads_upload_folder', 'ads_thumb_width', 'ads_thumb_height',
+            'mobile_ads_max_width', 'mobile_ads_max_height', 'mobile_ads_max_size'
         ];
+
+        // Declare the settings
+        $settings = [];
+
+        // Fill the settings array with public variable values
+        foreach ($variables as $variable) {
+            $settings[$variable] = $this->$variable;
+        }
 
         try {
             // Update the ads settings
@@ -117,6 +117,8 @@ class Ads extends Component
 
             // Show Message Success
             $this->dispatchSuccessEvent('Ads settings updated successfully.');
+            // Emit the 'adsUpdated' event with a true status
+            $this->emitUp('adsUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating ads settings: ' . $th->getMessage());
@@ -134,36 +136,6 @@ class Ads extends Component
     public function closeModal()
     {
         $this->emit('closeModal');
-    }
-
-    /**
-     * Dispatch a success event with the given message
-     *
-     * @param string $message Success message to be displayed
-     */
-    private function dispatchSuccessEvent($message)
-    {
-        // Dispatch the browser event with the success message
-        $this->dispatchBrowserEvent('message', ['success' => $message]);
-        // Close the modal
-        $this->closeModal();
-        // Reset the form fields
-        $this->resetFields();
-        // Emit the 'adsUpdated' event with a true status
-        $this->emitUp('adsUpdated', true);
-    }
-
-    /**
-     * Dispatch an error event with the given message
-     *
-     * @param string $message Error message to be displayed
-     */
-    private function dispatchErrorEvent($message)
-    {
-        // Dispatch the browser event with the error message
-        $this->dispatchBrowserEvent('message', ['error' => $message]);
-        // Close the modal
-        $this->closeModal();
     }
 
     /**
@@ -210,35 +182,10 @@ class Ads extends Component
     private function setLivewireVariables($adsParameters)
     {
         foreach ($adsParameters as $ads) {
-            switch ($ads->setting) {
-                case 'ads_max_width':
-                    $this->ads_max_width = $ads->value;
-                    break;
-                case 'ads_max_height':
-                    $this->ads_max_height = $ads->value;
-                    break;
-                case 'ads_max_size':
-                    $this->ads_max_size = $ads->value;
-                    break;
-                case 'ads_upload_folder':
-                    $this->ads_upload_folder = $ads->value;
-                    break;
-                case 'ads_thumb_width':
-                    $this->ads_thumb_width = $ads->value;
-                    break;
-                case 'ads_thumb_height':
-                    $this->ads_thumb_height = $ads->value;
-                    break;
-                case 'mobile_ads_max_width':
-                    $this->mobile_ads_max_width = $ads->value;
-                    break;
-                case 'mobile_ads_max_height':
-                    $this->mobile_ads_max_height = $ads->value;
-                    break;
-                case 'mobile_ads_max_size':
-                    $this->mobile_ads_max_size = $ads->value;
-                    break;
+            if (property_exists($this, $ads->setting)) {
+                $this->{$ads->setting} = $ads->value;
             }
         }
     }
+
 }

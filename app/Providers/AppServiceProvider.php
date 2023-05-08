@@ -14,6 +14,8 @@ use App\Repositories\Config\HotelRoom\HotelRoomRepository;
 use App\Repositories\Config\HotelRoom\HotelRoomRepositoryImplement;
 use App\Repositories\Config\UserData\UserDataRepository;
 use App\Repositories\Config\UserData\UserDataRepositoryImplement;
+use App\Repositories\Config\SocialPlugin\SocialPluginRepository;
+use App\Repositories\Config\SocialPlugin\SocialPluginRepositoryImplement;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -40,6 +42,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             UserDataRepository::class,
             UserDataRepositoryImplement::class
+        );
+        $this->app->bind(
+            SocialPluginRepository::class,
+            SocialPluginRepositoryImplement::class
         );
     }
 

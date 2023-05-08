@@ -159,8 +159,8 @@ class EditRouter extends Component
      */
     public function resetForm(NasService $nasService)
     {
-        // Get the NAS parameters using the NasService
         /**
+         * Get the NAS parameters using the NasService
          * @var Nas $nas
          */
         $nas = $nasService->getNasParameters();

@@ -6,5 +6,19 @@ use LaravelEasyRepository\BaseService;
 
 interface SocialPluginService extends BaseService{
 
-    // Write something awesome :)
+    /**
+     * getSocialPluginParameters
+     *
+     * @return void
+     */
+    public function getSocialPluginParameters();
+
+
+    /**
+     * updateSocialPluginSettings
+     *
+     * @param  mixed $settings
+     * @return void
+     */
+    public function updateSocialPluginSettings($settings);
 }

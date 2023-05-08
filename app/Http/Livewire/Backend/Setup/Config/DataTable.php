@@ -12,7 +12,8 @@ class DataTable extends Component
         'nasUpdated'                => 'handleUpdatedNas',
         'clientUpdated'             => 'handleUpdatedClient',
         'hotelRoomUpdatedUpdated'   => 'handleUpdatedHotelRoom',
-        'userDataUpdated'           => 'handleUpdateduserData',
+        'userDataUpdated'           => 'handleUpdatedUserData',
+        'socialPluginUpdated'       => 'handleUpdatedSocialPlugin',
     ];
 
 
@@ -65,12 +66,23 @@ class DataTable extends Component
     }
 
     /**
-     * handleUpdateduserData
-     * Called when the 'handleUpdateduserData' event is received
+     * handleUpdatedUserData
+     * Called when the 'handleUpdatedUserData' event is received
      * Dispatches the 'refreshDatatable' browser event to reload the DataTable
      * @return void
      */
-    public function handleUpdateduserData()
+    public function handleUpdatedUserData()
+    {
+        $this->dispatchBrowserEvent('refreshDatatable');
+    }
+
+    /**
+     * handleUpdatedSocialPlugin
+     * Called when the 'handleUpdatedSocialPlugin' event is received
+     * Dispatches the 'refreshDatatable' browser event to reload the DataTable
+     * @return void
+     */
+    public function handleUpdatedSocialPlugin()
     {
         $this->dispatchBrowserEvent('refreshDatatable');
     }

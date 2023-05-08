@@ -21,8 +21,13 @@ class UsersData extends Component
         'resetForm' => 'resetForm',
     ];
 
-
-    // Validation rules
+    /**
+     * This is a PHP function that returns an array of validation rules for columns and displays.
+     * @return an array that contains validation rules for columns and displays. The validation rules
+     * for columns include required, numeric, min, and max, while the validation rules for displays
+     * include required, string, and regex. The function merges the two arrays of validation rules and
+     * returns the resulting array.
+     */
     protected function rules()
     {
         $columnRules = 'required|numeric|min:0|max:1';
@@ -68,7 +73,12 @@ class UsersData extends Component
         );
     }
 
-    // Validation messages
+    /**
+     * The function returns an array of default error messages for various validation rules in PHP.
+     *
+     * @return an array of default error messages for various validation rules such as 'required',
+     * 'numeric', 'min', 'max', 'regex', and 'string'.
+     */
     protected function messages()
     {
         $dafaultMessages = [
@@ -95,12 +105,7 @@ class UsersData extends Component
         $this->resetForm($userDataService);
     }
 
-    /**
-     * updated
-     *
-     * @param  mixed $property
-     * @return void
-     */
+
     public function updated($property)
     {
         // Every time a property changes
@@ -116,10 +121,14 @@ class UsersData extends Component
         return view('livewire.backend.setup.config.form.users-data');
     }
 
+
     /**
-     * updateUserData
+     * This function updates user data settings and emits an event with the status of the update.
      *
-     * @return void
+     * @param UserDataService userDataService userDataService is an instance of the UserDataService
+     * class, which is a service class responsible for handling the logic related to user data
+     * settings, such as updating the settings in the database. It is injected into the updateUserData
+     * method as a dependency, allowing the method to call its methods and use its functionality.
      */
     public function updateUserData(UserDataService $userDataService)
     {
@@ -167,8 +176,8 @@ class UsersData extends Component
      */
     public function resetForm(UserDataService $userDataService)
     {
-        // Get the USERDATA parameters using the UserDataService
         /**
+         * Get the USERDATA parameters using the UserDataService
          * @var UserData $userData
          */
         $userDataParameters = $userDataService->getUserDataParameters();
@@ -187,9 +196,7 @@ class UsersData extends Component
     }
 
     /**
-     * resetFields
-     *
-     * @return void
+     * The function resets the values of public variables to an empty string.
      */
     public function resetFields()
     {

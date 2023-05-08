@@ -173,23 +173,34 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
             'message' => ''
         ];
 
-        // Create the new group with the required policies
-        $groupResult = $this->routerOsApi->comm("/user/group/add", array(
-            "name"     => env('MIKROTIK_NAME'),
-            "policy"   => "write,policy,read,test,api",
-            "comment"  => "managed by AZMI. DO NOT EDIT!!!"
+        // Check if the group already exists
+        $groupExists = $this->routerOsApi->comm("/user/group/print", array(
+            "?name" => env('MIKROTIK_NAME')
         ));
 
-        // Check if the group creation was successful
-        if (isset($groupResult['!re']) && $groupResult['!re'] === 0) {
-            $result['status'] = true;
-        } else {
-            // Handle errors during group creation
-            if (isset($groupResult['!trap'])) {
-                $result['message'] = "Error in adding user group: " . $groupResult['!trap'][0]['message'];
-            } else {
+        // If the group does not exist, create the group
+        if (empty($groupExists)) {
+            // Create the new group with the required policies
+            $groupResult = $this->routerOsApi->comm("/user/group/add", array(
+                "name"     => env('MIKROTIK_NAME'),
+                "policy"   => "write,policy,read,test,api",
+                "comment"  => "managed by AZMI. DO NOT EDIT!!!"
+            ));
+
+            // Check if the group creation was successful
+            if (isset($groupResult['!re']) && $groupResult['!re'] === 0) {
                 $result['status'] = true;
+            } else {
+                // Handle errors during group creation
+                if (isset($groupResult['!trap'])) {
+                    $result['message'] = "Error in adding user group: " . $groupResult['!trap'][0]['message'];
+                } else {
+                    $result['status'] = true;
+                }
             }
+        } else {
+            $result['status'] = true;
+            $result['message'] = "User group already exists.";
         }
 
         return $result;
@@ -211,24 +222,35 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
             'message' => ''
         ];
 
-        // Add the new user with the specified username, password, and group
-        $userResult = $this->routerOsApi->comm("/user/add", array(
-            "name"     => env('MIKROTIK_NAME'),
-            "password" => env('MIKROTIK_NAME'),
-            "group"    => env('MIKROTIK_NAME'),
-            "comment"  => "managed by AZMI. DO NOT EDIT!!!"
+        // Check if the user already exists
+        $userExists = $this->routerOsApi->comm("/user/print", array(
+            "?name" => env('MIKROTIK_NAME')
         ));
 
-        // Check if the user creation was successful
-        if (isset($userResult['!re']) && $userResult['!re'] === 0) {
-            $result['status'] = true;
-        } else {
-            // Handle errors during user creation
-            if (isset($userResult['!trap'])) {
-                $result['message'] = "Error in adding user: " . $userResult['!trap'][0]['message'];
-            } else {
+        // If the user does not exist, create the user
+        if (empty($userExists)) {
+            // Add the new user with the specified username, password, and group
+            $userResult = $this->routerOsApi->comm("/user/add", array(
+                "name"     => env('MIKROTIK_NAME'),
+                "password" => env('MIKROTIK_NAME'),
+                "group"    => env('MIKROTIK_NAME'),
+                "comment"  => "managed by AZMI. DO NOT EDIT!!!"
+            ));
+
+            // Check if the user creation was successful
+            if (isset($userResult['!re']) && $userResult['!re'] === 0) {
                 $result['status'] = true;
+            } else {
+                // Handle errors during user creation
+                if (isset($userResult['!trap'])) {
+                    $result['message'] = "Error in adding user: " . $userResult['!trap'][0]['message'];
+                } else {
+                    $result['status'] = true;
+                }
             }
+        } else {
+            $result['status'] = true;
+            $result['message'] = "User already exists.";
         }
 
         return $result;

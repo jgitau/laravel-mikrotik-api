@@ -93,6 +93,9 @@ class SocialPlugins extends Component
         $this->validateOnly($property);
     }
 
+    /**
+     * Render View
+     **/
     public function render()
     {
         return view('livewire.backend.setup.config.form.social-plugins');

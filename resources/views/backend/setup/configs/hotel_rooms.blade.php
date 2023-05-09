@@ -24,16 +24,8 @@ $configData = Helper::appClasses();
                 </div>
             </div>
             <div class="card-body">
-                <form action="#" method="POST">
-                    <div class="row">
-                        <div class="col-5">
-                            <label for="hmsConnect" class="form-label">HMS Connect</label>
-                            <input type="text" id="hmsConnect" class="form-control @error('hmsConnect') is-invalid @enderror"
-                                placeholder="HMS Connect" wire:model="hmsConnect" />
-                            @error('hmsConnect') <small class="error text-danger">{{ $message }}</small> @enderror
-                        </div>
-                    </div>
-                </form>
+                {{-- *** TODO: *** --}}
+                @livewire('backend.setup.config.hotel-room.add-service')
             </div>
         </div>
 

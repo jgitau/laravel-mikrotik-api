@@ -184,12 +184,15 @@ class MenuHelper
                 || (isset($menuItem['url']) && request()->path() === trim($menuItem['url'], '/'))
             ) {
                 $activeClass .= 'active';
+            } elseif (isset($menuItem['url']) && strpos(request()->path(), 'list-configs') !== false && strpos($menuItem['url'], 'list-configs') !== false) {
+                // If the current path contains 'list-configs' and the menu item URL also contains 'list-configs' (if the 'url' key exists)
+                $activeClass .= 'active';
             }
 
             // Build the menu item's HTML structure
             $html .= '<li class="menu-item ' . $activeClass . '" style="">';
             $html .= '<a href="' . (isset($menuItem['url']) ? $baseUrl . '/' . ltrim($menuItem['url'], '/') : 'javascript:void(0);') . '"';
-            $html .= isset($menuItem['submenu']) ? ' class="menu-link menu-toggle"' : ' class="menu-link" data-turbolinks-action="replace"';
+            $html .= isset($menuItem['submenu']) ? ' class="menu-link menu-toggle"' : ' class="menu-link"';
             $html .= '>';
 
             if (isset($menuItem['icon'])) {
@@ -212,50 +215,4 @@ class MenuHelper
 
         return $html;
     }
-
-    /**
-     * getRoutesFromDatabase
-     *
-     * @return void
-     */
-    // *** TODO: ROUTES FROM DB ***
-    // public static function getRoutesFromDatabase()
-    // {
-    //     $routes = [];
-
-    //     // Ambil data admin bersama relasi grup, modul, dan halaman
-    //     $admin = Admin::with(['group.modules.pages'])->where('admin_uid', session('user_uid'))->first();
-
-    //     // Bangun data menu berdasarkan data admin yang diambil
-    //     $menuData = self::buildMenuData($admin);
-
-    //     // Iterasi melalui setiap item menu dan submenu
-    //     foreach ($menuData as $menuItem) {
-    //         if (isset($menuItem['submenu'])) {
-    //             foreach ($menuItem['submenu'] as $subMenuItem) {
-    //                 if (isset($subMenuItem['submenu'])) {
-    //                     foreach ($subMenuItem['submenu'] as $subSubMenuItem) {
-    //                         $routes[] = [
-    //                             'url' => $subSubMenuItem['url'],
-    //                             'controller' => $subSubMenuItem['controller_class'],
-    //                             'method' => $subSubMenuItem['controller_method'],
-    //                             'name' => $subSubMenuItem['route_name']
-    //                         ];
-    //                     }
-    //                 } else {
-    //                     $routes[] = [
-    //                         'url' => $subMenuItem['url'],
-    //                         'controller' => $subMenuItem['controller_class'],
-    //                         'method' => $subMenuItem['controller_method'],
-    //                         'name' => $subMenuItem['route_name']
-    //                     ];
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     return $routes;
-    // }
-
-
 }

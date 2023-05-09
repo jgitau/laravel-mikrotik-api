@@ -115,9 +115,9 @@ class EditRouter extends Component
             'radiusSecret' => $this->secret,
             'tempUsername' => $this->temporary_username,
             'tempPassword' => $this->temporary_password,
-            'username' => 'megalos',
-            'password' => Hash::make('megalos'),
-            'groupname' => 'megalos',
+            'username' => env('MIKROTIK_NAME'),
+            'password' => Hash::make(env('MIKROTIK_NAME')),
+            'groupname' => env('MIKROTIK_NAME'),
             'serverDomain' => env('MGL_SPLASH_DOMAIN'),
         ];
 

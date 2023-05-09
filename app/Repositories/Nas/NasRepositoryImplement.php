@@ -38,7 +38,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * process. It includes the temporary username and password, Mikrotik IP address, RADIUS server IP
      * address, and RADIUS secret.
      *
-     * @return an array with two keys: 'status' and 'message'. The 'status' key indicates whether the
+     * @return array with two keys: 'status' and 'message'. The 'status' key indicates whether the
      * setup process was successful or not, and the 'message' key provides additional information about
      * the status of the process.
      */
@@ -108,7 +108,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * @param radiusSecret The secret key used for RADIUS authentication between the router and the
      * RADIUS server.
      *
-     * @return An array with two keys: 'status' and 'message'. The 'status' key indicates whether the
+     * @return Array with two keys: 'status' and 'message'. The 'status' key indicates whether the
      * operation was successful or not, and the 'message' key contains an error message if the
      * operation was not successful.
      */
@@ -161,7 +161,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * The function creates a new user group with specific policies and returns a result indicating
      * success or failure.
      *
-     * @return an array with two keys: 'status' and 'message'. The 'status' key indicates whether the
+     * @return array with two keys: 'status' and 'message'. The 'status' key indicates whether the
      * user group creation was successful or not, and the 'message' key contains an error message if
      * the creation was not successful.
      */
@@ -210,7 +210,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * The function creates a new user with a specified username, password, and group, and returns a
      * result array indicating whether the creation was successful or not.
      *
-     * @return an array with two keys: 'status' and 'message'. The 'status' key indicates whether the
+     * @return array with two keys: 'status' and 'message'. The 'status' key indicates whether the
      * user creation was successful or not, and the 'message' key contains an error message if the user
      * creation was not successful.
      */

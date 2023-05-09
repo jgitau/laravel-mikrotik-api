@@ -15,7 +15,7 @@ $configData = Helper::appClasses();
 <div class="row">
 
     {{-- TODO: Create New Service --}}
-    <div class="col-12 mb-3">
+    <div class="col-4">
 
         <div class="card">
             <div class="card-header">
@@ -31,7 +31,7 @@ $configData = Helper::appClasses();
 
     </div>
 
-    <div class="col-12">
+    <div class="col-8">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between">

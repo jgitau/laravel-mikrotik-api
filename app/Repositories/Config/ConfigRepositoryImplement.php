@@ -50,6 +50,8 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
             'name' => 'edit_router'
         ];
 
+
+
         // Initialize DataTables using the rawData array
         $dataTables = DataTables::of($rawData)
             // Add an index column to the DataTable for easier reference
@@ -59,7 +61,8 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
                 if ($data['id'] > 0) {
                     // For non-Router rows, use the edit and delete buttons with Names and classes
                     if($data['name'] == 'hotel_rooms') {
-                        $button = '<button type="button" aria-label="Detail Button" name="' . $data['name'] . '" class="edit btn btn-info btn-sm" onclick="showModalDetailHotelRooms(\'' . $data['name'] . '\')"> <i class="fas fa-eye"></i></button>';
+                        $routeDetailHotelRooms = route('backend.setup.config.hotel_rooms');
+                        $button = '<a href="' . $routeDetailHotelRooms . '" aria-label="Detail Button" name="' . $data['name'] . '" class="edit btn btn-info btn-sm"> <i class="fas fa-eye"></i></a>';
                         $button .= '&nbsp;&nbsp;<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';
                     }else{
                         $button = '<button type="button" aria-label="Edit Button" name="' . $data['name'] . '" class="edit btn btn-primary btn-sm" onclick="showModalByName(\'' . $data['name'] . '\')"> <i class="fas fa-edit"></i></button>';

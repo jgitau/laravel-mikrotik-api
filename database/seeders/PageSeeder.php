@@ -641,6 +641,16 @@ class PageSeeder extends Seeder
                 'show_to' => 19
             ],
             [
+                'id' => 81,
+                'page' => 'config_hotel_rooms',
+                'title' => 'Config Hotel Rooms',
+                'url' => '/setup/config/list-configs/hotel_rooms',
+                'module_id' => 19,
+                'allowed_groups' => '0',
+                'show_menu' => 0,
+                'show_to' => 19
+            ],
+            [
                 'id' => 84,
                 'page' => 'search_mac',
                 'title' => 'Search Mac',

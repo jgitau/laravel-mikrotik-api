@@ -28,11 +28,11 @@ Route::middleware(['check.session.cookie'])->name('backend.')->group(function ()
         Route::get('list-groups', [GroupController::class, 'index'])->name('list-groups');
     });
 
-
     // Config Group
     Route::prefix('setup/config/')->name('setup.config.')->group(function () {
         // List Config Routes
         Route::get('list-configs', [ConfigController::class, 'index'])->name('list-config');
+        Route::get('list-configs/hotel_rooms', [ConfigController::class, 'hotel_rooms'])->name('hotel_rooms');
     });
 
 });

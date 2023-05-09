@@ -646,8 +646,8 @@ class PageSeeder extends Seeder
                 'title' => 'Config Hotel Rooms',
                 'url' => '/setup/config/list-configs/hotel_rooms',
                 'module_id' => 19,
-                'allowed_groups' => '0',
-                'show_menu' => 0,
+                'allowed_groups' => '1',
+                'show_menu' => 1,
                 'show_to' => 19
             ],
             [

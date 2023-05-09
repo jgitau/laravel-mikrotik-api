@@ -22,7 +22,7 @@ $configData = Helper::appClasses();
 
     {{-- Start List DataTable --}}
     {{-- TODO: --}}
-    {{-- @livewire('backend.setup.config.data-table') --}}
+    @livewire('backend.setup.config.hotel-room.data-table')
     {{-- End List DataTable --}}
 
     <!-- Add the ModalManager Livewire component -->

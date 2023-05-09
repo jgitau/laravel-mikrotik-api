@@ -47,4 +47,18 @@ class HotelRoomServiceImplement extends Service implements HotelRoomService
             Log::debug($th->getMessage());
         }
     }
+
+    /**
+     * getDatatables
+     */
+    public function getDatatables()
+    {
+        try {
+            return $this->mainRepository->getDatatables();
+        } catch (\Throwable $th) {
+            Log::debug($th->getMessage());
+            return [];
+            //throw $th;
+        }
+    }
 }

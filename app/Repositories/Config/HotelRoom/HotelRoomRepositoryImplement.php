@@ -2,8 +2,10 @@
 
 namespace App\Repositories\Config\HotelRoom;
 
+use App\Models\Services;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Setting;
+use Yajra\DataTables\Facades\DataTables;
 
 class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomRepository{
 
@@ -46,6 +48,37 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
                 ['value' => $value]
             );
         }
+    }
+
+    /**
+     * getDatatables
+     */
+    public function getDatatables()
+    {
+        // Retrieve records from the database using the model, including the related 'Services' records, and sort by the latest records
+        $data = Services::select('service_name', 'cron_type', 'cron')->where('cron', '!=', 0)->get();
+
+        // Initialize the DataTables library using the fetched data
+        $dataTables = DataTables::of($data)
+            // Add an index column to the DataTable for easier reference
+            ->addIndexColumn()
+            // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
+            ->addColumn('action', function ($data) {
+                // Create an edit button with the record's 'id' as its ID and a 'fas fa-edit' icon
+                $button = '<button type="button" name="edit" id="' . $data->id . '" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</button>';
+
+                // Add a delete button with the record's 'id' as its ID and a 'fas fa-trash' icon
+                // TODO: Button delete
+                $button .= '&nbsp;&nbsp;<button type="button" name="edit" id="' . $data->id . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i></button>';
+
+                // Return the concatenated button HTML string
+                return $button;
+            })
+            // Create and return the DataTables response as a JSON object
+            ->make(true);
+
+        // Return the DataTables JSON response
+        return $dataTables;
     }
 
 }

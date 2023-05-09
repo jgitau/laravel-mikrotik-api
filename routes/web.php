@@ -9,6 +9,7 @@ use App\Http\Controllers\Home\LoginController;
 use App\Http\Livewire\Backend\Setup\Administrator\Admin\DataTable as DataTableAdmin;
 use App\Http\Livewire\Backend\Setup\Administrator\Group\DataTable as DataTableGroup;
 use App\Http\Livewire\Backend\Setup\Config\DataTable as DataTableConfig;
+use App\Http\Livewire\Backend\Setup\Config\HotelRoom\DataTable as DataTableHotelRoom;
 use Illuminate\Support\Facades\Route;
 
 // Home/Login Page
@@ -41,6 +42,7 @@ Route::get('livewire/backend/setup/administrator/admin/getDataTable', [DataTable
 // Get DataTable List Group
 Route::get('livewire/backend/setup/administrator/group/getDataTable', [DataTableGroup::class, 'getDataTable'])->name('group.getDataTable');
 Route::get('livewire/backend/setup/config/getDataTable', [DataTableConfig::class, 'getDataTable'])->name('config.getDataTable');
+Route::get('livewire/backend/setup/config/hotelRoom/getDataTable', [DataTableHotelRoom::class, 'getDataTable'])->name('config.hotelRoom.getDataTable');
 
 // Logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

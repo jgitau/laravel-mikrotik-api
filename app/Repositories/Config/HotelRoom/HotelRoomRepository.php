@@ -21,4 +21,9 @@ interface HotelRoomRepository extends Repository{
      * @return void
      */
     public function updateHotelRoomSettings($settings);
+
+    /**
+     * getDatatables
+     */
+    public function getDatatables();
 }

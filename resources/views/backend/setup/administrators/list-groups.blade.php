@@ -28,7 +28,9 @@ $configData = Helper::appClasses();
             </div>
 
             {{-- Start List DataTable --}}
-            @livewire('backend.setup.administrator.group.data-table')
+            <div class="card-body">
+                @livewire('backend.setup.administrator.group.data-table')
+            </div>
             {{-- End List DataTable --}}
 
         </div>

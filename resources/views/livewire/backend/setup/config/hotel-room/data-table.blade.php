@@ -1,4 +1,4 @@
-<div wire:ignore class="table" style="padding: 0 30px 30px 30px;">
+<div wire:ignore class="table">
     <table class="table table-hover table-responsive display" id="myTable">
         <thead>
             <tr>

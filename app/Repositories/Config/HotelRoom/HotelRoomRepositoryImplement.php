@@ -69,7 +69,7 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
 
                 // Add a delete button with the record's 'id' as its ID and a 'fas fa-trash' icon
                 // TODO: Button delete
-                $button .= '&nbsp;&nbsp;<button type="button" name="edit" id="' . $data->id . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i></button>';
+                $button .= '&nbsp;&nbsp;<button type="button" name="edit" id="' . $data->id . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
 
                 // Return the concatenated button HTML string
                 return $button;

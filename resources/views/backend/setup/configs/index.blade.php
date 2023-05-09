@@ -22,7 +22,9 @@ $configData = Helper::appClasses();
 
 
     {{-- Start List DataTable --}}
-    @livewire('backend.setup.config.data-table')
+    <div class="card-body">
+        @livewire('backend.setup.config.data-table')
+    </div>
     {{-- End List DataTable --}}
 
     <!-- Add the ModalManager Livewire component -->

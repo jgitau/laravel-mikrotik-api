@@ -151,7 +151,7 @@ class PageSeeder extends Seeder
                 'id' => 15,
                 'page' => 'add_new_group',
                 'title' => 'Add New Group',
-                'url' => 'administrators/pg/add_new_group',
+                'url' => 'setup/admin/add-new-group',
                 'module_id' => 10,
                 'allowed_groups' => '1',
                 'show_menu' => 1,

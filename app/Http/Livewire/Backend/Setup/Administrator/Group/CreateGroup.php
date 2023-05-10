@@ -9,7 +9,7 @@ class CreateGroup extends Component
 {
 
     // Define public variable
-    public $name;
+    public $name,$groupName;
 
     // Listeners
     protected $listeners = [
@@ -18,14 +18,16 @@ class CreateGroup extends Component
 
     // Validation Rules
     protected $rules = [
-        'name' => 'required',
+        'groupName' => 'required|min:4|max:60|unique:groups,name',
     ];
 
     // Validation Messages
     protected $messages = [
-        'name.required' => 'Name cannot be empty!',
+        'groupName.required'    => 'Group Name cannot be empty!',
+        'groupName.min'         => 'Group Name must be at least 4 characters!',
+        'groupName.max'         => 'Group Name can be a maximum of 60 characters!',
+        'groupName.unique'      => 'Group Name already exist!',
     ];
-
     /**
      * updated
      *

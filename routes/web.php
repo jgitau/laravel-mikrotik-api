@@ -27,6 +27,8 @@ Route::middleware(['check.session.cookie'])->name('backend.')->group(function ()
         Route::get('list-admins', [AdminController::class, 'index'])->name('list-admins');
         // List Group Routes
         Route::get('list-groups', [GroupController::class, 'index'])->name('list-groups');
+        // Add New Group Routes
+        Route::get('add-new-group', [GroupController::class, 'create'])->name('add-new-group');
     });
 
     // Config Group

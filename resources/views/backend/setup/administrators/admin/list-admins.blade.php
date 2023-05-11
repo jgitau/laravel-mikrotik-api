@@ -16,9 +16,12 @@ $configData = Helper::appClasses();
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h4 class="card-title">Table Admins</h4>
-            <button type="button" class="btn btn-facebook waves-effect waves-light">
-                <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp;Create
+            <button type="button" class="btn btn-facebook waves-effect waves-light" data-bs-toggle="modal"
+                data-bs-target="#createNewAdmin">
+                <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add new Admin
             </button>
+
+
             {{-- /Create Button for Add New Admin --}}
         </div>
     </div>
@@ -28,7 +31,15 @@ $configData = Helper::appClasses();
         @livewire('backend.setup.administrator.admin.data-table')
     </div>
     {{-- End List DataTable --}}
+    @livewire('backend.setup.administrator.admin.create')
 
+    @push('scripts')
+    <script>
+        window.addEventListener('hide-modal', () => {
+            $('#modalCenter').modal('hide');
+        });
+    </script>
+    @endpush
 </div>
 
 

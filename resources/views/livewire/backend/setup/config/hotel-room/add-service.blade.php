@@ -1,11 +1,13 @@
 <div class="row">
-    <form action="#" method="POST">
+    <form wire:submit.prevent="storeService" method="POST">
         {{-- *** TODO: *** --}}
         <div class="row">
             <div class="col-12 mb-3">
                 <label for="serviceName" class="form-label">Service Name</label>
-                <input type="text" id="serviceName" class="form-control @error('serviceName') is-invalid @enderror"
-                    placeholder="Service Name" wire:model="serviceName" />
+                <select name="serviceName" id="serviceName" class="form-select @error('serviceName') is-invalid @enderror" wire:model="serviceName">
+                    <option value="">-- Choice Service Name --</option>
+                    <option value="DefaultService">DefaultService</option>
+                </select>
                 @error('serviceName') <small class="error text-danger">{{ $message }}</small> @enderror
             </div>
             <div class="col-12">
@@ -17,7 +19,7 @@
         </div>
 
         <div class="mt-3 d-flex justify-content-end">
-            <button type="button" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
         </div>
 
     </form>

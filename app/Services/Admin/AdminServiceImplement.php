@@ -74,4 +74,19 @@ class AdminServiceImplement extends Service implements AdminService
             Log::debug($th->getMessage());
         }
     }
+
+    /**
+     * getAdminByUid
+     *
+     * @param  mixed $uid
+     * @return void
+     */
+    public function getAdminByUid($uid)
+    {
+        try {
+            return $this->mainRepository->getAdminByUid($uid);
+        } catch (\Throwable $th) {
+            Log::debug($th->getMessage());
+        }
+    }
 }

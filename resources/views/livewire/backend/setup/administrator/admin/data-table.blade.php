@@ -42,6 +42,12 @@
             }
         });
 
+        // Function to show a modal based on a given name
+        function showAdmin(uid) {
+            // Emit an event to show the modal with the given Livewire component name
+            Livewire.emit('getAdmin', uid);
+        }
+
         // Listen for the refreshDatatable event
         Livewire.on('refreshDatatable', () => {
             $('#myTable').DataTable().ajax.reload(null, false);

@@ -33,7 +33,7 @@ class DataTable extends Component
 
     /**
      * handleAdminCreated
-     * Called when the 'adminCreated' event is received
+     * Called when the 'refreshEditDataTable' event is received
      * Dispatches the 'refreshDatatable' browser event to reload the DataTable
      * @return void
      */
@@ -41,6 +41,5 @@ class DataTable extends Component
     {
         $this->dispatchBrowserEvent('refreshDatatable');
     }
-
 
 }

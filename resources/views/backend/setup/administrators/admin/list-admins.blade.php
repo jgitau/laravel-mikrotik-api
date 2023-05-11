@@ -31,17 +31,21 @@ $configData = Helper::appClasses();
         @livewire('backend.setup.administrator.admin.data-table')
     </div>
     {{-- End List DataTable --}}
-    @livewire('backend.setup.administrator.admin.create')
 
     @push('scripts')
     <script>
         // Hide Modal
         window.addEventListener('hide-modal', () => {
             $('#createNewAdmin').modal('hide');
+            $('#updateAdminModal').modal('hide');
+        });
+        window.addEventListener('show-modal', () => {
+            $('#updateAdminModal').modal('show');
         });
     </script>
     @endpush
 </div>
 
-
+@livewire('backend.setup.administrator.admin.create')
+@livewire('backend.setup.administrator.admin.edit')
 @endsection

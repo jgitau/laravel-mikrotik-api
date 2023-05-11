@@ -19,11 +19,12 @@ class Create extends Component
     // Listeners
     protected $listeners = [
         'productCreated' => '$refresh',
+
     ];
 
     // Validation Rules
     protected $rules = [
-        'groupId'   => 'required',
+        'groupId'       => 'required',
         'username'      => 'required|min:4|max:60|unique:admins,username',
         'password'      => 'required|min:6|confirmed',
         'status'        => 'required',
@@ -33,7 +34,7 @@ class Create extends Component
 
     // Validation Messages
     protected $messages = [
-        'groupId.required'      => 'Choose Group cannot be empty!',
+        'groupId.required'          => 'Choose Group cannot be empty!',
         'username.required'         => 'Username cannot be empty!',
         'username.min'              => 'Username must be at least 4 characters!',
         'username.max'              => 'Username cannot be more than 60 characters!',

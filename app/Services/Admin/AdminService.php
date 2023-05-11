@@ -23,4 +23,12 @@ interface AdminService extends BaseService
      * getDatatables
      */
     public function getDatatables();
+
+    /**
+     * storeNewAdmin
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function storeNewAdmin($request);
 }

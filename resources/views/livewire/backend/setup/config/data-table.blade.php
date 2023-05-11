@@ -117,7 +117,7 @@
         Livewire.on('refreshDatatable', () => {
             setTimeout(() => {
                 dataTable.ajax.reload(null, false);
-            }, 500);
+            }, 200);
         });
     </script>
     @endpush

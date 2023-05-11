@@ -35,8 +35,9 @@ $configData = Helper::appClasses();
 
     @push('scripts')
     <script>
+        // Hide Modal
         window.addEventListener('hide-modal', () => {
-            $('#modalCenter').modal('hide');
+            $('#createNewAdmin').modal('hide');
         });
     </script>
     @endpush

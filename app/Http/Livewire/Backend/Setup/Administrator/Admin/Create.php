@@ -3,19 +3,27 @@
 namespace App\Http\Livewire\Backend\Setup\Administrator\Admin;
 
 use App\Models\Group;
+use App\Services\Admin\AdminService;
+use App\Traits\LivewireMessageEvents;
 use Livewire\Component;
 
 class Create extends Component
 {
+    use LivewireMessageEvents;
     // Properties Public Variables
-    public $chooseGroup, $username, $password, $status, $fullName, $emailAddress, $password_confirmation;
+    public $groupId, $username, $password, $status, $fullName, $emailAddress, $password_confirmation;
 
     // Groups
     public $groups;
 
+    // Listeners
+    protected $listeners = [
+        'productCreated' => '$refresh',
+    ];
+
     // Validation Rules
     protected $rules = [
-        'chooseGroup'   => 'required',
+        'groupId'   => 'required',
         'username'      => 'required|min:4|max:60|unique:admins,username',
         'password'      => 'required|min:6|confirmed',
         'status'        => 'required',
@@ -25,7 +33,7 @@ class Create extends Component
 
     // Validation Messages
     protected $messages = [
-        'chooseGroup.required'      => 'Choose Group cannot be empty!',
+        'groupId.required'      => 'Choose Group cannot be empty!',
         'username.required'         => 'Username cannot be empty!',
         'username.min'              => 'Username must be at least 4 characters!',
         'username.max'              => 'Username cannot be more than 60 characters!',
@@ -72,10 +80,47 @@ class Create extends Component
         return view('livewire.backend.setup.administrator.admin.create');
     }
 
-    // TODO:
-    public function storeNewAdmin()
+    /**
+     * This function stores a new admin by validating the form, declaring variables, filling an array
+     * with public variable values, updating the ads admins, and emitting events.
+     *
+     * @param AdminService adminService It is an instance of the AdminService class, which is likely
+     * responsible for handling the business logic related to creating and managing admin users. It is
+     * being passed as a dependency injection to the storeNewAdmin() method.
+     */
+    public function storeNewAdmin(AdminService $adminService)
     {
+        // Validate the form
         $this->validate();
+
+        // Declare the public variable names
+        $variables = ['groupId', 'username', 'password', 'status', 'fullName', 'emailAddress',];
+
+        // Declare the settings
+        $admins = [];
+
+        // Fill the admins array with public variable values
+        foreach ($variables as $variable) {
+            $admins[$variable] = $this->$variable;
+        }
+
+        try {
+            // Store the new admin
+            $admin = $adminService->storeNewAdmin($admins);
+            if ($admin === null) {
+                $this->dispatchErrorEvent('Failed to create the admin');
+            }
+            // Show Message Success
+            $this->dispatchSuccessEvent('Admin was created successfully.');
+            // Emit the 'adminCreated' event with a true status
+            $this->emitUp('adminCreated', true);
+        } catch (\Throwable $th) {
+            // Show Message Error
+            $this->dispatchErrorEvent('An error occurred while creating admin: ' . $th->getMessage());
+        }
+
+        // Close Modal
+        $this->closeModal();
     }
 
     /**
@@ -88,9 +133,12 @@ class Create extends Component
         $this->dispatchBrowserEvent('hide-modal');
     }
 
+    /**
+     * The function resets all fields to their default values.
+     */
     public function resetFields()
     {
-        $this->chooseGroup = '';
+        $this->groupId = '';
         $this->username = '';
         $this->password = '';
         $this->status = '';

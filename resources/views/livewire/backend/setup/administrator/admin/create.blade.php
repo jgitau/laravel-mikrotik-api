@@ -13,14 +13,14 @@
                         {{-- FORM INPUT CHOOSE GROUP AND USERNAME --}}
                         <div class="row">
                             <div class="col">
-                                <label for="chooseGroup" class="form-label">Choose Group</label>
-                                <select name="chooseGroup" id="chooseGroup" class="form-select @error('chooseGroup') is-invalid @enderror" wire:model="chooseGroup">
+                                <label for="groupId" class="form-label">Choose Group</label>
+                                <select name="groupId" id="groupId" class="form-select @error('groupId') is-invalid @enderror" wire:model="groupId">
                                     <option value="" selected>-- Choice Group -- </option>
                                     @foreach($groups as $group)
                                     <option value="{{ $group->id }}">{{ $group->name }}</option>
                                     @endforeach
                                 </select>
-                                @error('chooseGroup') <small class="error text-danger">{{ $message }}</small> @enderror
+                                @error('groupId') <small class="error text-danger">{{ $message }}</small> @enderror
                             </div>
                             <div class="col">
                                 <label for="username" class="form-label">Username</label>

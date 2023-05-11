@@ -172,4 +172,37 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
         // Return the DataTables JSON response
         return $dataTables;
     }
+
+
+    /**
+     * This function stores a new admin in the database with the provided information.
+     *
+     * @param request  is a parameter that is passed to the function storeNewAdmin(). It is
+     * likely an associative array that contains the data needed to create a new admin user. The keys
+     * in the array are likely the names of the fields in a form that was submitted, and the values are
+     * the data entered by the
+     *
+     * @return instance of the newly created admin if the creation is successful, and null if there
+     * is an exception thrown during the creation process.
+     */
+    public function storeNewAdmin($request)
+    {
+        try {
+            // Create a new admin with the provided information
+            $admin = $this->model->create([
+                'group_id'    => $request['groupId'],
+                'username'    => $request['username'],
+                'password'    => Hash::make($request['password']),
+                'status'      => $request['status'],
+                'fullname'    => $request['fullName'],
+                'email'       => $request['emailAddress'],
+            ]);
+            // Return the newly created admin
+            return $admin;
+        } catch (\Exception $e) {
+            // Return null if there is an exception thrown during the creation process
+            return null;
+        }
+    }
+
 }

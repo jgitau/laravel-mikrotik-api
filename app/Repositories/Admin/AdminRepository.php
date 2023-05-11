@@ -24,4 +24,12 @@ interface AdminRepository extends Repository
      * getDatatables
      */
     public function getDatatables();
+
+    /**
+     * storeNewAdmin
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function storeNewAdmin($request);
 }

@@ -136,11 +136,17 @@ class SocialPlugins extends Component
 
             // Show Message Success
             $this->dispatchSuccessEvent('Social Plugin settings updated successfully.');
+            // Close the modal
+            $this->closeModal();
+            // Reset the form fields
+            $this->resetFields();
             // Emit the 'socialPluginUpdated' event with a true status
             $this->emitUp('socialPluginUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating ads settings: ' . $th->getMessage());
+            // Close the modal
+            $this->closeModal();
         }
 
         // Close Modal

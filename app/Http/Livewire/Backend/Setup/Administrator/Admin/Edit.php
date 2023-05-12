@@ -133,11 +133,17 @@ class Edit extends Component
 
             // Show Message Success
             $this->dispatchSuccessEvent('Admin successfully updated.');
+            // Close the modal
+            $this->closeModal();
+            // Reset the form fields
+            $this->resetFields();
             // Emit the 'adminUpdated' event with a true status
             $this->emit('adminUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating admin: ' . $th->getMessage());
+            // Close the modal
+            $this->closeModal();
         }
 
         // Close Modal

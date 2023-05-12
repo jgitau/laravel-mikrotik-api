@@ -133,23 +133,31 @@ class EditRouter extends Component
                 // If the NAS update is successful, dispatch the success event
                 if ($status) {
                     $this->dispatchSuccessEvent('Router settings updated successfully.');
+                    // Close the modal
+                    $this->closeModal();
                     // Emit the 'nasUpdated' event with a true status
                     $this->emitUp('nasUpdated', true);
                 } else {
                     // If the NAS update is not successful, dispatch the error event with a message
                     $this->dispatchErrorEvent('An error occurred while updating router settings.');
+                    // Close the modal
+                    $this->closeModal();
                     // Reset the form fields
                     $this->resetFields();
                 }
             } else {
                 // If the Mikrotik setup is not successful, dispatch the error event
                 $this->dispatchErrorEvent('An error occurred during the Mikrotik setup process.');
+                // Close the modal
+                $this->closeModal();
                 // Reset the form fields
                 $this->resetFields();
             }
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating router settings: ' . $th->getMessage());
+            // Close the modal
+            $this->closeModal();
             // Reset the form fields
             $this->resetFields();
         }

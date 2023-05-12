@@ -73,12 +73,12 @@ class DataTable extends Component
             // Delete Admin by uid
             $adminService->deleteAdmin($admin_uid);
             // Show Message Success
-            $this->dispatchSuccessNoModalEvent('Admin successfully deleted.');
+            $this->dispatchSuccessEvent('Admin successfully deleted.');
             // Dispatchs the 'adminDeleted' event with a true status
             $this->dispatchBrowserEvent('refreshDatatable');
         } catch (\Throwable $th) {
             // Show Message Error
-            $this->dispatchErrorNoModalEvent('An error occurred while deleting admin: ' . $th->getMessage());
+            $this->dispatchErrorEvent('An error occurred while deleting admin: ' . $th->getMessage());
 
         }
     }

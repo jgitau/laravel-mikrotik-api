@@ -141,8 +141,11 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
         return $cookie;
     }
 
+
     /**
-     * getDatatables
+     * This function retrieves records from a database, initializes the DataTables library, adds
+     * columns to the DataTable, and returns the DataTables response as a JSON object.
+     * @return DataTables Yajra JSON response.
      */
     public function getDatatables()
     {
@@ -206,6 +209,45 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
             return null;
         }
     }
+
+
+    /**
+     * @param admin_uid The unique identifier of the admin that needs to be updated.
+     * @param request The  parameter is an instance of the Illuminate\Http\Request class, which
+     * contains the data submitted in the HTTP request. It can contain data from the query string, form
+     * data, and uploaded files. In this function, it is used to retrieve the data needed to update an
+     * admin record in the database.
+     */
+    public function updateAdmin($admin_uid, $request)
+    {
+        // Check if admin_uid is in the request
+        if ($admin_uid) {
+            // Search for admin by uid
+            $admin = $this->model->where('admin_uid', $admin_uid)->first();
+            // Check if admin exists
+            if ($admin) {
+                // Prepare data admin
+                $adminData = [
+                    'username' => $request['username'],
+                    'fullname' => $request['fullname'],
+                    'email' => $request['email'],
+                    'group_id' => $request['group_id'],
+                    'status' => $request['status'],
+                ];
+                // Check if password is not empty
+                if (!empty($request->password)) {
+                    $adminData['password'] = Hash::make($request->password);
+                }
+                // Update data admin
+                $admin->update($adminData);
+                // Return updated admin
+                return $admin;
+            }
+        }
+        // Return null if admin_uid is not in the request
+        return null;
+    }
+
 
     /**
     * This PHP function retrieves an admin user by their unique identifier.

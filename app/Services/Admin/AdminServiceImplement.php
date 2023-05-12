@@ -59,7 +59,6 @@ class AdminServiceImplement extends Service implements AdminService
         }
     }
 
-
     /**
      * storeNewAdmin
      *
@@ -70,6 +69,21 @@ class AdminServiceImplement extends Service implements AdminService
     {
         try {
             return $this->mainRepository->storeNewAdmin($request);
+        } catch (\Throwable $th) {
+            Log::debug($th->getMessage());
+        }
+    }
+
+    /**
+     * updateAdmin
+     * @param  mixed $admin_uid
+     * @param  mixed $request
+     * @return void
+     */
+    public function updateAdmin($admin_uid, $request)
+    {
+        try {
+            return $this->mainRepository->updateAdmin($admin_uid, $request);
         } catch (\Throwable $th) {
             Log::debug($th->getMessage());
         }

@@ -1,5 +1,5 @@
-<div class="table">
-    <table class="table table-hover table-responsive display" id="myTable">
+<div wire:ignore class="table">
+    <table class="table table-hover table-responsive display" id="myTable" >
         <thead>
             <tr>
                 <th>No</th>
@@ -48,11 +48,6 @@
             Livewire.emit('getAdmin', uid);
         }
 
-        // Listen for the refreshDatatable event
-        Livewire.on('refreshDatatable', () => {
-            $('#myTable').DataTable().ajax.reload(null, false);
-        });
-
         let dataTable;
 
         // Function to initialize the DataTable
@@ -74,17 +69,13 @@
                 ]
             });
         }
-
         // Initialize the DataTable when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', function () {
             initializeDataTable();
         });
-
         // Listen for the showCreateModal event
-        Livewire.on('refreshDatatable', () => {
-            setTimeout(() => {
-            dataTable.ajax.reload(null, false);
-            }, 200);
+        window.addEventListener('refreshDatatable', event =>{
+            dataTable.ajax.reload();
         });
     </script>
     @endpush

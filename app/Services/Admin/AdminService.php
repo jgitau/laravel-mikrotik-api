@@ -33,6 +33,14 @@ interface AdminService extends BaseService
     public function storeNewAdmin($request);
 
     /**
+     * updateAdmin
+     * @param  mixed $admin_uid
+     * @param  mixed $request
+     * @return void
+     */
+    public function updateAdmin($admin_uid, $request);
+
+    /**
      * getAdminByUid
      *
      * @param  mixed $uid

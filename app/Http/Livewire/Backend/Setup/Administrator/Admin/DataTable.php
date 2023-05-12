@@ -12,6 +12,7 @@ class DataTable extends Component
     // Listeners
     protected $listeners = [
         'adminCreated' => 'handleAdminCreated',
+        'adminUpdated' => 'handleAdminUpdated',
     ];
 
     /**
@@ -33,11 +34,22 @@ class DataTable extends Component
 
     /**
      * handleAdminCreated
-     * Called when the 'refreshEditDataTable' event is received
+     * Called when the 'refreshCreateDataTable' event is received
      * Dispatches the 'refreshDatatable' browser event to reload the DataTable
      * @return void
      */
     public function handleAdminCreated()
+    {
+        $this->dispatchBrowserEvent('refreshDatatable');
+    }
+
+    /**
+     * handleAdminUpdated
+     * Called when the 'refreshEditDataTable' event is received
+     * Dispatches the 'refreshDatatable' browser event to reload the DataTable
+     * @return void
+     */
+    public function handleAdminUpdated()
     {
         $this->dispatchBrowserEvent('refreshDatatable');
     }

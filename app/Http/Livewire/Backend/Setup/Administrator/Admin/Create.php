@@ -113,11 +113,17 @@ class Create extends Component
             }
             // Show Message Success
             $this->dispatchSuccessEvent('Admin was created successfully.');
+            // Close the modal
+            $this->closeModal();
+            // Reset the form fields
+            $this->resetFields();
             // Emit the 'adminCreated' event with a true status
-            $this->emitUp('adminCreated', true);
+            $this->emit('adminCreated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while creating admin: ' . $th->getMessage());
+            // Close the modal
+            $this->closeModal();
         }
 
         // Close Modal

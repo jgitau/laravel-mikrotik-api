@@ -15,10 +15,6 @@ trait LivewireMessageEvents
     {
         // Dispatch the browser event with the success message
         $this->dispatchBrowserEvent('message', ['success' => $message]);
-        // Close the modal
-        $this->closeModal();
-        // Reset the form fields
-        $this->resetFields();
 
     }
 
@@ -31,7 +27,5 @@ trait LivewireMessageEvents
     {
         // Dispatch the browser event with the error message
         $this->dispatchBrowserEvent('message', ['error' => $message]);
-        // Close the modal
-        $this->closeModal();
     }
 }

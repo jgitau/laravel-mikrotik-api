@@ -15,6 +15,7 @@
                         <div class="row">
                             <div class="col">
                                 <label for="groupIdUpdate" class="form-label">Choose Group</label>
+                                <input type="hidden" id="adminUid" class="form-control" wire:model="admin_uid">
                                 <select name="group_id" id="groupIdUpdate"
                                     class="form-select @error('group_id') is-invalid @enderror" wire:model="group_id">
                                     <option value="" selected>-- Choice Group -- </option>
@@ -40,7 +41,11 @@
                                 <input type="password" id="passwordUpdate"
                                     class="form-control @error('password') is-invalid @enderror"
                                     placeholder="Enter a Password.." wire:model="password">
+                                @if($password)
                                 @error('password') <small class="error text-danger">{{ $message }}</small> @enderror
+                                @else
+                                <small class="text-danger">Leave it blank if you don't want it to change.</small>
+                                @endif
                             </div>
                             <div class="col">
                                 <label for="statusUpdate" class="form-label">Status</label>

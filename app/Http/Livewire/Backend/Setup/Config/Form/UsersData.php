@@ -157,11 +157,17 @@ class UsersData extends Component
 
             // Show Message Success
             $this->dispatchSuccessEvent('User Data settings updated successfully.');
+            // Close the modal
+            $this->closeModal();
+            // Reset the form fields
+            $this->resetFields();
             // Emit the 'userDataUpdated' event with a true status
             $this->emitUp('userDataUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating user Data settings: ' . $th->getMessage());
+            // Close the modal
+            $this->closeModal();
         }
 
         // Close Modal

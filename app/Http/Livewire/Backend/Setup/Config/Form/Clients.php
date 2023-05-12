@@ -73,11 +73,17 @@ class Clients extends Component
 
             // Show Message Success
             $this->dispatchSuccessEvent('Client settings updated successfully.');
+            // Close the modal
+            $this->closeModal();
+            // Reset the form fields
+            $this->resetFields();
             // Emit the 'clientUpdated' event with a true status
             $this->emitUp('clientUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating client settings: ' . $th->getMessage());
+            // Close the modal
+            $this->closeModal();
         }
 
         // Close Modal

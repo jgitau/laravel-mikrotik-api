@@ -33,6 +33,21 @@ interface AdminRepository extends Repository
      */
     public function storeNewAdmin($request);
 
+    /**
+     * updateAdmin
+     * @param  mixed $admin_uid
+     * @param  mixed $request
+     * @return void
+     */
+    public function updateAdmin($admin_uid, $request);
+
+    /**
+     * deleteAdmin
+     * @param  mixed $admin_uid
+     * @return void
+     */
+    public function deleteAdmin($admin_uid);
+
 
     /**
      * getAdminByUid

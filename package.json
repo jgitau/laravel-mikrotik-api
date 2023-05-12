@@ -16,7 +16,7 @@
     "@fullcalendar/core": "6.1.5",
     "@fullcalendar/daygrid": "6.0.3",
     "@fullcalendar/interaction": "6.1.5",
-    "@fullcalendar/list": "6.0.3",
+    "@fullcalendar/list": "6.1.5",
     "@fullcalendar/timegrid": "6.0.3",
     "@fullcalendar/timeline": "6.0.3",
     "@popperjs/core": "2.11.6",

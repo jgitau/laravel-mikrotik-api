@@ -165,7 +165,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
                 // Create an edit button with the record's 'admin_uid' as its ID and a 'fas fa-edit' icon
                 $button = '<button type="button" name="edit" class="edit btn btn-primary btn-sm" onclick="showAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-edit"></i></button>';
                 // Add a delete button with the record's 'admin_uid' as its ID and a 'fas fa-trash' icon
-                $button .= '&nbsp;&nbsp;<button type="button" name="edit" id="' . $data->admin_uid . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i></button>';
+                $button .= '&nbsp;&nbsp;<button type="button" name="edit" class="delete btn btn-danger btn-sm" onclick="confirmDeleteAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-trash"></i></button>';
                 // Return the concatenated button HTML string
                 return $button;
             })
@@ -247,6 +247,30 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
         // Return null if admin_uid is not in the request
         return null;
     }
+
+    /**
+     * This PHP function deletes an admin user by their unique identifier.
+     *
+     * @param admin_uid The admin_uid parameter is the unique identifier of the admin that needs to be
+     * deleted from the database.
+     *
+     * @return If the admin with the given uid is found and deleted successfully, the function returns
+     * `true`. If the admin is not found, the function returns `null`.
+     */
+    public function deleteAdmin($admin_uid)
+    {
+        // Find the admin by uid
+        $admin = $this->model->where('admin_uid', $admin_uid)->first();
+        if ($admin) {
+            // Delete the admin
+            $admin->delete();
+            // Return a success message
+            return true;
+        }
+        // Return a failure message
+        return null;
+    }
+
 
 
     /**

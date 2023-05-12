@@ -41,6 +41,13 @@ interface AdminService extends BaseService
     public function updateAdmin($admin_uid, $request);
 
     /**
+     * deleteAdmin
+     * @param  mixed $admin_uid
+     * @return void
+     */
+    public function deleteAdmin($admin_uid);
+
+    /**
      * getAdminByUid
      *
      * @param  mixed $uid

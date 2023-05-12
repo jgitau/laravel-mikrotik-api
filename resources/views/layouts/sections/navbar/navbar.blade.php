@@ -170,9 +170,9 @@ $navbarDetached = ($navbarDetached ?? '');
                 showCancelButton: true,
                 confirmButtonColor: '#7367f0',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Logout!',
-                cancelButtonText: 'No!'
+                confirmButtonText: 'Yes, Logout!',
             }).then((result) => {
+                // If Result is True then submit the form will be logout
                 if (result.isConfirmed) {
                     document.querySelector("#logout-form").submit();
                 }

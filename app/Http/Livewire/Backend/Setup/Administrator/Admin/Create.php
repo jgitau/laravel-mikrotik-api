@@ -114,7 +114,7 @@ class Create extends Component
             // Show Message Success
             $this->dispatchSuccessEvent('Admin was created successfully.');
             // Emit the 'adminCreated' event with a true status
-            $this->emitUp('adminCreated', true);
+            $this->emit('adminCreated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while creating admin: ' . $th->getMessage());

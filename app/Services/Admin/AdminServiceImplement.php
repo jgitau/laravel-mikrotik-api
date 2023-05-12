@@ -90,6 +90,20 @@ class AdminServiceImplement extends Service implements AdminService
     }
 
     /**
+     * deleteAdmin
+     * @param  mixed $admin_uid
+     * @return void
+     */
+    public function deleteAdmin($admin_uid)
+    {
+        try {
+            return $this->mainRepository->deleteAdmin($admin_uid);
+        } catch (\Throwable $th) {
+            Log::debug($th->getMessage());
+        }
+    }
+
+    /**
      * getAdminByUid
      *
      * @param  mixed $uid

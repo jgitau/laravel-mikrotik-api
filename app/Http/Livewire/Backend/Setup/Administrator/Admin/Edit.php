@@ -132,7 +132,7 @@ class Edit extends Component
             $adminService->updateAdmin($this->admin_uid,$dataAdmin);
 
             // Show Message Success
-            $this->dispatchSuccessEvent('Admin updated successfully.');
+            $this->dispatchSuccessEvent('Admin successfully updated.');
             // Emit the 'adminUpdated' event with a true status
             $this->emit('adminUpdated', true);
         } catch (\Throwable $th) {

@@ -69,7 +69,7 @@
                     {data: 'fullname', name: 'fullname'},
                     {data: 'group.name', name: 'group.name'},
                     {data: 'email', name: 'email'},
-                    {data: 'status', name: 'status'},
+                    {data: 'status', name: 'status' },
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });

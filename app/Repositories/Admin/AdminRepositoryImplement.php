@@ -155,7 +155,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
             ->addIndexColumn()
             // Add a new 'status' column to the DataTable, displaying 'Active' if status is 1, and 'Non Active' otherwise
             ->addColumn('status', function ($data) {
-                return $data->status == 1 ? 'Active' : 'Non Active';
+                return $data->status == 1 ? '<span class="badge bg-label-success">Active</span>' : '<span class="badge bg-label-danger">Non Active</span>';
             })
             // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
             ->addColumn('action', function ($data) {
@@ -166,6 +166,8 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
                 // Return the concatenated button HTML string
                 return $button;
             })
+            // Make the 'status' and 'action' columns render HTML tags instead of plain text
+            ->rawColumns(['status', 'action'])
             // Create and return the DataTables response as a JSON object
             ->make(true);
 

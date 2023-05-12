@@ -137,21 +137,22 @@ class PageSeeder extends Seeder
                 'show_menu' => 1,
                 'show_to' => NULL
             ],
-            [
-                'id' => 14,
-                'page' => 'add_new_admin',
-                'title' => 'Add New Admin',
-                'url' => 'administrators/pg/add_new_admin',
-                'module_id' => 10,
-                'allowed_groups' => '1',
-                'show_menu' => 1,
-                'show_to' => NULL
-            ],
+            // *** TODO: ***
+            // [
+            //     'id' => 14,
+            //     'page' => 'add_new_admin',
+            //     'title' => 'Add New Admin',
+            //     'url' => 'administrators/pg/add_new_admin',
+            //     'module_id' => 10,
+            //     'allowed_groups' => '1',
+            //     'show_menu' => 1,
+            //     'show_to' => NULL
+            // ],
             [
                 'id' => 15,
                 'page' => 'add_new_group',
                 'title' => 'Add New Group',
-                'url' => 'administrators/pg/add_new_group',
+                'url' => 'setup/admin/add-new-group',
                 'module_id' => 10,
                 'allowed_groups' => '1',
                 'show_menu' => 1,
@@ -646,8 +647,8 @@ class PageSeeder extends Seeder
                 'title' => 'Config Hotel Rooms',
                 'url' => '/setup/config/list-configs/hotel_rooms',
                 'module_id' => 19,
-                'allowed_groups' => '0',
-                'show_menu' => 0,
+                'allowed_groups' => '1',
+                'show_menu' => 1,
                 'show_to' => 19
             ],
             [

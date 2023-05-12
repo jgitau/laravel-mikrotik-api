@@ -12,6 +12,11 @@ class GroupController extends Controller
      */
     public function index()
     {
-        return view('backend.setup.administrators.list-groups');
+        return view('backend.setup.administrators.group.list-groups');
+    }
+
+    public function create()
+    {
+        return view('backend.setup.administrators.group.add-new-group');
     }
 }

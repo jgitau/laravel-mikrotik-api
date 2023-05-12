@@ -184,9 +184,6 @@ class MenuHelper
                 || (isset($menuItem['url']) && request()->path() === trim($menuItem['url'], '/'))
             ) {
                 $activeClass .= 'active';
-            } elseif (isset($menuItem['url']) && strpos(request()->path(), 'list-configs') !== false && strpos($menuItem['url'], 'list-configs') !== false) {
-                // If the current path contains 'list-configs' and the menu item URL also contains 'list-configs' (if the 'url' key exists)
-                $activeClass .= 'active';
             }
 
             // Build the menu item's HTML structure

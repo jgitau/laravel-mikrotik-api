@@ -58,7 +58,7 @@ class ServicesSeeder extends Seeder
             'purchase_duration' => '0',
             'unit_time_purchase' => 'hours',
             'description' => 'Default service 1mbps',
-            'cron' => '0',
+            'cron' => '1',
             'cron_type' => '0',
             'volume_limit' => '0',
             'volume_limit_unit' => 'MB',

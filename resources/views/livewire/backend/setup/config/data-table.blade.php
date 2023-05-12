@@ -1,4 +1,4 @@
-<div class="table" style="padding: 0 30px 30px 30px;">
+<div class="table">
     <table class="table table-hover table-responsive display" id="myTable">
         <thead>
             <tr>
@@ -117,7 +117,7 @@
         Livewire.on('refreshDatatable', () => {
             setTimeout(() => {
                 dataTable.ajax.reload(null, false);
-            }, 500);
+            }, 200);
         });
     </script>
     @endpush

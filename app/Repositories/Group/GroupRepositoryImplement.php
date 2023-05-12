@@ -20,8 +20,13 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository{
         $this->model = $model;
     }
 
+
     /**
-     * getDatatables
+     * This function retrieves records from a database using a model, initializes the DataTables
+     * library, adds an index column and an action column with edit and delete buttons, and returns the
+     * DataTables response as a JSON object.
+     *
+     * @return a JSON response for DataTables.
      */
     public function getDatatables()
     {

@@ -20,4 +20,9 @@ interface HotelRoomService extends BaseService{
      * @return void
      */
     public function updateHotelRoomSettings($settings);
+
+    /**
+     * getDatatables
+     */
+    public function getDatatables();
 }

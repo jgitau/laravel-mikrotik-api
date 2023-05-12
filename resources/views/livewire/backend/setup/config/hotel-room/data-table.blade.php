@@ -1,9 +1,10 @@
-<div wire:ignore class="table" >
+<div wire:ignore class="table">
     <table class="table table-hover table-responsive display" id="myTable">
         <thead>
             <tr>
                 <th>No</th>
-                <th>Title</th>
+                <th>Service Name</th>
+                <th>Cron Type</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -20,10 +21,11 @@
                 "serverSide": true,
                 "responsive": true,
                 "autoWidth": false,
-                ajax: "{{ route('group.getDataTable') }}",
+                ajax: "{{ route('config.hotelRoom.getDataTable') }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false},
-                    {data: 'name', name: 'name'},
+                    {data: 'service_name', name: 'service_name'},
+                    {data: 'cron_type', name: 'cron_type'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
@@ -33,9 +35,9 @@
         initializeDataTable();
         });
 
-        window.addEventListener('groupStored', event =>{
-            dataTable.ajax.reload();
-        });
+        // window.addEventListener('groupStored', event =>{
+        //     dataTable.ajax.reload();
+        // });
     </script>
     @endpush
 </div>

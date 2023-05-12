@@ -31,8 +31,6 @@ class AdminServiceImplement extends Service implements AdminService
             return $this->mainRepository->validateAdmin($username, $password);
         } catch (\Throwable $th) {
             Log::debug($th->getMessage());
-            return [];
-            //throw $th;
         }
     }
 
@@ -46,8 +44,6 @@ class AdminServiceImplement extends Service implements AdminService
             return $this->mainRepository->logout();
         } catch (\Throwable $th) {
             Log::debug($th->getMessage());
-            return [];
-            //throw $th;
         }
     }
 
@@ -60,8 +56,37 @@ class AdminServiceImplement extends Service implements AdminService
             return $this->mainRepository->getDatatables();
         } catch (\Throwable $th) {
             Log::debug($th->getMessage());
-            return [];
-            //throw $th;
+        }
+    }
+
+
+    /**
+     * storeNewAdmin
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function storeNewAdmin($request)
+    {
+        try {
+            return $this->mainRepository->storeNewAdmin($request);
+        } catch (\Throwable $th) {
+            Log::debug($th->getMessage());
+        }
+    }
+
+    /**
+     * getAdminByUid
+     *
+     * @param  mixed $uid
+     * @return void
+     */
+    public function getAdminByUid($uid)
+    {
+        try {
+            return $this->mainRepository->getAdminByUid($uid);
+        } catch (\Throwable $th) {
+            Log::debug($th->getMessage());
         }
     }
 }

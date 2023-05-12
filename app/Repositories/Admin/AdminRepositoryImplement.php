@@ -160,7 +160,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
             // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
             ->addColumn('action', function ($data) {
                 // Create an edit button with the record's 'admin_uid' as its ID and a 'fas fa-edit' icon
-                $button = '<button type="button" name="edit" id="' . $data->admin_uid . '" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i></button>';
+                $button = '<button type="button" name="edit" class="edit btn btn-primary btn-sm" onclick="showAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-edit"></i></button>';
                 // Add a delete button with the record's 'admin_uid' as its ID and a 'fas fa-trash' icon
                 $button .= '&nbsp;&nbsp;<button type="button" name="edit" id="' . $data->admin_uid . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i></button>';
                 // Return the concatenated button HTML string
@@ -172,4 +172,49 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
         // Return the DataTables JSON response
         return $dataTables;
     }
+
+
+    /**
+     * This function stores a new admin in the database with the provided information.
+     *
+     * @param request  is a parameter that is passed to the function storeNewAdmin(). It is
+     * likely an associative array that contains the data needed to create a new admin user. The keys
+     * in the array are likely the names of the fields in a form that was submitted, and the values are
+     * the data entered by the
+     *
+     * @return instance of the newly created admin if the creation is successful, and null if there
+     * is an exception thrown during the creation process.
+     */
+    public function storeNewAdmin($request)
+    {
+        try {
+            // Create a new admin with the provided information
+            $admin = $this->model->create([
+                'group_id'    => $request['groupId'],
+                'username'    => $request['username'],
+                'password'    => Hash::make($request['password']),
+                'status'      => $request['status'],
+                'fullname'    => $request['fullName'],
+                'email'       => $request['emailAddress'],
+            ]);
+            // Return the newly created admin
+            return $admin;
+        } catch (\Exception $e) {
+            // Return null if there is an exception thrown during the creation process
+            return null;
+        }
+    }
+
+    /**
+    * This PHP function retrieves an admin user by their unique identifier.
+    * @return The function `getAdminByUid` returns the first row of the `model` table where the
+    * `admin_uid` column matches the `` parameter. It returns an object representing the row, or
+    * `null` if no matching row is found.
+    */
+    public function getAdminByUid($uid)
+    {
+        $admin = $this->model->with('group')->where('admin_uid', $uid)->first();
+        return $admin;
+    }
+
 }

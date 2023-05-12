@@ -12,6 +12,6 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return view('backend.setup.administrators.list-admins');
+        return view('backend.setup.administrators.admin.list-admins');
     }
 }

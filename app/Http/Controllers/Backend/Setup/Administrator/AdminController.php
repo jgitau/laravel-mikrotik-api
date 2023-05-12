@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 
 class AdminController extends Controller
 {
-    /**
+    /*
      * index
      */
     public function index()

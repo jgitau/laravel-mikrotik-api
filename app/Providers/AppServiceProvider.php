@@ -16,6 +16,7 @@ use App\Repositories\Config\UserData\UserDataRepository;
 use App\Repositories\Config\UserData\UserDataRepositoryImplement;
 use App\Repositories\Config\SocialPlugin\SocialPluginRepository;
 use App\Repositories\Config\SocialPlugin\SocialPluginRepositoryImplement;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -56,6 +57,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         Schema::defaultStringLength(200);
     }
 }

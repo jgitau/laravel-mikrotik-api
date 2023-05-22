@@ -47,7 +47,9 @@
     @include('layouts/sections/scripts')
     @stack('scripts')
 
+    {{-- Check if the authentication is already exist! --}}
     @if (session()->has('auth'))
+    {{-- Display an error message using Swal.fire --}}
     <script>
         Swal.fire({
         icon: 'error',
@@ -56,6 +58,8 @@
         });
     </script>
     @endif
+
+
 </body>
 
 </html>

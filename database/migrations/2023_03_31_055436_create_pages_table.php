@@ -23,7 +23,7 @@ return new class extends Migration
             $table->tinyInteger('show_menu')->default(0);
             $table->integer('show_to')->nullable();
             $table->foreign('module_id')
-                ->references('module_id')
+                ->references('id')
                 ->on('modules')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');

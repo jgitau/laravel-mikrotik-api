@@ -1,7 +1,7 @@
 <!-- BEGIN: Vendor JS-->
 
 <!-- Sweet Alert -->
-<script src="{{ asset('assets/js/sweetalert2.all.min.js') }}"></script>
+<script src="{{ asset(mix('assets/js/sweetalert2.all.min.js')) }}"></script>
 
 <script src="{{ asset(mix('assets/vendor/libs/jquery/jquery.js')) }}"></script>
 <script src="{{ asset(mix('assets/vendor/libs/popper/popper.js')) }}"></script>

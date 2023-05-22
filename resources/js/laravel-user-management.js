@@ -3,8 +3,6 @@
  */
 
 'use strict';
-var Turbolinks = require('turbolinks');
-Turbolinks.start();
 
 // Datatable (jquery)
 $(function () {

@@ -82,7 +82,6 @@
     "swiper": "8.4.2",
     "timepicker": "1.13.18",
     "toastr": "2.1.4",
-    "turbolinks": "^5.2.0",
     "typeahead.js": "0.11.1"
   },
   "devDependencies": {

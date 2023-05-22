@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
 use App\Services\Admin\AdminService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class LoginController extends Controller
 {
@@ -25,7 +27,15 @@ class LoginController extends Controller
      */
     public function index()
     {
+        // Check if the user is already authenticated
+        if (Cookie::get('session_key')) {
+            // Redirect to the dashboard page
+            return redirect()->route('backend.dashboard')->with('auth', 'You are already logged in!');
+        }
+
+        // Set page layout
         $pageConfigs = ['myLayout' => 'blank'];
+        // Return view
         return view('home.login.index', ['pageConfigs' => $pageConfigs]);
     }
 

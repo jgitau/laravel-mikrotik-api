@@ -46,6 +46,16 @@
     @livewireScripts
     @include('layouts/sections/scripts')
     @stack('scripts')
+
+    @if (session()->has('auth'))
+    <script>
+        Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: "{{ session('auth') }}",
+        });
+    </script>
+    @endif
 </body>
 
 </html>

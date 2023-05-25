@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\Backend\ClientController;
 use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Backend\Report\UserController;
 use App\Http\Controllers\Backend\ServiceController;
 use App\Http\Controllers\Backend\Setup\Administrator\AdminController;
 use App\Http\Controllers\Backend\Setup\Config\ConfigController;
 use App\Http\Controllers\Backend\Setup\Administrator\GroupController;
+use App\Http\Controllers\Backend\Setup\SetUrlRedirectController;
 use App\Http\Controllers\Home\LoginController;
 use App\Http\Livewire\Backend\Setup\Administrator\Admin\DataTable as DataTableAdmin;
 use App\Http\Livewire\Backend\Setup\Administrator\Group\DataTable as DataTableGroup;
@@ -21,11 +23,17 @@ Route::middleware(['check.session.cookie'])->name('backend.')->group(function ()
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // Clients Routes
     Route::get('clients/list-clients', [ClientController::class, 'index'])->name('clients.list-clients');
+
     // Services Routes
     Route::get('services/list-services', [ServiceController::class, 'index'])->name('services.list-services');
 
+    // Reports Routes
+    Route::get('reports/list-online-users', [UserController::class, 'index'])->name('reports.list-online-users');
+
     // Administrator Group
     Route::prefix('setup/admin/')->name('setup.admin.')->group(function () {
+        // Set URL Redirect Routes
+        Route::get('set-url-redirect', [SetUrlRedirectController::class, 'index'])->name('set-url-redirect');
         // List Admin Routes
         Route::get('list-admins', [AdminController::class, 'index'])->name('list-admins');
         // List Group Routes

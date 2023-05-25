@@ -15,7 +15,6 @@ trait LivewireMessageEvents
     {
         // Dispatch the browser event with the success message
         $this->dispatchBrowserEvent('message', ['success' => $message]);
-
     }
 
     /**

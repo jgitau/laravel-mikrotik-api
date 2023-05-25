@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Backend\ClientController;
 use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Backend\ServiceController;
 use App\Http\Controllers\Backend\Setup\Administrator\AdminController;
 use App\Http\Controllers\Backend\Setup\Config\ConfigController;
 use App\Http\Controllers\Backend\Setup\Administrator\GroupController;
@@ -20,6 +21,8 @@ Route::middleware(['check.session.cookie'])->name('backend.')->group(function ()
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // Clients Routes
     Route::get('clients/list-clients', [ClientController::class, 'index'])->name('clients.list-clients');
+    // Services Routes
+    Route::get('services/list-services', [ServiceController::class, 'index'])->name('services.list-services');
 
     // Administrator Group
     Route::prefix('setup/admin/')->name('setup.admin.')->group(function () {

@@ -272,7 +272,7 @@ class PageSeeder extends Seeder
                 'id' => 40,
                 'page' => 'set_url_redirect',
                 'title' => 'Set URL Redirect',
-                'url' => 'setup/admin/set-url-redirect',
+                'url' => 'setup/set-url-redirect',
                 'module_id' => 9,
                 'allowed_groups' => '1,2',
                 'show_menu' => 1,

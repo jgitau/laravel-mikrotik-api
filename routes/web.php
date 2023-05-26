@@ -30,10 +30,10 @@ Route::middleware(['check.session.cookie'])->name('backend.')->group(function ()
     // Reports Routes
     Route::get('reports/list-online-users', [UserController::class, 'index'])->name('reports.list-online-users');
 
+    // Set URL Redirect Routes
+    Route::get('setup/set-url-redirect', [SetUrlRedirectController::class, 'index'])->name('setup/set-url-redirect');
     // Administrator Group
     Route::prefix('setup/admin/')->name('setup.admin.')->group(function () {
-        // Set URL Redirect Routes
-        Route::get('set-url-redirect', [SetUrlRedirectController::class, 'index'])->name('set-url-redirect');
         // List Admin Routes
         Route::get('list-admins', [AdminController::class, 'index'])->name('list-admins');
         // List Group Routes

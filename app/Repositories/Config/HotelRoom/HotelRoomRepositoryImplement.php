@@ -69,11 +69,12 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
             // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
             ->addColumn('action', function ($data) {
                 // Create an edit button with the record's 'id' as its ID and a 'fas fa-edit' icon
-                $button = '<button type="button" name="edit" id="' . $data->id . '" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</button>';
+                // TODO: BUTTON EDIT
+                // $button = '<button type="button" name="edit" id="' . $data->id . '" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</button>';
 
                 // Add a delete button with the record's 'id' as its ID and a 'fas fa-trash' icon
                 // TODO: Button delete
-                $button .= '&nbsp;&nbsp;<button type="button" name="edit" id="' . $data->id . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
+                $button = '&nbsp;&nbsp;<button type="button" name="edit" id="' . $data->id . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
 
                 // Return the concatenated button HTML string
                 return $button;

@@ -56,7 +56,7 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
     public function getDatatables()
     {
         // Retrieve records from the database using the model, including the related 'Services' records, and sort by the latest records
-        $data = Services::select('service_name', 'cron_type', 'cron')
+        $data = Services::select('id','service_name', 'cron_type', 'cron')
         ->where('cron_type', '!=', null)
         ->where('cron', '!=', '')
         ->where('cron', '!=', 0)
@@ -74,7 +74,7 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
 
                 // Add a delete button with the record's 'id' as its ID and a 'fas fa-trash' icon
                 // TODO: Button delete
-                $button = '&nbsp;&nbsp;<button type="button" name="edit" id="' . $data->id . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
+                $button = '&nbsp;&nbsp;<button type="button" name="edit" class="delete btn btn-danger btn-sm" onclick="confirmDeleteService(\'' . $data->id . '\')"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
 
                 // Return the concatenated button HTML string
                 return $button;

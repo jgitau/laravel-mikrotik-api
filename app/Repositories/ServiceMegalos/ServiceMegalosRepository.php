@@ -21,4 +21,12 @@ interface ServiceMegalosRepository extends Repository{
      * @return void
      */
     public function storeHotelRoomService($request);
+
+    /**
+     * deleteService
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function deleteService($id);
 }

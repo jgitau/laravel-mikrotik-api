@@ -21,4 +21,12 @@ interface ServiceMegalosService extends BaseService{
      * @return void
      */
     public function storeHotelRoomService($request);
+
+    /**
+     * deleteService
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function deleteService($id);
 }

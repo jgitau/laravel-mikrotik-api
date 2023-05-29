@@ -26,11 +26,7 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
      */
     public function getServices()
     {
-        return $this->model->select('id', 'service_name', 'cron_type', 'cron')
-            ->where('cron_type', '!=', null)
-            ->where('cron', '!=', '')
-            ->where('cron', '!=', 0)
-            ->get();
+        return $this->model->select('id', 'service_name', 'cron_type', 'cron')->get();
     }
 
     /**
@@ -56,6 +52,31 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
         // Check if service exists
         if (!$service) {
             throw new \RuntimeException("Service with id {$request['idService']} not found");
+        }
+
+        // Return the updated service
+        return $service;
+    }
+
+
+    /**
+     * deleteService
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function deleteService($id)
+    {
+        // Delete the service
+        $service = $this->model->where('id', $id)
+            ->update([
+                'cron' => 0,
+                'cron_type' => "",
+            ]);
+
+        // Check if service exists
+        if (!$service) {
+            throw new \RuntimeException("Service with id {$id} not found");
         }
 
         // Return the updated service

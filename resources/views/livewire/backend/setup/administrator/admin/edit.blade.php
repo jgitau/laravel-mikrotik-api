@@ -37,7 +37,7 @@
                         {{-- FORM INPUT PASSWORD, CONFIRM PASSWORD AND STATUS --}}
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="passwordUpdate" class="form-label">Password <span class="text-danger"><b>*</b></span></label>
+                                <label for="passwordUpdate" class="form-label">Password </label>
                                 <input type="password" id="passwordUpdate"
                                     class="form-control @error('password') is-invalid @enderror"
                                     placeholder="Enter a Password.." wire:model="password">

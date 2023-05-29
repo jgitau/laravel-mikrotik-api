@@ -4,6 +4,7 @@ namespace App\Services\ServiceMegalos;
 
 use LaravelEasyRepository\Service;
 use App\Repositories\ServiceMegalos\ServiceMegalosRepository;
+use Exception;
 use Illuminate\Support\Facades\Log;
 
 class ServiceMegalosServiceImplement extends Service implements ServiceMegalosService
@@ -24,9 +25,10 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
     {
         try {
             return $this->mainRepository->getServices();
-        } catch (\Throwable $th) {
-            return Log::debug($th->getMessage());
+        } catch (Exception $exception) {
+            throw new Exception("Error getting services: " . $exception->getMessage());
         }
+
     }
 
     /**
@@ -39,8 +41,23 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
     {
         try {
             return $this->mainRepository->storeHotelRoomService($request);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
+        } catch (Exception $exception) {
+            throw new Exception("Error storing hotel room service: " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * deleteService
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function deleteService($id)
+    {
+        try {
+            return $this->mainRepository->deleteService($id);
+        } catch (Exception $exception) {
+            throw new Exception("Error deleting service: " . $exception->getMessage());
         }
     }
 }

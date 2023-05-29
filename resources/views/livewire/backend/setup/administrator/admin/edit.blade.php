@@ -59,10 +59,13 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="closeModal">
+                        <x-button color="secondary" dismiss="true" click="closeModal">
                             Close
-                        </button>
-                        <button type="submit" class="btn btn-primary waves-effect waves-light">Save Changes</button>
+                        </x-button>
+
+                        <x-button type="submit" color="primary">
+                            Save Changes
+                        </x-button>
                     </div>
                 </form>
             </div>

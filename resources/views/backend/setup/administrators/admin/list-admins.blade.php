@@ -20,8 +20,6 @@ $configData = Helper::appClasses();
                 data-bs-target="#createNewAdmin">
                 <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add new Admin
             </button>
-
-
             {{-- /Create Button for Add New Admin --}}
         </div>
     </div>

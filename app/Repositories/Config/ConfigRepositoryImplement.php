@@ -78,4 +78,29 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
         // Return the DataTables JSON response
         return $dataTables;
     }
+
+    public function getUrlRedirect()
+    {
+        // Use Eloquent to retrieve data from the database
+        $data = $this->model->whereIn('setting', ['url_redirect'])->firstOrFail();
+
+        // Return the data
+        return $data;
+    }
+
+    /**
+     * updateUrlRedirect
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function updateUrlRedirect($request)
+    {
+        foreach ($request as $key => $value) {
+            $this->model->updateOrCreate(
+                ['setting' => $key],
+                ['value' => $value]
+            );
+        }
+    }
 }

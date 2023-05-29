@@ -21,11 +21,12 @@
                 @error('cronType') <small class="error text-danger">{{ $message }}</small> @enderror
             </div>
 
+            <div class="mt-3 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+
         </div>
 
-        <div class="mt-3 d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
 
     </form>
 </div>

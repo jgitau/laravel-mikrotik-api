@@ -19,6 +19,8 @@ use App\Http\Livewire\Backend\Setup\Config\{
 };
 
 Route::middleware(['check.session.cookie'])->group(function () {
+
+    // Grouping routes related to SETUP section
     Route::prefix('setup')->name('backend.setup.')->group(function () {
         // Route for URL redirection setup page
         Route::get('set-url-redirect', [SetUrlRedirectController::class, 'index'])->name('set-url-redirect');

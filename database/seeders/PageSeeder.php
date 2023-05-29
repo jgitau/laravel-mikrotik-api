@@ -625,7 +625,7 @@ class PageSeeder extends Seeder
                 'id' => 75,
                 'page' => 'vouchers_print_setup',
                 'title' => 'Vouchers Print Setup',
-                'url' => 'clients/pg/vouchers_print_setup',
+                'url' => 'setup/voucher-print-setup',
                 'module_id' => 9,
                 'allowed_groups' => '1',
                 'show_menu' => 1,

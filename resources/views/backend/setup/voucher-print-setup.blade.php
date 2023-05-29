@@ -4,25 +4,28 @@ $configData = Helper::appClasses();
 
 @extends('layouts/layoutMaster')
 
-@section('title', 'Set URL Redirect')
+@section('title', 'Vouchers Print Setup')
 
 @section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light"></span>Set URL Redirect</h4>
+<h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light"></span>Vouchers Print Setup</h4>
 
 <div class="row">
+
+    {{-- TODO: 2 COLUMN : 1 = Form, 2 = View Voucher --}}
     <div class="col-8">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between">
-                    <h4 class="card-title">Form Set URL Redirect</h4>
+                    <h4 class="card-title">Form Vouchers Print Setup</h4>
                 </div>
             </div>
 
-            {{-- Start Form Set URL Redirect --}}
+            {{-- TODO: Voucher Print Setup FORM --}}
+            {{-- Start Form Vouchers Print Setup --}}
             <div class="card-body">
-                @livewire('backend.setup.config.set-url-redirect.form')
+                {{-- @livewire('backend.setup.config.set-url-redirect.form') --}}
             </div>
-            {{-- End Form Set URL Redirect --}}
+            {{-- End Form Vouchers Print Setup --}}
 
             @push('scripts')
 
@@ -54,6 +57,7 @@ $configData = Helper::appClasses();
                 });
             </script>
             @endpush
+
         </div>
     </div>
 </div>

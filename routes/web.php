@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\Setup\Administrator\AdminController;
 use App\Http\Controllers\Backend\Setup\Config\ConfigController;
 use App\Http\Controllers\Backend\Setup\Administrator\GroupController;
 use App\Http\Controllers\Backend\Setup\SetUrlRedirectController;
+use App\Http\Controllers\Backend\Setup\VoucherPrintSetupController;
 use App\Http\Controllers\Home\LoginController;
 use Illuminate\Support\Facades\Route;
 // Get DataTatable
@@ -33,6 +34,7 @@ Route::middleware(['check.session.cookie'])->name('backend.')->group(function ()
 
     // Set URL Redirect Routes
     Route::get('setup/set-url-redirect', [SetUrlRedirectController::class, 'index'])->name('setup/set-url-redirect');
+    Route::get('setup/voucher-print-setup', [VoucherPrintSetupController::class, 'index'])->name('setup/voucher-print-setup');
     // Administrator Group
     Route::prefix('setup/admin/')->name('setup.admin.')->group(function () {
         // List Admin Routes

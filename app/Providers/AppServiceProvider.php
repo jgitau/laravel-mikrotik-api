@@ -4,22 +4,24 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-
-// Repositories
-use App\Repositories\Config\Ads\AdsRepository;
-use App\Repositories\Config\Ads\AdsRepositoryImplement;
-use App\Repositories\Config\Client\ClientRepository;
-use App\Repositories\Config\Client\ClientRepositoryImplement;
-use App\Repositories\Config\HotelRoom\HotelRoomRepository;
-use App\Repositories\Config\HotelRoom\HotelRoomRepositoryImplement;
-use App\Repositories\Config\UserData\UserDataRepository;
-use App\Repositories\Config\UserData\UserDataRepositoryImplement;
-use App\Repositories\Config\SocialPlugin\SocialPluginRepository;
-use App\Repositories\Config\SocialPlugin\SocialPluginRepositoryImplement;
 use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * The array to hold repositories.
+     *
+     * @var array
+     */
+    protected $repositories = [
+        \App\Repositories\Config\Ads\AdsRepository::class                       => \App\Repositories\Config\Ads\AdsRepositoryImplement::class,
+        \App\Repositories\Config\Client\ClientRepository::class                 => \App\Repositories\Config\Client\ClientRepositoryImplement::class,
+        \App\Repositories\Config\HotelRoom\HotelRoomRepository::class           => \App\Repositories\Config\HotelRoom\HotelRoomRepositoryImplement::class,
+        \App\Repositories\Config\UserData\UserDataRepository::class             => \App\Repositories\Config\UserData\UserDataRepositoryImplement::class,
+        \App\Repositories\Config\SocialPlugin\SocialPluginRepository::class     => \App\Repositories\Config\SocialPlugin\SocialPluginRepositoryImplement::class,
+        \App\Repositories\Config\VoucherPrint\VoucherPrintRepository::class     => \App\Repositories\Config\VoucherPrint\VoucherPrintRepositoryImplement::class
+    ];
+
     /**
      * Register any application services.
      *
@@ -27,27 +29,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // Instantiable Repositories in Sub-Folders
-        $this->app->bind(
-            ClientRepository::class,
-            ClientRepositoryImplement::class
-        );
-        $this->app->bind(
-            HotelRoomRepository::class,
-            HotelRoomRepositoryImplement::class
-        );
-        $this->app->bind(
-            AdsRepository::class,
-            AdsRepositoryImplement::class
-        );
-        $this->app->bind(
-            UserDataRepository::class,
-            UserDataRepositoryImplement::class
-        );
-        $this->app->bind(
-            SocialPluginRepository::class,
-            SocialPluginRepositoryImplement::class
-        );
+        foreach ($this->repositories as $interface => $implement) {
+            $this->app->bind($interface, $implement);
+        }
     }
 
     /**

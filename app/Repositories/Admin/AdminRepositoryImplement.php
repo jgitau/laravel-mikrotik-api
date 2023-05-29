@@ -212,41 +212,44 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
 
     /**
-     * @param admin_uid The unique identifier of the admin that needs to be updated.
-     * @param request The  parameter is an instance of the Illuminate\Http\Request class, which
-     * contains the data submitted in the HTTP request. It can contain data from the query string, form
-     * data, and uploaded files. In this function, it is used to retrieve the data needed to update an
-     * admin record in the database.
+     * Updates an admin record in the database.
+     *
+     * @param string $admin_uid The unique identifier of the admin.
+     * @param Illuminate\Http\Request $request The request containing the updated admin data.
+     * @return App\Models\Admin|null The updated admin or null if the admin was not found.
+     * @throws InvalidArgumentException if admin_uid is not provided.
+     * @throws RuntimeException if admin was not found.
      */
     public function updateAdmin($admin_uid, $request)
     {
-        // Check if admin_uid is in the request
-        if ($admin_uid) {
-            // Search for admin by uid
-            $admin = $this->model->where('admin_uid', $admin_uid)->first();
-            // Check if admin exists
-            if ($admin) {
-                // Prepare data admin
-                $adminData = [
-                    'username' => $request['username'],
-                    'fullname' => $request['fullname'],
-                    'email' => $request['email'],
-                    'group_id' => $request['group_id'],
-                    'status' => $request['status'],
-                ];
-                // Check if password is not empty
-                if (!empty($request->password)) {
-                    $adminData['password'] = Hash::make($request->password);
-                }
-                // Update data admin
-                $admin->update($adminData);
-                // Return updated admin
-                return $admin;
-            }
+        if (empty($admin_uid)) {
+            throw new \InvalidArgumentException("admin_uid is empty");
         }
-        // Return null if admin_uid is not in the request
-        return null;
+
+        $admin = $this->model->where('admin_uid', $admin_uid)
+            ->first();
+
+        if (!$admin) {
+            throw new \RuntimeException("Admin with uid {$admin_uid} not found");
+        }
+
+        $adminData = [
+            'username' => $request['username'],
+            'fullname' => $request['fullname'],
+            'email' => $request['email'],
+            'group_id' => $request['group_id'],
+            'status' => $request['status'],
+        ];
+
+        if (!empty($request->password)) {
+            $adminData['password'] = Hash::make($request->password);
+        }
+
+        $admin->update($adminData);
+
+        return $admin;
     }
+
 
     /**
      * This PHP function deletes an admin user by their unique identifier.

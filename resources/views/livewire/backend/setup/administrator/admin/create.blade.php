@@ -13,7 +13,7 @@
                         {{-- FORM INPUT CHOOSE GROUP AND USERNAME --}}
                         <div class="row">
                             <div class="col">
-                                <label for="groupId" class="form-label">Choose Group</label>
+                                <label for="groupId" class="form-label">Choose Group <span class="text-danger"><b>*</b></span></label>
                                 <select name="groupId" id="groupId" class="form-select @error('groupId') is-invalid @enderror" wire:model="groupId">
                                     <option value="" selected>-- Choice Group -- </option>
                                     @foreach($groups as $group)
@@ -23,7 +23,7 @@
                                 @error('groupId') <small class="error text-danger">{{ $message }}</small> @enderror
                             </div>
                             <div class="col">
-                                <label for="username" class="form-label">Username</label>
+                                <label for="username" class="form-label">Username <span class="text-danger"><b>*</b></span></label>
                                 <input type="text" id="username" class="form-control @error('username') is-invalid @enderror" placeholder="Enter a Username.." wire:model="username">
                                 @error('username') <small class="error text-danger">{{ $message }}</small> @enderror
                             </div>
@@ -32,7 +32,7 @@
                         {{-- FORM INPUT PASSWORD, CONFIRM PASSWORD AND STATUS --}}
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="password" class="form-label">Password</label>
+                                <label for="password" class="form-label">Password <span class="text-danger"><b>*</b></span></label>
                                 <input type="password" id="password" class="form-control @error('password') is-invalid @enderror"
                                     placeholder="Enter a Password.." wire:model="password">
                                     @error('password') <small class="error text-danger">{{ $message }}</small> @enderror
@@ -45,7 +45,7 @@
                                 @error('password_confirmation') <small class="error text-danger">{{ $message }}</small> @enderror
                             </div>
                             <div class="col">
-                                <label for="status" class="form-label">Status</label>
+                                <label for="status" class="form-label">Status <span class="text-danger"><b>*</b></span></label>
                                 <select name="status" id="status" class="form-select @error('status') is-invalid @enderror" wire:model="status">
                                     <option value="">-- Choice Status -- </option>
                                     <option value="1">Active</option>
@@ -64,12 +64,12 @@
                         {{-- FORM INPUT FULL NAME AND EMAIL ADDRESS --}}
                         <div class="row">
                             <div class="col">
-                                <label for="fullName" class="form-label">Full Name</label>
+                                <label for="fullName" class="form-label">Full Name <span class="text-danger"><b>*</b></span></label>
                                 <input type="text" id="fullName" class="form-control @error('fullName') is-invalid @enderror" placeholder="Enter a Full Name.." wire:model="fullName">
                                 @error('fullName') <small class="error text-danger">{{ $message }}</small> @enderror
                             </div>
                             <div class="col">
-                                <label for="emailAddress" class="form-label">Email Address</label>
+                                <label for="emailAddress" class="form-label">Email Address <span class="text-danger"><b>*</b></span></label>
                                 <input type="email" id="emailAddress" class="form-control @error('emailAddress') is-invalid @enderror"
                                     placeholder="Enter a Email Address.." wire:model="emailAddress">
                                     @error('emailAddress') <small class="error text-danger">{{ $message }}</small> @enderror

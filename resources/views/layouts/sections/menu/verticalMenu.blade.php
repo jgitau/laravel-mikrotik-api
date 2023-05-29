@@ -26,6 +26,8 @@ $menuData = App\Helpers\MenuHelper::generateMenuHtml();
 
     <div class="menu-inner-shadow"></div>
 
+    {{-- Start Siderbar Menu --}}
         {!! $menuData !!}
+    {{-- End Siderbar Menu --}}
 
 </aside>

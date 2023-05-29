@@ -14,7 +14,7 @@
                         {{-- FORM INPUT CHOOSE GROUP AND USERNAME --}}
                         <div class="row">
                             <div class="col">
-                                <label for="groupIdUpdate" class="form-label">Choose Group</label>
+                                <label for="groupIdUpdate" class="form-label">Choose Group <span class="text-danger"><b>*</b></span></label>
                                 <input type="hidden" id="adminUid" class="form-control" wire:model="admin_uid">
                                 <select name="group_id" id="groupIdUpdate"
                                     class="form-select @error('group_id') is-invalid @enderror" wire:model="group_id">
@@ -26,7 +26,7 @@
                                 @error('group_id') <small class="error text-danger">{{ $message }}</small> @enderror
                             </div>
                             <div class="col">
-                                <label for="usernameUpdate" class="form-label">Username</label>
+                                <label for="usernameUpdate" class="form-label">Username <span class="text-danger"><b>*</b></span></label>
                                 <input type="text" id="usernameUpdate"
                                     class="form-control @error('username') is-invalid @enderror"
                                     placeholder="Enter a Username.." wire:model="username">
@@ -37,7 +37,7 @@
                         {{-- FORM INPUT PASSWORD, CONFIRM PASSWORD AND STATUS --}}
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="passwordUpdate" class="form-label">Password</label>
+                                <label for="passwordUpdate" class="form-label">Password </label>
                                 <input type="password" id="passwordUpdate"
                                     class="form-control @error('password') is-invalid @enderror"
                                     placeholder="Enter a Password.." wire:model="password">
@@ -48,7 +48,7 @@
                                 @endif
                             </div>
                             <div class="col">
-                                <label for="statusUpdate" class="form-label">Status</label>
+                                <label for="statusUpdate" class="form-label">Status <span class="text-danger"><b>*</b></span></label>
                                 <select name="status" id="statusUpdate"
                                     class="form-select @error('status') is-invalid @enderror" wire:model="status">
                                     <option value="">-- Choice Status -- </option>
@@ -68,14 +68,14 @@
                         {{-- FORM INPUT FULL NAME AND EMAIL ADDRESS --}}
                         <div class="row">
                             <div class="col">
-                                <label for="fullNameUpdate" class="form-label">Full Name</label>
+                                <label for="fullNameUpdate" class="form-label">Full Name <span class="text-danger"><b>*</b></span></label>
                                 <input type="text" id="fullNameUpdate"
                                     class="form-control @error('fullname') is-invalid @enderror"
                                     placeholder="Enter a Full Name.." wire:model="fullname">
                                 @error('fullname') <small class="error text-danger">{{ $message }}</small> @enderror
                             </div>
                             <div class="col">
-                                <label for="emailAddressUpdate" class="form-label">Email Address</label>
+                                <label for="emailAddressUpdate" class="form-label">Email Address <span class="text-danger"><b>*</b></span></label>
                                 <input type="email" id="emailAddressUpdate"
                                     class="form-control @error('email') is-invalid @enderror"
                                     placeholder="Enter a Email Address.." wire:model="email">

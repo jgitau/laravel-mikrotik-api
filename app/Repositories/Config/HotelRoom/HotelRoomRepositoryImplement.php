@@ -56,7 +56,11 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
     public function getDatatables()
     {
         // Retrieve records from the database using the model, including the related 'Services' records, and sort by the latest records
-        $data = Services::select('service_name', 'cron_type', 'cron')->where('cron', '!=', 0)->get();
+        $data = Services::select('id','service_name', 'cron_type', 'cron')
+        ->where('cron_type', '!=', null)
+        ->where('cron', '!=', '')
+        ->where('cron', '!=', 0)
+        ->get();
 
         // Initialize the DataTables library using the fetched data
         $dataTables = DataTables::of($data)
@@ -65,11 +69,12 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
             // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
             ->addColumn('action', function ($data) {
                 // Create an edit button with the record's 'id' as its ID and a 'fas fa-edit' icon
-                $button = '<button type="button" name="edit" id="' . $data->id . '" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</button>';
+                // TODO: BUTTON EDIT
+                // $button = '<button type="button" name="edit" id="' . $data->id . '" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</button>';
 
                 // Add a delete button with the record's 'id' as its ID and a 'fas fa-trash' icon
                 // TODO: Button delete
-                $button .= '&nbsp;&nbsp;<button type="button" name="edit" id="' . $data->id . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
+                $button = '&nbsp;&nbsp;<button type="button" name="edit" class="delete btn btn-danger btn-sm" onclick="confirmDeleteService(\'' . $data->id . '\')"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
 
                 // Return the concatenated button HTML string
                 return $button;
@@ -80,5 +85,7 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
         // Return the DataTables JSON response
         return $dataTables;
     }
+
+
 
 }

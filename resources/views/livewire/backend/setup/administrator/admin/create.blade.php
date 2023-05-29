@@ -52,7 +52,7 @@
                                     placeholder="Enter a Full Name.." required />
                             </div>
                             <div class="col">
-                                <x-input-field id="emailAddress" label="Email Address" model="emailAddress"
+                                <x-input-field type="email" id="emailAddress" label="Email Address" model="emailAddress"
                                     placeholder="Enter a Email Address.." required />
                             </div>
                         </div>

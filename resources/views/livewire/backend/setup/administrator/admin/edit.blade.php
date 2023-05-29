@@ -11,26 +11,15 @@
                 <form wire:submit.prevent="updateAdmin" method="POST">
                     <div class="modal-body">
 
-                        {{-- FORM INPUT CHOOSE GROUP AND USERNAME --}}
+                        {{-- FORM INPUT ADMIN UID, CHOOSE GROUP AND USERNAME --}}
                         <div class="row">
                             <div class="col">
-                                <label for="groupIdUpdate" class="form-label">Choose Group <span class="text-danger"><b>*</b></span></label>
-                                <input type="hidden" id="adminUid" class="form-control" wire:model="admin_uid">
-                                <select name="group_id" id="groupIdUpdate"
-                                    class="form-select @error('group_id') is-invalid @enderror" wire:model="group_id">
-                                    <option value="" selected>-- Choice Group -- </option>
-                                    @foreach($groups as $group)
-                                    <option value="{{ $group->id }}">{{ $group->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('group_id') <small class="error text-danger">{{ $message }}</small> @enderror
+                                <x-input-field type="hidden" id="adminUid" model="admin_uid" required />
+                                <x-select-field id="groupIdUpdate" label="Group" model="group_id" required
+                                    :options="$groups->pluck('name', 'id')->toArray()" />
                             </div>
                             <div class="col">
-                                <label for="usernameUpdate" class="form-label">Username <span class="text-danger"><b>*</b></span></label>
-                                <input type="text" id="usernameUpdate"
-                                    class="form-control @error('username') is-invalid @enderror"
-                                    placeholder="Enter a Username.." wire:model="username">
-                                @error('username') <small class="error text-danger">{{ $message }}</small> @enderror
+                                <x-input-field id="usernameUpdate" label="Username" model="username" placeholder="Enter a Username.." required />
                             </div>
                         </div>
 
@@ -48,14 +37,7 @@
                                 @endif
                             </div>
                             <div class="col">
-                                <label for="statusUpdate" class="form-label">Status <span class="text-danger"><b>*</b></span></label>
-                                <select name="status" id="statusUpdate"
-                                    class="form-select @error('status') is-invalid @enderror" wire:model="status">
-                                    <option value="">-- Choice Status -- </option>
-                                    <option value="1">Active</option>
-                                    <option value="0">Not Active</option>
-                                </select>
-                                @error('status') <small class="error text-danger">{{ $message }}</small> @enderror
+                                <x-select-field id="statusUpdate" label="Status" model="status" required :options="['1' => 'Active', '0' => 'Not Active']" />
                             </div>
                         </div>
 
@@ -68,18 +50,10 @@
                         {{-- FORM INPUT FULL NAME AND EMAIL ADDRESS --}}
                         <div class="row">
                             <div class="col">
-                                <label for="fullNameUpdate" class="form-label">Full Name <span class="text-danger"><b>*</b></span></label>
-                                <input type="text" id="fullNameUpdate"
-                                    class="form-control @error('fullname') is-invalid @enderror"
-                                    placeholder="Enter a Full Name.." wire:model="fullname">
-                                @error('fullname') <small class="error text-danger">{{ $message }}</small> @enderror
+                                <x-input-field id="fullNameUpdate" label="Full Name" model="fullname" placeholder="Enter a Full Name.." required />
                             </div>
                             <div class="col">
-                                <label for="emailAddressUpdate" class="form-label">Email Address <span class="text-danger"><b>*</b></span></label>
-                                <input type="email" id="emailAddressUpdate"
-                                    class="form-control @error('email') is-invalid @enderror"
-                                    placeholder="Enter a Email Address.." wire:model="email">
-                                @error('email') <small class="error text-danger">{{ $message }}</small> @enderror
+                                <x-input-field type="email" id="emailAddressUpdate" label="Email Address" model="email" placeholder="Enter a Email Address.." required />
                             </div>
                         </div>
 

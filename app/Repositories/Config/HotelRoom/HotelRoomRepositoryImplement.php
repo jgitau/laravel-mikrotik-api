@@ -56,7 +56,12 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
     public function getDatatables()
     {
         // Retrieve records from the database using the model, including the related 'Services' records, and sort by the latest records
-        $data = Services::select('service_name', 'cron_type', 'cron')->where('cron', '!=', 0)->get();
+        $data = Services::select('service_name', 'cron_type', 'cron')
+        ->where('cron_type', '!=', null)
+        ->where('cron', '!=', '')
+        ->where('cron', '!=', 0)
+        ->get();
+
 
         // Initialize the DataTables library using the fetched data
         $dataTables = DataTables::of($data)

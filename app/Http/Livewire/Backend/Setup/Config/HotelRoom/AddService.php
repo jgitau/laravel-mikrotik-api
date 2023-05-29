@@ -2,7 +2,10 @@
 
 namespace App\Http\Livewire\Backend\Setup\Config\HotelRoom;
 
+use App\Models\Services;
 use App\Rules\UniqueCronType;
+use App\Services\Config\HotelRoom\HotelRoomService;
+use App\Services\ServiceMegalos\ServiceMegalosService;
 use App\Traits\LivewireMessageEvents;
 use Livewire\Component;
 
@@ -12,41 +15,47 @@ class AddService extends Component
     use LivewireMessageEvents;
 
     // Properties Public Variables
-    public $serviceName, $cronType;
+    public $idService, $cronType;
 
+    // Listeners
+    protected $listeners = [
+        'serviceCreated' => '$refresh',
+    ];
 
     // Validation Rules
     protected function rules()
     {
         return [
-            'serviceName'   => 'required',
+            'idService'   => 'required',
             'cronType'      => ['required', new UniqueCronType],
         ];
     }
 
     // Custom Message
     protected $messages = [
-        'serviceName.required'  => 'The Service Name cannot be empty.',
+        'idService.required'  => 'The Service Name cannot be empty.',
         'cronType.required'     => 'The Cron Type cannot be empty.',
     ];
 
-
     /**
-     * @return The `render()` function is returning a view named `add-service.blade.php` located in the
-     * directory `livewire/backend/setup/config/hotel-room/`.
+     * @return The `render()` function is returning a view called `add-service` with an array of
+     * `` passed to it. The `` array is obtained by selecting the `service_name`,
+     * `cron_type`, and `cron` columns from the `services` table where `cron_type` is not null, `cron`
+     * is not an empty string, and `cron` is not equal to
      */
-    public function render()
+    public function render(ServiceMegalosService $serviceMegalosService)
     {
-        return view('livewire.backend.setup.config.hotel-room.add-service');
+        $services = $serviceMegalosService->getServices();
+        return view('livewire.backend.setup.config.hotel-room.add-service', ['services' => $services]);
     }
 
-    public function storeService()
+    public function storeService(ServiceMegalosService $serviceMegalosService)
     {
         // Validate the form fields
         $this->validate();
 
         // Declare the public variable names
-        $variables = ['serviceName', 'cronType'];
+        $variables = ['idService', 'cronType'];
 
         // Declare the services
         $services = [];
@@ -57,11 +66,8 @@ class AddService extends Component
         }
 
         try {
-            // Store the new admin
-            // TODO: Add New Service to Database
-            // if ($admin === null) {
-            //     $this->dispatchErrorEvent('Failed to create the service');
-            // }
+            // Update / Store New Service to Database
+            $serviceMegalosService->storeHotelRoomService($services);
 
             // Show Message Success
             $this->dispatchSuccessEvent('Service was created successfully.');
@@ -80,8 +86,7 @@ class AddService extends Component
      */
     public function resetFields()
     {
-        $this->serviceName = '';
+        $this->idService = '';
         $this->cronType = '';
     }
-
 }

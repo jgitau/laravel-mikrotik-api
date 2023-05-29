@@ -2,14 +2,16 @@
     <form wire:submit.prevent="storeService" method="POST">
         {{-- *** TODO: *** --}}
         <div class="row">
-
             <div class="col-12 mb-3">
-                <label for="serviceName" class="form-label">Service Name</label>
-                <select name="serviceName" id="serviceName" class="form-select @error('serviceName') is-invalid @enderror" wire:model="serviceName">
+                <label for="idService" class="form-label">Service Name</label>
+                <select name="idService" id="idService" class="form-select @error('idService') is-invalid @enderror"
+                    wire:model="idService">
                     <option value="">-- Choice Service Name --</option>
-                    <option value="DefaultService">DefaultService</option>
+                    @foreach($services as $service)
+                    <option value="{{ $service->id }}">{{ $service->service_name }}</option>
+                    @endforeach
                 </select>
-                @error('serviceName') <small class="error text-danger">{{ $message }}</small> @enderror
+                @error('idService') <small class="error text-danger">{{ $message }}</small> @enderror
             </div>
             <div class="col-12">
                 <label for="cronType" class="form-label">Cron Type</label>

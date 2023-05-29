@@ -62,7 +62,6 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
         ->where('cron', '!=', 0)
         ->get();
 
-
         // Initialize the DataTables library using the fetched data
         $dataTables = DataTables::of($data)
             // Add an index column to the DataTable for easier reference
@@ -85,5 +84,7 @@ class HotelRoomRepositoryImplement extends Eloquent implements HotelRoomReposito
         // Return the DataTables JSON response
         return $dataTables;
     }
+
+
 
 }

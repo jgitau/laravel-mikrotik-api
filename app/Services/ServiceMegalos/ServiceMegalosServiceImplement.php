@@ -4,8 +4,9 @@ namespace App\Services\ServiceMegalos;
 
 use LaravelEasyRepository\Service;
 use App\Repositories\ServiceMegalos\ServiceMegalosRepository;
+use Illuminate\Support\Facades\Log;
 
-class MegalosServiceImplement extends Service implements MegalosService
+class ServiceMegalosServiceImplement extends Service implements ServiceMegalosService
 {
 
     /**
@@ -19,5 +20,27 @@ class MegalosServiceImplement extends Service implements MegalosService
         $this->mainRepository = $mainRepository;
     }
 
-    // Define your custom methods :)
+    public function getServices()
+    {
+        try {
+            return $this->mainRepository->getServices();
+        } catch (\Throwable $th) {
+            return Log::debug($th->getMessage());
+        }
+    }
+
+    /**
+     * storeHotelRoomService
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function storeHotelRoomService($request)
+    {
+        try {
+            return $this->mainRepository->storeHotelRoomService($request);
+        } catch (\Throwable $th) {
+            Log::debug($th->getMessage());
+        }
+    }
 }

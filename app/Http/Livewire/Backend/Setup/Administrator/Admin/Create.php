@@ -19,7 +19,6 @@ class Create extends Component
     // Listeners
     protected $listeners = [
         'productCreated' => '$refresh',
-
     ];
 
     // Validation Rules

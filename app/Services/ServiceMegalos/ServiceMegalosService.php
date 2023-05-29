@@ -4,7 +4,21 @@ namespace App\Services\ServiceMegalos;
 
 use LaravelEasyRepository\BaseService;
 
-interface MegalosService extends BaseService{
+interface ServiceMegalosService extends BaseService{
 
-    // Write something awesome :)
+    /**
+     * getServices
+     *
+     * @return void
+     */
+    public function getServices();
+
+
+    /**
+     * storeHotelRoomService
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function storeHotelRoomService($request);
 }

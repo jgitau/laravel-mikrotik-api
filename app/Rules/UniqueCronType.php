@@ -26,8 +26,10 @@ class UniqueCronType implements Rule
      */
     public function passes($attribute, $value)
     {
-        return Services::where('cron_type', $value)->count() > 0;
+        // If the value is not null, check if the cron type is already registered
+        return Services::where('cron_type', $value)->count() == 0;
     }
+
 
     /**
      * Get the validation error message.
@@ -36,6 +38,6 @@ class UniqueCronType implements Rule
      */
     public function message()
     {
-        return 'This cron type has been registered.';
+        return 'This Type has been registered.';
     }
 }

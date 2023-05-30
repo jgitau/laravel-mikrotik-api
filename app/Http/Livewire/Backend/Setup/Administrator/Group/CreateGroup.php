@@ -67,8 +67,6 @@ class CreateGroup extends Component
         }
     }
 
-
-
     /**
      * render
      */
@@ -82,6 +80,7 @@ class CreateGroup extends Component
      *
      * @return void
      */
+    // *** TODO: Add store() function to create a new group ***
     public function store()
     {
 

@@ -65,7 +65,6 @@ class Edit extends Component
         return $messages;
     }
 
-
     /**
      *
      * mount
@@ -76,6 +75,19 @@ class Edit extends Component
     {
         // $this->resetFields();
         $this->groups   = Group::orderBy('created_at', 'ASC')->get();
+    }
+
+    /**
+     * updated
+     *
+     * @param  mixed $property
+     * @return void
+     */
+    public function updated($property)
+    {
+        // Every time a property changes
+        // (only `text` for now), validate it
+        $this->validateOnly($property);
     }
 
     public function render()

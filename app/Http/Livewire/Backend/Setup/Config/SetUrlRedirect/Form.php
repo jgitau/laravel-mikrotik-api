@@ -42,6 +42,19 @@ class Form extends Component
         $this->url = $configService->getUrlRedirect()->value;
     }
 
+    /**
+     * updated
+     *
+     * @param  mixed $property
+     * @return void
+     */
+    public function updated($property)
+    {
+        // Every time a property changes
+        // (only `text` for now), validate it
+        $this->validateOnly($property);
+    }
+
 
     /**
      * Render the livewire component

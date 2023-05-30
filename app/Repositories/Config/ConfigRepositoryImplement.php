@@ -50,8 +50,6 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
             'name' => 'edit_router'
         ];
 
-
-
         // Initialize DataTables using the rawData array
         $dataTables = DataTables::of($rawData)
             // Add an index column to the DataTable for easier reference

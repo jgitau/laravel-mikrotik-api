@@ -21,6 +21,10 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
         $this->mainRepository = $mainRepository;
     }
 
+    /**
+     * @return The `getServices()` function is returning the result of calling the `getServices()`
+     * method on the `` object.
+     */
     public function getServices()
     {
         try {

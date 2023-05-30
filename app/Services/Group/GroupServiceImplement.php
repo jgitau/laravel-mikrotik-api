@@ -4,6 +4,7 @@ namespace App\Services\Group;
 
 use LaravelEasyRepository\Service;
 use App\Repositories\Group\GroupRepository;
+use Exception;
 use Illuminate\Support\Facades\Log;
 
 class GroupServiceImplement extends Service implements GroupService
@@ -31,6 +32,19 @@ class GroupServiceImplement extends Service implements GroupService
             Log::debug($th->getMessage());
             return [];
             //throw $th;
+        }
+    }
+
+    /**
+     * @return The `getDataPermissions()` function is returning the result of calling the `getDataPermissions()`
+     * method on the `` object.
+     */
+    public function getDataPermissions()
+    {
+        try {
+            return $this->mainRepository->getDataPermissions();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting data permissions : " . $exception->getMessage());
         }
     }
 }

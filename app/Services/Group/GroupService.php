@@ -10,4 +10,9 @@ interface GroupService extends BaseService{
      * getDatatables
      */
     public function getDatatables();
+
+    /**
+     * getDataPermissions
+     */
+    public function getDataPermissions();
 }

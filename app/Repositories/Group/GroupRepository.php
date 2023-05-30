@@ -10,4 +10,9 @@ interface GroupRepository extends Repository{
      * getDatatables
      */
     public function getDatatables();
+
+    /**
+     * getDataPermissions
+     */
+    public function getDataPermissions();
 }

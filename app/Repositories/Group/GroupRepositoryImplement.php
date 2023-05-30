@@ -4,6 +4,8 @@ namespace App\Repositories\Group;
 
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Group;
+use App\Models\Module;
+use App\Models\Page;
 use Yajra\DataTables\Facades\DataTables;
 
 class GroupRepositoryImplement extends Eloquent implements GroupRepository{
@@ -55,4 +57,28 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository{
         // Return the DataTables JSON response
         return $dataTables;
     }
+
+    /**
+     * Retrieves active page permissions, ordered by module ID and page ID.
+     *
+     * @return Collection of pages with associated module titles and IDs.
+     */
+    public function getDataPermissions()
+    {
+        $data = Page::with('module')
+            ->whereHas('module', function ($query) {
+                $query->where('root', '!=', 1);
+                $query->where('active', 1);
+            })
+            ->select('id', 'title')
+            ->addSelect([
+                'mod_title' => Module::select('title')
+                    ->whereColumn('id', 'pages.module_id')
+            ])
+            ->orderBy('module_id', 'asc')
+            ->orderBy('id', 'asc')
+            ->get();
+        return $data;
+    }
+
 }

@@ -38,6 +38,19 @@ class AddService extends Component
     ];
 
     /**
+     * updated
+     *
+     * @param  mixed $property
+     * @return void
+     */
+    public function updated($property)
+    {
+        // Every time a property changes
+        // (only `text` for now), validate it
+        $this->validateOnly($property);
+    }
+
+    /**
      * @return The `render()` function is returning a view called `add-service` with an array of
      * `` passed to it. The `` array is obtained by selecting the `service_name`,
      * `cron_type`, and `cron` columns from the `services` table where `cron_type` is not null, `cron`

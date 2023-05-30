@@ -18,7 +18,7 @@ class SettingSeeder extends Seeder
         $settings = [
             ['id' => 1, 'module_id' => 3, 'setting' => 'clients_vouchers_printer', 'value' => 'double_column_voucher_printer', 'flag_module' => 'clients'],
             ['id' => 2, 'module_id' => 3, 'setting' => 'create_vouchers_type', 'value' => 'with_password', 'flag_module' => 'clients'],
-            ['id' => 3, 'module_id' => 4, 'setting' => 'url_redirect', 'value' => 'https://id-id.facebook.com/', 'flag_module' => NULL],
+            ['id' => 3, 'module_id' => 4, 'setting' => 'url_redirect', 'value' => 'https://github.com/Mazmiiskndr', 'flag_module' => NULL],
             ['id' => 4, 'module_id' => 13, 'setting' => 'hms_connect', 'value' => '1', 'flag_module' => 'hotel_rooms'],
             ['id' => 5, 'module_id' => 14, 'setting' => 'ads_max_width', 'value' => '160', 'flag_module' => 'ads'],
             ['id' => 6, 'module_id' => 14, 'setting' => 'ads_max_height', 'value' => '390', 'flag_module' => 'ads'],

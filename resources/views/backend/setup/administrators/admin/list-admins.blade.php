@@ -16,10 +16,11 @@ $configData = Helper::appClasses();
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <h4 class="card-title">Table Admins</h4>
-            <button type="button" class="btn btn-facebook waves-effect waves-light" data-bs-toggle="modal"
+
+            <x-button type="button" color="facebook" data-bs-toggle="modal"
                 data-bs-target="#createNewAdmin">
                 <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add new Admin
-            </button>
+            </x-button>
             {{-- /Create Button for Add New Admin --}}
         </div>
     </div>

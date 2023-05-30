@@ -3,25 +3,24 @@
         <h5 class="modal-title" id="modalCenterTitle">
             Config - Edit Hotel Rooms
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-            wire:click="closeModal"></button>
+        <x-button color="close" dismiss="true" click="closeModal" />
     </div>
     <form wire:submit.prevent="updateHotelRoom" method="POST">
         <div class="modal-body">
             <div class="row">
                 <div class="col">
-                    <label for="hmsConnect" class="form-label">HMS Connect</label>
-                    <input type="text" id="hmsConnect" class="form-control @error('hmsConnect') is-invalid @enderror"
-                        placeholder="HMS Connect" wire:model="hmsConnect" />
-                    @error('hmsConnect') <small class="error text-danger">{{ $message }}</small> @enderror
+                    <x-input-field id="hmsConnect" label="HMS Connect" model="hmsConnect"
+                        placeholder="Enter a HMS Connect.." required />
                 </div>
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="closeModal">
+            <x-button color="secondary" dismiss="true" click="closeModal">
                 Close
-            </button>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            </x-button>
+            <x-button type="submit" color="primary">
+                Save Changes
+            </x-button>
         </div>
     </form>
 </div>

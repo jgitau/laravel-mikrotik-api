@@ -39,7 +39,7 @@ $navbarDetached = ($navbarDetached ?? '');
 
                 <!-- Style Switcher -->
                 <div class="navbar-nav align-items-center">
-                    <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);">
+                    <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);" aria-label="Style Switcher">
                         <i class='ti ti-sm'></i>
                     </a>
                 </div>
@@ -50,7 +50,7 @@ $navbarDetached = ($navbarDetached ?? '');
                     <!-- User -->
                     <li class="nav-item navbar-dropdown dropdown-user dropdown">
                         <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
-                            data-bs-toggle="dropdown">
+                            data-bs-toggle="dropdown" aria-label="Dropdown Toggle">
                             <div class="avatar avatar-online">
                                 <img src="{{ asset('assets/img/avatars/default.png') }}"
                                     alt class="w-px-40 h-auto rounded-circle">

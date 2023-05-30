@@ -19,7 +19,7 @@
             </div>
             @foreach($permissions as $permission)
             <div class="col-2">
-                <label class="mt-1">{{ $permission->title }}</label>
+                <label class="mt-2">{{ $permission->title }}</label>
                 <div class="form-check mt-1">
                     <x-radio-input id="p{{ $permission->id }}a" label="Yes" name="p{{ $permission->id }}"
                         model="permission.{{ $permission->id }}" />

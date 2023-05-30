@@ -5,8 +5,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalCenterTitle">Add New Admin</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                        wire:click="closeModal"></button>
+                        <x-button color="close" dismiss="true" click="closeModal"/>
                 </div>
                 <form wire:submit.prevent="storeNewAdmin" method="POST">
                     <div class="modal-body">

@@ -3,62 +3,58 @@
         <h5 class="modal-title" id="modalCenterTitle">
             Config - Edit Router
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="closeModal"></button>
+        <x-button color="close" dismiss="true" click="closeModal" />
     </div>
     <form wire:submit.prevent="updateRouter" method="POST">
         <div class="modal-body">
             {{-- Form Input Server IP Address, Mikrotik IP Address and API Port --}}
             <div class="row g-2 mb-3">
                 <div class="col-4">
-                    <label for="serverIpAddress" class="form-label">Server IP Address <span class="text-danger"><b>*</b></span></label>
-                    <input type="text" id="serverIpAddress" class="form-control @error('server_ip_address') is-invalid @enderror" placeholder="Server IP Address" wire:model='server_ip_address'  />
-                    @error('server_ip_address') <small class="error text-danger">{{ $message }}</small> @enderror
+                    <x-input-field id="serverIpAddress" label="Server IP Address" model="server_ip_address"
+                        placeholder="Enter a Server IP Address.." required />
                 </div>
                 <div class="col-4">
-                    <label for="mikrotikIpAddress" class="form-label">Mikrotik IP Address <span class="text-danger"><b>*</b></span></label>
-                    <input type="text" id="mikrotikIpAddress" class="form-control @error('mikrotik_ip_address') is-invalid @enderror" placeholder="Mikrotik IP Address" wire:model='mikrotik_ip_address' />
-                    @error('mikrotik_ip_address') <small class="error text-danger">{{ $message }}</small> @enderror
+                    <x-input-field id="mikrotikIpAddress" label="Mikrotik IP Address" model="mikrotik_ip_address"
+                        placeholder="Enter a Mikrotik IP Address.." required />
                 </div>
                 <div class="col-4">
-                    <label for="apiPort" class="form-label">API Port <span class="text-danger"><b>*</b></span></label>
-                    <input type="text" id="apiPort" class="form-control @error('mikrotik_api_port') is-invalid @enderror" placeholder="API Port" wire:model='mikrotik_api_port' />
-                    @error('mikrotik_api_port') <small class="error text-danger">{{ $message }}</small> @enderror
+                    <x-input-field id="apiPort" label="API Port" model="mikrotik_api_port"
+                        placeholder="Enter a API Port.." required />
                 </div>
             </div>
 
             {{-- Form Input Temporary Username and Temporary Password --}}
             <div class="row g-2 mb-3">
                 <div class="col-6">
-                    <label for="temporaryUsername" class="form-label">Temporary Username <span class="text-danger"><b>*</b></span></label>
-                    <input type="text" id="temporaryUsername" class="form-control @error('temporary_username') is-invalid @enderror" placeholder="Temporary Username" wire:model='temporary_username'  />
-                    @error('temporary_username') <small class="error text-danger">{{ $message }}</small> @enderror
+                    <x-input-field id="temporaryUsername" label="Temporary Username" model="temporary_username"
+                        placeholder="Enter a Temporary Username.." required />
                 </div>
                 <div class="col-6">
-                    <label for="temporaryPassword" class="form-label">Temporary Password </label>
-                    <input type="text" id="temporaryPassword" class="form-control" placeholder="Temporary Password" wire:model='temporary_password' />
+                    <x-input-field id="temporaryPassword" label="Temporary Password" model="temporary_password"
+                        placeholder="Enter a Temporary Password.." />
                 </div>
             </div>
 
             {{-- Form Input Radius Ports and Radius Secret --}}
             <div class="row g-2 mb-3">
                 <div class="col-6">
-                    <label for="radiusPorts" class="form-label">Radius Port <span class="text-danger"><b>*</b></span></label>
-                    <input type="text" id="radiusPorts" class="form-control @error('ports') is-invalid @enderror" placeholder="Radius Port" wire:model='ports'/>
-                    @error('ports') <small class="error text-danger">{{ $message }}</small> @enderror
+                    <x-input-field id="radiusPorts" label="Radius Port" model="ports"
+                        placeholder="Enter a Radius Port.." required />
                 </div>
                 <div class="col-6">
-                    <label for="radiusSecret" class="form-label">Radius Secret <span class="text-danger"><b>*</b></span></label>
-                    <input type="text" id="radiusSecret" class="form-control @error('secret') is-invalid @enderror" placeholder="Radius Secret" wire:model='secret' />
-                    @error('secret') <small class="error text-danger">{{ $message }}</small> @enderror
+                    <x-input-field id="radiusSecret" label="Radius Secret" model="secret"
+                        placeholder="Enter a Radius Secret.." required />
                 </div>
             </div>
 
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="closeModal">
+            <x-button color="secondary" dismiss="true" click="closeModal">
                 Close
-            </button>
-            <button type="submit" class="btn btn-primary">Save Changes {{ session('error') }}</button>
+            </x-button>
+            <x-button type="submit" color="primary">
+                Save Changes
+            </x-button>
         </div>
     </form>
     {{-- @push('scripts')

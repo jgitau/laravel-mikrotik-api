@@ -4,13 +4,14 @@ namespace App\Http\Livewire\Backend\Setup\Administrator\Group;
 
 use App\Models\Group;
 use App\Services\Group\GroupService;
+use App\Traits\LivewireMessageEvents;
 use Livewire\Component;
 
 class CreateGroup extends Component
 {
-
+    use LivewireMessageEvents;
     // Define public variable
-    public $name,$groupName;
+    public $name, $groupName;
 
     // DataPermissions
     public $dataPermissions;
@@ -36,7 +37,7 @@ class CreateGroup extends Component
         'groupName.min'         => 'Group Name must be at least 4 characters!',
         'groupName.max'         => 'Group Name can be a maximum of 60 characters!',
         'groupName.unique'      => 'Group Name already exist!',
-        'permission.*.in'      => 'The selected permission is invalid.',
+        'permission.*.in'       => 'The selected permission is invalid.',
     ];
     /**
      * updated
@@ -59,6 +60,7 @@ class CreateGroup extends Component
      */
     public function mount(GroupService $groupService)
     {
+        // Get all permissions from the database
         $this->dataPermissions = $groupService->getDataPermissions();
 
         // Initialize all permissions to 0
@@ -76,36 +78,28 @@ class CreateGroup extends Component
     }
 
     /**
-     * store
+     * storeGroup
      *
      * @return void
      */
-    // *** TODO: Add store() function to create a new group ***
-    public function store()
+    // *** TODO: Add storeGroup() function to create a new group ***
+    public function storeGroup(GroupService $groupService)
     {
-
         // Validate Form Request
         $this->validate();
 
         try {
-            // Create Group
-            $group = Group::create([
-                'name' => $this->name,
-            ]);
-
-            // Set Flash Message
-            session()->flash('success', 'Group added successfully!');
-            $this->showToast();
-
-            // Reset Form Fields After Creating Group
+            // Call the storeNewGroup function in the repository
+            $groupService->storeNewGroup($this->groupName, $this->permission);
+            // Reset the form fields
             $this->resetFields();
-            $this->emit('createdGroup', $group);
-        } catch (\Exception $e) {
-            // Set Flash Message
-            session()->flash('error', 'Group failed to add!');
-
-            // Reset Form Fields After Creating Group
-            $this->resetFields();
+            // Emit the 'groupCreated' event with a true status
+            $this->emit('groupCreated', true);
+            return redirect()->route('backend.setup.admin.list-groups')->with('success', 'Group was created successfully.');
+            // // Redirect to the group.index page with a success message
+        } catch (\Throwable $th) {
+            // Show Message Error
+            $this->dispatchErrorEvent('An error occurred while creating group: ' . $th->getMessage());
         }
     }
 
@@ -121,6 +115,6 @@ class CreateGroup extends Component
      */
     public function resetFields()
     {
-        $this->name = '';
+        $this->groupName = '';
     }
 }

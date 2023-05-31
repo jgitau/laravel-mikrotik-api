@@ -37,6 +37,17 @@ $configData = Helper::appClasses();
 
 </div>
 @push('scripts')
+@if (session()->has('success'))
+<script>
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: '{{ session('success') }}',
+        showConfirmButton: false,
+        timer: 1500
+    });
+</script>
+@endif
 @endpush
 
 @endsection

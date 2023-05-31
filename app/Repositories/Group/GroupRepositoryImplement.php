@@ -6,6 +6,7 @@ use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Group;
 use App\Models\Module;
 use App\Models\Page;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class GroupRepositoryImplement extends Eloquent implements GroupRepository{
@@ -79,6 +80,58 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository{
             ->orderBy('id', 'asc')
             ->get();
         return $data;
+    }
+
+    /**
+     * Creates a new group and updates page permissions.
+     * @param string $groupName Group name.
+     * @param array $permissions Page permissions, keyed by page ID.
+     *
+     * @return mixed Returns Group instance on success, Exception on failure.
+     * @throws Exception if unable to create Group or update permissions.
+     */
+    public function storeNewGroup($groupName, $permissions)
+    {
+        // Start a database transaction
+        DB::beginTransaction();
+
+        try {
+            // Create Group
+            $group = $this->model->create([
+                'name' => trim($groupName),
+            ]);
+
+            // Get all pages
+            $pages = Page::all();
+
+            // Loop through the pages
+            foreach ($pages as $page) {
+                $allowedGroups = explode(',', $page->allowed_groups);
+                // If the permission for this page is set to "1" or if the page id is "1"
+                if ($permissions[$page->id] == '1' || $page->id == '1') {
+                    // If the group id is not in the allowed groups
+                    if (!in_array($group->id, $allowedGroups)) {
+                        // Add the group id to the allowed groups
+                        $allowedGroups[] = $group->id;
+                        // Update the page
+                        $page->allowed_groups = implode(',', $allowedGroups);
+                        $page->save();
+                    }
+                }
+            }
+
+            // Commit the transaction
+            DB::commit();
+
+            // Return the created group
+            return $group;
+        } catch (\Exception $e) {
+            // If something goes wrong, rollback the transaction
+            DB::rollback();
+
+            // Return the exception
+            return $e;
+        }
     }
 
 }

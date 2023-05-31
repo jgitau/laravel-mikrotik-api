@@ -31,7 +31,7 @@
             {{-- Loop over the permissions for the current module --}}
             @foreach($permissions as $permission)
             {{-- Column for each permission --}}
-            <div class="col-2">
+            <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-4 col-6">
                 {{-- Display the permission title --}}
                 <label class="mt-2">{{ $permission->title }}</label>
                 {{-- Yes radio button for the current permission --}}

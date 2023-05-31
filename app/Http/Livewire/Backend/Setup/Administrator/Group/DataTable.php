@@ -11,8 +11,7 @@ class DataTable extends Component
 
     // Listeners
     protected $listeners = [
-        'createdGroup' => 'handleStored',
-        'updatedGroup' => 'handleUpdated',
+        'groupCreated' => 'handleGroupCreated',
     ];
 
     /**
@@ -33,21 +32,13 @@ class DataTable extends Component
     }
 
     /**
-     * handleStored
-     *
+     * handleGroupCreated
+     * Called when the 'refreshCreateDataTable' event is received
+     * Dispatches the 'refreshDatatable' browser event to reload the DataTable
      * @return void
      */
-    public function handleStored()
+    public function handleGroupCreated()
     {
-        $this->dispatchBrowserEvent('groupStored');
-    }
-    /**
-     * handleUpdated
-     *
-     * @return void
-     */
-    public function handleUpdated()
-    {
-        //
+        $this->dispatchBrowserEvent('refreshDatatable');
     }
 }

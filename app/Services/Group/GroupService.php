@@ -15,4 +15,11 @@ interface GroupService extends BaseService{
      * getDataPermissions
      */
     public function getDataPermissions();
+
+    /**
+     * storeNewGroup
+     * @param  mixed $groupName
+     * @param  mixed $permissions
+     */
+    public function storeNewGroup($groupName, $permissions);
 }

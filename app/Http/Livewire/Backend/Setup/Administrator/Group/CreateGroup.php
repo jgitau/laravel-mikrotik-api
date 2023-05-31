@@ -39,6 +39,7 @@ class CreateGroup extends Component
         'groupName.unique'      => 'Group Name already exist!',
         'permission.*.in'       => 'The selected permission is invalid.',
     ];
+
     /**
      * updated
      *
@@ -78,11 +79,11 @@ class CreateGroup extends Component
     }
 
     /**
-     * storeGroup
+     * Stores a new group, validates the form, resets fields, and emits 'groupCreated' event.
      *
-     * @return void
+     * @param GroupService $groupService - Service for handling group-related logic.
+     * @return redirect - On success, redirects to 'list-groups' route with success message.
      */
-    // *** TODO: Add storeGroup() function to create a new group ***
     public function storeGroup(GroupService $groupService)
     {
         // Validate Form Request
@@ -101,11 +102,7 @@ class CreateGroup extends Component
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while creating group: ' . $th->getMessage());
         }
-    }
 
-    public function showToast()
-    {
-        $this->dispatchBrowserEvent('showToast');
     }
 
     /**

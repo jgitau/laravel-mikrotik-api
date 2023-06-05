@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Admin;
 
+use App\Helpers\AccessControlHelper;
 use App\Helpers\SessionKeyHelper;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Admin;
@@ -151,14 +152,6 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
      */
     public function getDatatables()
     {
-        // Get session key from cookie
-        $sessionKey = Cookie::get('session_key');
-        $redisKey = '_redis_key_prefix_' . $sessionKey;
-
-        // Get session data from Redis
-        $sessionData = Redis::hGetAll($redisKey);
-        $groupId = $sessionData['group_id'];
-
         // Retrieve records from the database using the model, including the related 'group' records, and sort by the latest records
         $data = $this->model->with('group')->latest()->get();
 
@@ -167,30 +160,20 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
             ->addColumn('status', function ($data) {
                 return $data->status == 1 ? '<span class="badge bg-label-success">Active</span>' : '<span class="badge bg-label-danger">Non Active</span>';
             })
-            ->addColumn('action', function ($data) use ($groupId) {
-                // Query the pages table to get all allowed groups
-                $editAdminPage = Page::where('page', 'edit_admin')->first();
-                $deleteAdminPage = Page::where('page', 'delete_admin')->first();
-
+            ->addColumn('action', function ($data) {
                 $editButton = '';
                 $deleteButton = '';
 
-                // Check if this group_id is allowed to edit
-                if ($editAdminPage) {
-                    $allowedGroups = explode(',', $editAdminPage->allowed_groups);
-                    if (in_array($groupId, $allowedGroups)) {
-                        // If group is allowed, show edit button
-                        $editButton = '<button type="button" name="edit" class="edit btn btn-primary btn-sm" onclick="showAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-edit"></i></button>';
-                    }
+                // Check if the current group is allowed to edit
+                if (AccessControlHelper::isAllowedToPerformAction('edit_admin')) {
+                    // If group is allowed, show edit button
+                    $editButton = '<button type="button" name="edit" class="edit btn btn-primary btn-sm" onclick="showAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-edit"></i></button>';
                 }
 
-                // Check if this group_id is allowed to delete
-                if ($deleteAdminPage) {
-                    $allowedGroups = explode(',', $deleteAdminPage->allowed_groups);
-                    if (in_array($groupId, $allowedGroups)) {
-                        // If group is allowed, show delete button
-                        $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-trash"></i></button>';
-                    }
+                // Check if the current group is allowed to delete
+                if (AccessControlHelper::isAllowedToPerformAction('delete_admin')) {
+                    // If group is allowed, show delete button
+                    $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-trash"></i></button>';
                 }
 
                 return $editButton . $deleteButton;
@@ -198,7 +181,6 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
             ->rawColumns(['status', 'action'])
             ->make(true);
     }
-
 
     /**
      * This function stores a new admin in the database with the provided information.

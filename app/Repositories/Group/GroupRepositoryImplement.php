@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Group;
 
+use App\Helpers\AccessControlHelper;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Group;
 use App\Models\Module;
@@ -36,48 +37,31 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository
      */
     public function getDatatables()
     {
-        // Get session key from cookie
-        $sessionKey = Cookie::get('session_key');
-        $redisKey = '_redis_key_prefix_' . $sessionKey;
+        // Retrieve records from the database using the model, sort by the latest records
+        $data = $this->model->select('groups.*')->latest()->get();
 
-        // Get session data from Redis
-        $sessionData = Redis::hGetAll($redisKey);
-        $groupId = $sessionData['group_id'];
-
-        // Query the Group model
-        $query = $this->model->select('groups.*')->latest();
-
-        return Datatables::of($query)
+        return Datatables::of($data)
             ->addIndexColumn()
-            ->editColumn('action', function ($row) use ($groupId) {
-                // Query the pages table to get all allowed groups
-                $editGroupPage = Page::where('page', 'edit_group')->first();
-                $deleteGroupPage = Page::where('page', 'delete_group')->first();
-
+            ->addColumn('action', function ($data) {
                 $editButton = '';
                 $deleteButton = '';
 
-                // Check if this group_id is allowed to edit
-                if ($editGroupPage) {
-                    $allowedGroups = explode(',', $editGroupPage->allowed_groups);
-                    if (in_array($groupId, $allowedGroups)) {
-                        // If group is allowed, show edit button
-                        $editButton = '<a href="' . route('backend.setup.admin.edit-group', $row->id) . '" class="btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</a>';
-                    }
+                // Check if the current group is allowed to edit
+                if (AccessControlHelper::isAllowedToPerformAction('edit_group')) {
+                    // If group is allowed, show edit button
+                    $editButton = '<a href="' . route('backend.setup.admin.edit-group', $data->id) . '" class="btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</a>';
                 }
 
-                // Check if this group_id is allowed to delete
-                if ($deleteGroupPage) {
-                    $allowedGroups = explode(',', $deleteGroupPage->allowed_groups);
-                    if (in_array($groupId, $allowedGroups)) {
-                        // If group is allowed, show delete button
-                        $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteGroup(\'' . $row->id . '\')"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
-                    }
+                // Check if the current group is allowed to delete
+                if (AccessControlHelper::isAllowedToPerformAction('delete_group')) {
+                    // If group is allowed, show delete button
+                    $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteGroup(\'' . $data->id . '\')"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
                 }
 
-                return $editButton . $deleteButton;
+                return $editButton . $deleteButton ?: null;
             })
-            ->rawColumns(['action']) // Make sure your buttons won't be escaped
+
+            ->rawColumns(['action'])
             ->make(true);
     }
 

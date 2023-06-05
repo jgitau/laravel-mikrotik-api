@@ -87,6 +87,7 @@
                 ]
             });
         }
+
         // Initialize the DataTable when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', function () {
             initializeDataTable();

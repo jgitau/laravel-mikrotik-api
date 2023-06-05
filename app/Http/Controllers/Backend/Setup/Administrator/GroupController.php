@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Setup\Administrator;
 
+use App\Helpers\AccessControlHelper;
 use App\Http\Controllers\Controller;
 use App\Services\Group\GroupService;
 use Illuminate\Http\Request;
@@ -13,7 +14,8 @@ class GroupController extends Controller
      */
     public function index()
     {
-        return view('backend.setup.administrators.group.list-groups');
+        $isAllowedToAddAdmin = AccessControlHelper::isAllowedToPerformAction('add_new_group');
+        return view('backend.setup.administrators.group.list-groups', ['isAllowedToAddAdmin' => $isAllowedToAddAdmin]);
     }
 
     /**

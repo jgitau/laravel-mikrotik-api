@@ -9,8 +9,9 @@ $configData = Helper::appClasses();
 @endpush
 
 @section('content')
+{{-- Is Allowed User To List Groups --}}
+@if($isAllowedToListGroup)
 <h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light">Groups </span>/ List</h4>
-
 <div class="row">
     <!-- DataTable with Buttons -->
     <div class="col-md-12">
@@ -19,7 +20,7 @@ $configData = Helper::appClasses();
             <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <h4 class="card-title">Table Groups</h4>
-                    @if ($isAllowedToAddAdmin)
+                    @if ($isAllowedToAddGroup)
                     <a href="{{route('backend.setup.admin.add-new-group') }}"
                         class="btn btn-sm btn-facebook text-white">
                         <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Group
@@ -28,15 +29,17 @@ $configData = Helper::appClasses();
                 </div>
             </div>
 
+
+
             {{-- Start List DataTable --}}
             <div class="card-body">
                 @livewire('backend.setup.administrator.group.data-table')
             </div>
             {{-- End List DataTable --}}
 
+
         </div>
     </div>
-
 </div>
 @push('scripts')
 @if (session()->has('success'))
@@ -49,6 +52,8 @@ $configData = Helper::appClasses();
         timer: 1500
     });
 </script>
+@endif
+
 @endif
 @endpush
 

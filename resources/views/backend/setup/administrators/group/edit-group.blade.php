@@ -9,6 +9,8 @@ $configData = Helper::appClasses();
 @endpush
 
 @section('content')
+{{-- Is Allowed User To Edit Group --}}
+@if($isAllowedToEditGroup)
 <h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light">Groups </span>/ Edit Group</h4>
 
 <div class="row">
@@ -36,4 +38,5 @@ $configData = Helper::appClasses();
 @push('scripts')
 @endpush
 
+@endif
 @endsection

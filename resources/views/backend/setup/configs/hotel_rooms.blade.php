@@ -9,6 +9,8 @@ $configData = Helper::appClasses();
 @endpush
 
 @section('content')
+{{-- Is Allowed User To Config Hotel Rooms --}}
+@if($isAllowedToConfigHotelRooms)
 <h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light">Configs </span>/ Hotel Rooms</h4>
 
 <!-- DataTable with Buttons -->
@@ -41,4 +43,7 @@ $configData = Helper::appClasses();
 
 
 </div>
+
+
+@endif
 @endsection

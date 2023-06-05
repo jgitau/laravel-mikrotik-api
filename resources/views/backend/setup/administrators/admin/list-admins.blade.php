@@ -9,8 +9,9 @@ $configData = Helper::appClasses();
 @endpush
 
 @section('content')
+{{-- Is Allowed User To List Admins --}}
+@if($isAllowedToListAdmins)
 <h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light">Administrators </span>/ List</h4>
-
 <!-- DataTable with Buttons -->
 <div class="card">
     <div class="card-header">
@@ -45,6 +46,7 @@ $configData = Helper::appClasses();
     </script>
     @endpush
 </div>
+@endif
 
 @livewire('backend.setup.administrator.admin.create')
 @livewire('backend.setup.administrator.admin.edit')

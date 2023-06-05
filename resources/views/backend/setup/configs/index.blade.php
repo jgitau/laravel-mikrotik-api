@@ -9,6 +9,8 @@ $configData = Helper::appClasses();
 @endpush
 
 @section('content')
+{{-- Is Allowed User To List Config --}}
+@if($isAllowedToListConfig)
 <h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light">Configs </span>/ List</h4>
 
 <!-- DataTable with Buttons -->
@@ -32,7 +34,6 @@ $configData = Helper::appClasses();
 
     @push('scripts')
     <script>
-
         window.addEventListener('closeModal', event =>{
             $('#modalCenter').modal('hide');
         });
@@ -41,4 +42,7 @@ $configData = Helper::appClasses();
     @endpush
 
 </div>
+
+@endif
+
 @endsection

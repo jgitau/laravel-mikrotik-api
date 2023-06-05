@@ -40,6 +40,7 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository
         // Retrieve records from the database using the model, sort by the latest records
         $data = $this->model->select('groups.*')->latest()->get();
 
+        // Initialize DataTables and add columns to the table
         return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($data) {
@@ -52,11 +53,12 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository
                     $editButton = '<a href="' . route('backend.setup.admin.edit-group', $data->id) . '" class="btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</a>';
                 }
 
+                // TODO: Delete Group
                 // Check if the current group is allowed to delete
-                if (AccessControlHelper::isAllowedToPerformAction('delete_group')) {
-                    // If group is allowed, show delete button
-                    $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteGroup(\'' . $data->id . '\')"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
-                }
+                // if (AccessControlHelper::isAllowedToPerformAction('delete_group')) {
+                //     // If group is allowed, show delete button
+                //     $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteGroup(\'' . $data->id . '\')"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
+                // }
 
                 return $editButton . $deleteButton ?: null;
             })

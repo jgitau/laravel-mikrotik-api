@@ -9,6 +9,8 @@ $configData = Helper::appClasses();
 @endpush
 
 @section('content')
+{{-- Is Allowed User To Add New Group --}}
+@if($isAllowedToAddGroup)
 <h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light">Groups </span>/ Add New Group</h4>
 
 <div class="row">
@@ -36,4 +38,5 @@ $configData = Helper::appClasses();
 @push('scripts')
 @endpush
 
+@endif
 @endsection

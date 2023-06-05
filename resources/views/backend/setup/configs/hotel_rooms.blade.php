@@ -13,10 +13,7 @@ $configData = Helper::appClasses();
 
 <!-- DataTable with Buttons -->
 <div class="row">
-
-    {{-- TODO: Create New Service --}}
-    <div class="col-4">
-
+    <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-12 mb-3">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between">
@@ -24,40 +21,21 @@ $configData = Helper::appClasses();
                 </div>
             </div>
             <div class="card-body">
-                {{-- *** TODO: *** --}}
                 @livewire('backend.setup.config.hotel-room.add-service')
             </div>
         </div>
-
     </div>
 
-    <div class="col-8">
+    <div class="col-xxl-8 col-xl-8 col-lg-8 col-md-12 col-12">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <h4 class="card-title">Table Registered Service</h4>
                 </div>
             </div>
-
-            {{-- Start List DataTable --}}
-            {{-- TODO: --}}
             <div class="card-body">
                 @livewire('backend.setup.config.hotel-room.data-table')
             </div>
-            {{-- End List DataTable --}}
-
-            <!-- Add the ModalManager Livewire component -->
-            {{-- TODO: --}}
-            {{-- @livewire('backend.setup.config.form.modal-manager')
-
-            @push('scripts')
-            <script>
-                window.addEventListener('closeModal', event =>{
-                    $('#modalCenter').modal('hide');
-                });
-            </script>
-            @endpush --}}
-
         </div>
     </div>
 

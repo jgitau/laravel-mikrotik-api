@@ -20,7 +20,7 @@ $configData = Helper::appClasses();
             <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <h4 class="card-title">Table Groups</h4>
-                    @if ($isAllowedToAddAdmin)
+                    @if ($isAllowedToAddGroup)
                     <a href="{{route('backend.setup.admin.add-new-group') }}"
                         class="btn btn-sm btn-facebook text-white">
                         <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Group

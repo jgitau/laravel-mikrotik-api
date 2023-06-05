@@ -10,7 +10,7 @@ $configData = Helper::appClasses();
 
 @section('content')
 {{-- Is Allowed User To Add New Group --}}
-@if($isAllowedToAddNewGroup)
+@if($isAllowedToAddGroup)
 <h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light">Groups </span>/ Add New Group</h4>
 
 <div class="row">

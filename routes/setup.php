@@ -36,6 +36,8 @@ Route::middleware(['check.session.cookie'])->group(function () {
             Route::get('list-groups', [GroupController::class, 'index'])->name('list-groups');
             // Route for adding a new group
             Route::get('add-new-group', [GroupController::class, 'create'])->name('add-new-group');
+            // Route for edit group
+            Route::get('edit-group/{id}', [GroupController::class, 'edit'])->name('edit-group');
         });
 
         // Grouping routes related to configuration setup

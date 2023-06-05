@@ -49,6 +49,19 @@ class GroupServiceImplement extends Service implements GroupService
     }
 
     /**
+     * getGroupAndPagesById
+     * @param  mixed $id
+     */
+    public function getGroupAndPagesById($id)
+    {
+        try {
+            return $this->mainRepository->getGroupAndPagesById($id);
+        } catch (Exception $exception) {
+            throw new Exception("Error getting group by Id : " . $exception->getMessage());
+        }
+    }
+
+    /**
      * storeNewGroup
      * @param  mixed $request
      * @param  mixed $permissions
@@ -57,6 +70,21 @@ class GroupServiceImplement extends Service implements GroupService
     {
         try {
             return $this->mainRepository->storeNewGroup($groupName, $permissions);
+        } catch (Exception $exception) {
+            throw new Exception("Error storing group : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * updateGroup
+     * @param  mixed $request
+     * @param  mixed $permissions
+     * @param  mixed $id
+     */
+    public function updateGroup($groupName, $permissions, $id)
+    {
+        try {
+            return $this->mainRepository->updateGroup($groupName, $permissions, $id);
         } catch (Exception $exception) {
             throw new Exception("Error storing group : " . $exception->getMessage());
         }

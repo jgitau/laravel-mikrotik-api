@@ -134,20 +134,20 @@ class PageSeeder extends Seeder
                 'url' => 'setup/admin/list-groups',
                 'module_id' => 10,
                 'allowed_groups' => '1',
-                'show_menu' => 1,
+                'show_menu' => 0,
                 'show_to' => NULL
             ],
             // *** TODO: ***
-            // [
-            //     'id' => 14,
-            //     'page' => 'add_new_admin',
-            //     'title' => 'Add New Admin',
-            //     'url' => 'administrators/pg/add_new_admin',
-            //     'module_id' => 10,
-            //     'allowed_groups' => '1',
-            //     'show_menu' => 1,
-            //     'show_to' => NULL
-            // ],
+            [
+                'id' => 14,
+                'page' => 'add_new_admin',
+                'title' => 'Add New Admin',
+                'url' => '#',
+                'module_id' => 10,
+                'allowed_groups' => '1',
+                'show_menu' => 1,
+                'show_to' => NULL
+            ],
             [
                 'id' => 15,
                 'page' => 'add_new_group',
@@ -172,7 +172,7 @@ class PageSeeder extends Seeder
                 'id' => 17,
                 'page' => 'edit_group',
                 'title' => 'Edit Group',
-                'url' => 'administrators/pg/edit_group',
+                'url' => 'setup/admin/edit-group',
                 'module_id' => 10,
                 'allowed_groups' => '1',
                 'show_menu' => 0,

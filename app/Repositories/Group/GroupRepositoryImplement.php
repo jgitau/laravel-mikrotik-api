@@ -2,20 +2,24 @@
 
 namespace App\Repositories\Group;
 
+use App\Helpers\AccessControlHelper;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Group;
 use App\Models\Module;
 use App\Models\Page;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Yajra\DataTables\Facades\DataTables;
 
-class GroupRepositoryImplement extends Eloquent implements GroupRepository{
+class GroupRepositoryImplement extends Eloquent implements GroupRepository
+{
 
     /**
-    * Model class to be used in this repository for the common methods inside Eloquent
-    * Don't remove or change $this->model variable name
-    * @property Model|mixed $model;
-    */
+     * Model class to be used in this repository for the common methods inside Eloquent
+     * Don't remove or change $this->model variable name
+     * @property Model|mixed $model;
+     */
     protected $model;
 
     public function __construct(Group $model)
@@ -23,40 +27,42 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository{
         $this->model = $model;
     }
 
-
     /**
-     * This function retrieves records from a database using a model, initializes the DataTables
-     * library, adds an index column and an action column with edit and delete buttons, and returns the
-     * DataTables response as a JSON object.
+     * Fetches data from Redis, queries Group model, and generates a DataTables table.
+     * Edit and delete buttons are added based on the user's group permissions.
      *
-     * @return a JSON response for DataTables.
+     * @return DataTables instance with query on "groups" table, sorted by latest.
+     * The "action" column includes edit and delete buttons based on group permissions.
+     * Buttons are kept raw (not escaped). DataTables instance is returned as JSON.
      */
     public function getDatatables()
     {
-        // Retrieve records from the database using the model, including the related 'group' records, and sort by the latest records
-        $data = $this->model->latest()->get();
+        // Retrieve records from the database using the model, sort by the latest records
+        $data = $this->model->select('groups.*')->latest()->get();
 
-        // Initialize the DataTables library using the fetched data
-        $dataTables = DataTables::of($data)
-            // Add an index column to the DataTable for easier reference
+        return Datatables::of($data)
             ->addIndexColumn()
-            // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
             ->addColumn('action', function ($data) {
-                // Create an edit button with the record's 'id' as its ID and a 'fas fa-edit' icon
-                $button = '<button type="button" name="edit" id="' . $data->id . '" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</button>';
+                $editButton = '';
+                $deleteButton = '';
 
-                // Add a delete button with the record's 'id' as its ID and a 'fas fa-trash' icon
-                // TODO: Button delete
-                // $button .= '&nbsp;&nbsp;<button type="button" name="edit" id="' . $data->id . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i></button>';
+                // Check if the current group is allowed to edit
+                if (AccessControlHelper::isAllowedToPerformAction('edit_group')) {
+                    // If group is allowed, show edit button
+                    $editButton = '<a href="' . route('backend.setup.admin.edit-group', $data->id) . '" class="btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</a>';
+                }
 
-                // Return the concatenated button HTML string
-                return $button;
+                // Check if the current group is allowed to delete
+                if (AccessControlHelper::isAllowedToPerformAction('delete_group')) {
+                    // If group is allowed, show delete button
+                    $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteGroup(\'' . $data->id . '\')"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
+                }
+
+                return $editButton . $deleteButton ?: null;
             })
-            // Create and return the DataTables response as a JSON object
-            ->make(true);
 
-        // Return the DataTables JSON response
-        return $dataTables;
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
     /**
@@ -71,7 +77,7 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository{
                 $query->where('root', '!=', 1);
                 $query->where('active', 1);
             })
-            ->select('id', 'title')
+            ->select('id', 'title', 'allowed_groups')
             ->addSelect([
                 'mod_title' => Module::select('title')
                     ->whereColumn('id', 'pages.module_id')
@@ -80,6 +86,57 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository{
             ->orderBy('id', 'asc')
             ->get();
         return $data;
+    }
+
+
+    /**
+     * Retrieves data from 'groups' and 'pages' tables based on group ID.
+     * @param groupId The group's ID.
+     * @return array Contains 'groupData' (data for the group) and 'pageIds' (IDs of allowed pages for the group).
+     */
+    public function getGroupAndPagesById($groupId)
+    {
+        // Initialize return array
+        $groupAndPagesData = [];
+
+        // Query 'groups' table where 'id' is $groupId
+        $groupData = $this->model->find($groupId);
+
+        // If groupData returns a result
+        if ($groupData) {
+            // Save group data to groupAndPagesData array
+            $groupAndPagesData['groupData'] = $groupData;
+
+            // Query 'pages' table, select 'id' and 'allowed_groups' columns
+            $pageDataQuery = Page::select('id', 'allowed_groups as ag')->get();
+
+            // If pageDataQuery returns results
+            if ($pageDataQuery->count() > 0) {
+                $pageIdsArray = [];
+
+                // Loop through pageDataQuery results
+                foreach ($pageDataQuery as $pageData) {
+                    // Convert 'ag' column to array
+                    $allowedGroupsArray = explode(',', $pageData->ag);
+
+                    // If $groupId is in $allowedGroupsArray
+                    if (in_array($groupId, $allowedGroupsArray)) {
+                        // Add page 'id' to $pageIdsArray
+                        $pageIdsArray[] = $pageData->id;
+                    }
+                }
+
+                // Save pageIdsArray to groupAndPagesData array
+                $groupAndPagesData['pageIds'] = $pageIdsArray;
+            } else {
+                $groupAndPagesData['pageIds'] = false;
+            }
+        } else {
+            $groupAndPagesData['groupData'] = false;
+        }
+
+        // Return groupAndPagesData array
+        return $groupAndPagesData;
     }
 
     /**
@@ -134,4 +191,64 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository{
         }
     }
 
+    /**
+     * Updates an existing group and its page permissions.
+     * @param string $groupName New group name.
+     * @param array $permissions Page permissions, keyed by page ID.
+     * @param int $id ID of the group to be updated.
+     *
+     * @return mixed Returns Group instance on success, Exception on failure.
+     * @throws Exception if unable to update Group or permissions.
+     */
+    public function updateGroup($groupName, $permissions, $id)
+    {
+        // Start a database transaction
+        DB::beginTransaction();
+
+        try {
+            // Find Group by id
+            $group = $this->model->findOrFail($id);
+
+            // Update Group name
+            $group->name = trim($groupName);
+            $group->save();
+
+            // Get all pages
+            $pages = Page::all();
+
+            // Loop through the pages
+            foreach ($pages as $page) {
+                $allowedGroups = explode(',', $page->allowed_groups);
+                // If the permission for this page is set to "1" or if the page id is "1"
+                if (isset($permissions[$page->id]) && $permissions[$page->id] == '1' || $page->id == '1') {
+                    // If the group id is not in the allowed groups
+                    if (!in_array($group->id, $allowedGroups)) {
+                        // Add the group id to the allowed groups
+                        $allowedGroups[] = $group->id;
+                    }
+                } else {
+                    // If the group id is in the allowed groups and the permission is not "1", remove it
+                    if (($key = array_search($group->id, $allowedGroups)) !== false) {
+                        unset($allowedGroups[$key]);
+                    }
+                }
+
+                // Update the page
+                $page->allowed_groups = implode(',', $allowedGroups);
+                $page->save();
+            }
+
+            // Commit the transaction
+            DB::commit();
+
+            // Return the updated group
+            return $group;
+        } catch (\Exception $e) {
+            // If something goes wrong, rollback the transaction
+            DB::rollback();
+
+            // Return the exception
+            return $e;
+        }
+    }
 }

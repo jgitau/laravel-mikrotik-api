@@ -2,9 +2,11 @@
 
 namespace App\Repositories\Admin;
 
+use App\Helpers\AccessControlHelper;
 use App\Helpers\SessionKeyHelper;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Admin;
+use App\Models\Page;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
@@ -143,8 +145,9 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
 
     /**
-     * This function retrieves records from a database, initializes the DataTables library, adds
-     * columns to the DataTable, and returns the DataTables response as a JSON object.
+     * Retrieves records from a database, initializes DataTables, adds columns to DataTable,
+     * and returns DataTables response as a JSON object. The action buttons depend on the user's group permissions.
+     *
      * @return DataTables Yajra JSON response.
      */
     public function getDatatables()
@@ -152,32 +155,32 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
         // Retrieve records from the database using the model, including the related 'group' records, and sort by the latest records
         $data = $this->model->with('group')->latest()->get();
 
-        // Initialize the DataTables library using the fetched data
-        $dataTables = DataTables::of($data)
-            // Add an index column to the DataTable for easier reference
+        return Datatables::of($data)
             ->addIndexColumn()
-            // Add a new 'status' column to the DataTable, displaying 'Active' if status is 1, and 'Non Active' otherwise
             ->addColumn('status', function ($data) {
                 return $data->status == 1 ? '<span class="badge bg-label-success">Active</span>' : '<span class="badge bg-label-danger">Non Active</span>';
             })
-            // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
             ->addColumn('action', function ($data) {
-                // Create an edit button with the record's 'admin_uid' as its ID and a 'fas fa-edit' icon
-                $button = '<button type="button" name="edit" class="edit btn btn-primary btn-sm" onclick="showAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-edit"></i></button>';
-                // Add a delete button with the record's 'admin_uid' as its ID and a 'fas fa-trash' icon
-                $button .= '&nbsp;&nbsp;<button type="button" name="edit" class="delete btn btn-danger btn-sm" onclick="confirmDeleteAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-trash"></i></button>';
-                // Return the concatenated button HTML string
-                return $button;
+                $editButton = '';
+                $deleteButton = '';
+
+                // Check if the current group is allowed to edit
+                if (AccessControlHelper::isAllowedToPerformAction('edit_admin')) {
+                    // If group is allowed, show edit button
+                    $editButton = '<button type="button" name="edit" class="edit btn btn-primary btn-sm" onclick="showAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-edit"></i></button>';
+                }
+
+                // Check if the current group is allowed to delete
+                if (AccessControlHelper::isAllowedToPerformAction('delete_admin')) {
+                    // If group is allowed, show delete button
+                    $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-trash"></i></button>';
+                }
+
+                return $editButton . $deleteButton;
             })
-            // Make the 'status' and 'action' columns render HTML tags instead of plain text
             ->rawColumns(['status', 'action'])
-            // Create and return the DataTables response as a JSON object
             ->make(true);
-
-        // Return the DataTables JSON response
-        return $dataTables;
     }
-
 
     /**
      * This function stores a new admin in the database with the provided information.

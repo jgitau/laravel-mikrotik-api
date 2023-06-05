@@ -14,10 +14,14 @@ class GroupController extends Controller
      */
     public function index()
     {
-        $isAllowedToAddAdmin = AccessControlHelper::isAllowedToPerformAction('add_new_group');
+        // Check if the user is allowed to add a new group
+        $isAllowedToAddGroup = AccessControlHelper::isAllowedToPerformAction('add_new_group');
+
+        // Check if the user is allowed to list groups
         $isAllowedToListGroup = AccessControlHelper::isAllowedToPerformAction('list_groups');
+
         return view('backend.setup.administrators.group.list-groups', [
-            'isAllowedToAddAdmin' => $isAllowedToAddAdmin,
+            'isAllowedToAddGroup' => $isAllowedToAddGroup,
             'isAllowedToListGroup' => $isAllowedToListGroup
         ]);
     }
@@ -27,9 +31,13 @@ class GroupController extends Controller
      */
     public function create()
     {
-        return view('backend.setup.administrators.group.add-new-group');
-    }
+        // Check if the user is allowed to add a new group
+        $isAllowedToAddGroup = AccessControlHelper::isAllowedToPerformAction('add_new_group');
 
+        return view('backend.setup.administrators.group.add-new-group', [
+            'isAllowedToAddGroup' => $isAllowedToAddGroup,
+        ]);
+    }
 
     /**
      * The "edit" function in PHP takes a parameter "id".
@@ -37,7 +45,15 @@ class GroupController extends Controller
      */
     public function edit(GroupService $groupService, $id)
     {
+        // Check if the user is allowed to edit a group
+        $isAllowedToEditGroup = AccessControlHelper::isAllowedToPerformAction('edit_group');
+
+        // Get the group and its associated pages by ID
         $dataGroup = $groupService->getGroupAndPagesById($id);
-        return view('backend.setup.administrators.group.edit-group', ['dataGroup' => $dataGroup]);
+
+        return view('backend.setup.administrators.group.edit-group', [
+            'dataGroup' => $dataGroup,
+            'isAllowedToEditGroup' => $isAllowedToEditGroup
+        ]);
     }
 }

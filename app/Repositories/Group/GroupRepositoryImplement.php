@@ -55,10 +55,10 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository
 
                 // TODO: Delete Group
                 // Check if the current group is allowed to delete
-                if (AccessControlHelper::isAllowedToPerformAction('delete_group')) {
-                    // If group is allowed, show delete button
-                    $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteGroup(\'' . $data->id . '\')"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
-                }
+                // if (AccessControlHelper::isAllowedToPerformAction('delete_group')) {
+                //     // If group is allowed, show delete button
+                //     $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteGroup(\'' . $data->id . '\')"> <i class="fas fa-trash"></i>&nbsp; Delete</button>';
+                // }
 
                 return $editButton . $deleteButton ?: null;
             })

@@ -9,9 +9,9 @@ $configData = Helper::appClasses();
 @endpush
 
 @section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light">Groups </span>/ List</h4>
 {{-- Is Allowed User To List Groups --}}
 @if($isAllowedToListGroup)
+<h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light">Groups </span>/ List</h4>
 <div class="row">
     <!-- DataTable with Buttons -->
     <div class="col-md-12">

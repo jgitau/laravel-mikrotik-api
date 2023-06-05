@@ -42,12 +42,12 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository{
             ->addIndexColumn()
             // Add a new 'action' column to the DataTable, including edit and delete buttons with their respective icons
             ->addColumn('action', function ($data) {
-                // Create an edit button with the record's 'id' as its ID and a 'fas fa-edit' icon
-                $button = '<button type="button" name="edit" id="' . $data->id . '" class="edit btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</button>';
+                // Create an edit link with the record's 'id' as its ID and a 'fas fa-edit' icon
+                $button = '<a href="' . route('backend.setup.admin.edit-group', $data->id) . '" class="btn btn-primary btn-sm"> <i class="fas fa-edit"></i>&nbsp; Edit</a>';
 
                 // Add a delete button with the record's 'id' as its ID and a 'fas fa-trash' icon
                 // TODO: Button delete
-                // $button .= '&nbsp;&nbsp;<button type="button" name="edit" id="' . $data->id . '" class="delete btn btn-danger btn-sm"> <i class="fas fa-trash"></i></button>';
+                // $button .= '&nbsp;&nbsp;<a href="'.route('delete-group', $data->id).'" class="btn btn-danger btn-sm"> <i class="fas fa-trash"></i></a>';
 
                 // Return the concatenated button HTML string
                 return $button;
@@ -59,6 +59,7 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository{
         return $dataTables;
     }
 
+
     /**
      * Retrieves active page permissions, ordered by module ID and page ID.
      *
@@ -67,19 +68,70 @@ class GroupRepositoryImplement extends Eloquent implements GroupRepository{
     public function getDataPermissions()
     {
         $data = Page::with('module')
-            ->whereHas('module', function ($query) {
-                $query->where('root', '!=', 1);
-                $query->where('active', 1);
-            })
-            ->select('id', 'title')
+        ->whereHas('module', function ($query) {
+            $query->where('root', '!=', 1);
+            $query->where('active', 1);
+        })
+            ->select('id', 'title', 'allowed_groups')
             ->addSelect([
                 'mod_title' => Module::select('title')
-                    ->whereColumn('id', 'pages.module_id')
+                ->whereColumn('id', 'pages.module_id')
             ])
             ->orderBy('module_id', 'asc')
             ->orderBy('id', 'asc')
             ->get();
         return $data;
+    }
+
+
+    /**
+     * Retrieves data from 'groups' and 'pages' tables based on group ID.
+     * @param groupId The group's ID.
+     * @return array Contains 'groupData' (data for the group) and 'pageIds' (IDs of allowed pages for the group).
+     */
+    public function getGroupAndPagesById($groupId)
+    {
+        // Initialize return array
+        $groupAndPagesData = [];
+
+        // Query 'groups' table where 'id' is $groupId
+        $groupData = $this->model->find($groupId);
+
+        // If groupData returns a result
+        if ($groupData) {
+            // Save group data to groupAndPagesData array
+            $groupAndPagesData['groupData'] = $groupData;
+
+            // Query 'pages' table, select 'id' and 'allowed_groups' columns
+            $pageDataQuery = Page::select('id', 'allowed_groups as ag')->get();
+
+            // If pageDataQuery returns results
+            if ($pageDataQuery->count() > 0) {
+                $pageIdsArray = [];
+
+                // Loop through pageDataQuery results
+                foreach ($pageDataQuery as $pageData) {
+                    // Convert 'ag' column to array
+                    $allowedGroupsArray = explode(',', $pageData->ag);
+
+                    // If $groupId is in $allowedGroupsArray
+                    if (in_array($groupId, $allowedGroupsArray)) {
+                        // Add page 'id' to $pageIdsArray
+                        $pageIdsArray[] = $pageData->id;
+                    }
+                }
+
+                // Save pageIdsArray to groupAndPagesData array
+                $groupAndPagesData['pageIds'] = $pageIdsArray;
+            } else {
+                $groupAndPagesData['pageIds'] = false;
+            }
+        } else {
+            $groupAndPagesData['groupData'] = false;
+        }
+
+        // Return groupAndPagesData array
+        return $groupAndPagesData;
     }
 
     /**

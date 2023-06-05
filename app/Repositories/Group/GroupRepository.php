@@ -17,6 +17,12 @@ interface GroupRepository extends Repository{
     public function getDataPermissions();
 
     /**
+     * getGroupAndPagesById
+     * @param  mixed $id
+     */
+    public function getGroupAndPagesById($id);
+
+    /**
      * storeNewGroup
      * @param  mixed $groupName
      * @param  mixed $permissions

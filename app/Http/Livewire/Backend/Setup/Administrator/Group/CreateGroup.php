@@ -11,7 +11,7 @@ class CreateGroup extends Component
 {
     use LivewireMessageEvents;
     // Define public variable
-    public $name, $groupName;
+    public $groupName;
 
     // DataPermissions
     public $dataPermissions;

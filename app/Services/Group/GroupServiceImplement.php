@@ -49,6 +49,19 @@ class GroupServiceImplement extends Service implements GroupService
     }
 
     /**
+     * getGroupAndPagesById
+     * @param  mixed $id
+     */
+    public function getGroupAndPagesById($id)
+    {
+        try {
+            return $this->mainRepository->getGroupAndPagesById($id);
+        } catch (Exception $exception) {
+            throw new Exception("Error getting group by Id : " . $exception->getMessage());
+        }
+    }
+
+    /**
      * storeNewGroup
      * @param  mixed $request
      * @param  mixed $permissions

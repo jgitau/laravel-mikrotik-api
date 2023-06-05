@@ -1,8 +1,8 @@
 {{-- This is the card body section --}}
 <div class="card-body">
     {{-- This is a form which uses a livewire event to prevent the default form submission --}}
-    <form wire:submit.prevent="storeGroup" method="POST">
-        {{-- A row for the Group Name input fiel --}}
+    <form wire:submit.prevent="updateGroup" method="POST">
+        {{-- A row for the Group Name input field --}}
         <div class="row">
             {{-- Column for the Group Name input field --}}
             <div class="col-12 mb-3">
@@ -15,6 +15,7 @@
         {{-- Permissions header --}}
         <h4>Permissions</h4>
         {{-- GroupBy with Module Title --}}
+
         @php
         $groupedPermissions = $dataPermissions->groupBy('mod_title');
         @endphp
@@ -30,6 +31,10 @@
             </div>
             {{-- Loop over the permissions for the current module --}}
             @foreach($permissions as $permission)
+            {{-- @php
+                $contoh = in_array($groupData->id, explode(',', $permission->allowed_groups)) ? 'checked' : '';
+                dd($contoh);
+            @endphp --}}
             {{-- Column for each permission --}}
             <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-4 col-6">
                 {{-- Display the permission title --}}
@@ -42,7 +47,7 @@
                 {{-- No radio button for the current permission --}}
                 <div class="form-check mt-1">
                     <x-radio-input id="p{{ $permission->id }}b" label="No" name="p{{ $permission->id }}" value="0"
-                        model="permission.{{ $permission->id }}" checked />
+                        model="permission.{{ $permission->id }}" />
                 </div>
             </div>
             @endforeach
@@ -59,7 +64,7 @@
             <div class="col-12">
                 {{-- The submit button --}}
                 <x-button type="submit" color="primary">
-                    Save
+                    Save Changes
                 </x-button>
             </div>
         </div>

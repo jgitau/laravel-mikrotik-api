@@ -172,7 +172,7 @@ class PageSeeder extends Seeder
                 'id' => 17,
                 'page' => 'edit_group',
                 'title' => 'Edit Group',
-                'url' => 'administrators/pg/edit_group',
+                'url' => 'setup/admin/edit-group',
                 'module_id' => 10,
                 'allowed_groups' => '1',
                 'show_menu' => 0,

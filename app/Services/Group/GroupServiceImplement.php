@@ -74,4 +74,19 @@ class GroupServiceImplement extends Service implements GroupService
             throw new Exception("Error storing group : " . $exception->getMessage());
         }
     }
+
+    /**
+     * updateGroup
+     * @param  mixed $request
+     * @param  mixed $permissions
+     * @param  mixed $id
+     */
+    public function updateGroup($groupName, $permissions, $id)
+    {
+        try {
+            return $this->mainRepository->updateGroup($groupName, $permissions, $id);
+        } catch (Exception $exception) {
+            throw new Exception("Error storing group : " . $exception->getMessage());
+        }
+    }
 }

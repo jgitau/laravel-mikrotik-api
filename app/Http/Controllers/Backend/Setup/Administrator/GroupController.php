@@ -15,7 +15,11 @@ class GroupController extends Controller
     public function index()
     {
         $isAllowedToAddAdmin = AccessControlHelper::isAllowedToPerformAction('add_new_group');
-        return view('backend.setup.administrators.group.list-groups', ['isAllowedToAddAdmin' => $isAllowedToAddAdmin]);
+        $isAllowedToListGroup = AccessControlHelper::isAllowedToPerformAction('list_groups');
+        return view('backend.setup.administrators.group.list-groups', [
+            'isAllowedToAddAdmin' => $isAllowedToAddAdmin,
+            'isAllowedToListGroup' => $isAllowedToListGroup
+        ]);
     }
 
     /**

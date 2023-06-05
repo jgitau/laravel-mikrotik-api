@@ -10,7 +10,8 @@ $configData = Helper::appClasses();
 
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light">Groups </span>/ List</h4>
-
+{{-- Is Allowed User To List Groups --}}
+@if($isAllowedToListGroup)
 <div class="row">
     <!-- DataTable with Buttons -->
     <div class="col-md-12">
@@ -28,15 +29,17 @@ $configData = Helper::appClasses();
                 </div>
             </div>
 
+
+
             {{-- Start List DataTable --}}
             <div class="card-body">
                 @livewire('backend.setup.administrator.group.data-table')
             </div>
             {{-- End List DataTable --}}
 
+
         </div>
     </div>
-
 </div>
 @push('scripts')
 @if (session()->has('success'))
@@ -49,6 +52,8 @@ $configData = Helper::appClasses();
         timer: 1500
     });
 </script>
+@endif
+
 @endif
 @endpush
 

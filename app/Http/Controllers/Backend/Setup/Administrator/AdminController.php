@@ -14,7 +14,10 @@ class AdminController extends Controller
     public function index()
     {
         $isAllowedToAddAdmin = AccessControlHelper::isAllowedToPerformAction('add_new_admin');
-        return view('backend.setup.administrators.admin.list-admins', ['isAllowedToAddAdmin' => $isAllowedToAddAdmin]);
+        $isAllowedToListAdmins = AccessControlHelper::isAllowedToPerformAction('list_admins');
+        return view('backend.setup.administrators.admin.list-admins', [
+            'isAllowedToAddAdmin' => $isAllowedToAddAdmin,
+            'isAllowedToListAdmins' => $isAllowedToListAdmins
+        ]);
     }
-
 }

@@ -155,6 +155,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
         // Retrieve records from the database using the model, including the related 'group' records, and sort by the latest records
         $data = $this->model->with('group')->latest()->get();
 
+        // Initialize DataTables and add columns to the table
         return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('status', function ($data) {

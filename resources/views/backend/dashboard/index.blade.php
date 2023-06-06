@@ -9,6 +9,7 @@ $configData = Helper::appClasses();
 @section('content')
 <div class="row">
 
+    {{-- *** TODO: *** --}}
     {{-- Start Lise Statictics --}}
     @livewire('backend.dashboard.list-statistic')
     {{-- End Lise Statictics --}}
@@ -18,16 +19,16 @@ $configData = Helper::appClasses();
 {{-- START CHART --}}
 <div class="row">
 
+    {{-- *** TODO: *** --}}
     <!-- Line Charts -->
     @livewire('backend.dashboard.line-chart')
-
     <!-- /Line Charts -->
 
     <!-- Polar Area Chart -->
     @livewire('backend.dashboard.polar-chart')
-
     <!-- /Polar Area Chart -->
 
+    {{-- *** TODO: *** --}}
     <!-- Radar Chart -->
     @livewire('backend.dashboard.radar-chart')
     <!-- /Radar Chart -->

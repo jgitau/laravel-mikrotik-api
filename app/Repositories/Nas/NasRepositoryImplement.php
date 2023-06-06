@@ -101,61 +101,78 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
 
     /**
-     * The function adds a RADIUS configuration to a router using the RouterOS API.
+     * Adds or updates a RADIUS configuration in RouterOS.
      *
-     * @param radiusServer The IP address or hostname of the RADIUS server to be added as a
-     * configuration.
-     * @param radiusSecret The secret key used for RADIUS authentication between the router and the
-     * RADIUS server.
-     *
-     * @return Array with two keys: 'status' and 'message'. The 'status' key indicates whether the
-     * operation was successful or not, and the 'message' key contains an error message if the
-     * operation was not successful.
+     * @param string $radiusServer RADIUS server IP or hostname.
+     * @param string $radiusSecret Secret key for RADIUS authentication.
+     * @return array Contains status and optional error message.
      */
     public function addRadiusConfiguration($radiusServer, $radiusSecret)
     {
-        // Initialize the result array
+        // Prepare the result with initial values
         $result = [
             'status' => false,
             'message' => ''
         ];
 
-        // Fetch existing RADIUS configurations
+        // Retrieve all current RADIUS configurations
         $radiusConfigs = $this->routerOsApi->comm("/radius/print");
 
-        // Remove each RADIUS configuration found
-        foreach ($radiusConfigs as $config) {
-            $this->routerOsApi->comm("/radius/remove", array(".id" => $config[".id"]));
-        }
+        // If there is at least one configuration present, update it
+        if (count($radiusConfigs) > 0) {
+            // Iterate through each existing configuration for updating
+            foreach ($radiusConfigs as $config) {
+                // Update the configuration with the provided parameters
+                $updateResult = $this->routerOsApi->comm("/radius/set", array(
+                    ".id"                   => $config[".id"],  // Use existing configuration id
+                    "address"               => $radiusServer,  // Set server address
+                    "secret"                => $radiusSecret,  // Set secret key
+                    // The following values are from the environment variables
+                    "domain"                => env('MIKROTIK_NAME'),
+                    "service"               => "hotspot",
+                    "authentication-port"   => env('MIKROTIK_AUTHENTICATION_PORT'),
+                    "accounting-port"       => env('MIKROTIK_ACCOUNTING_PORT'),
+                    "timeout"               => env('MIKROTIK_TIMEOUT'),
+                    // Comment for configuration
+                    "comment"               => "Managed by AZMI. DO NOT EDIT!!!"
+                ));
 
-        // Add new RADIUS configuration
-        $addResult = $this->routerOsApi->comm("/radius/add", array(
-            "address"               => $radiusServer,
-            "secret"                => $radiusSecret,
-            "domain"                => env('MIKROTIK_NAME'),
-            "service"               => "hotspot",
-            "authentication-port"   => env('MIKROTIK_AUTHENTICATION_PORT'),
-            "accounting-port"       => env('MIKROTIK_ACCOUNTING_PORT'),
-            "timeout"               => env('MIKROTIK_TIMEOUT'),
-            "comment"               => "managed by AZMI. DO NOT EDIT!!!"
-        ));
+                // If there was an error, set the error message and return the result
+                if (isset($updateResult['!trap'])) {
+                    $result['message'] = "Error in updating RADIUS configuration: " . $updateResult['!trap'][0]['message'];
+                    return $result;
+                }
+            }
 
-        // Check if the RADIUS configuration addition was successful
-        if (isset($addResult['!re']) && $addResult['!re'] === 0) {
+            // If updates were successful, set status to true
             $result['status'] = true;
         } else {
-            // Check if there is an error message
+            // If there were no existing configurations, add a new one
+            $addResult = $this->routerOsApi->comm("/radius/add", array(
+                // Same parameters as the update operation above
+                "address"               => $radiusServer,
+                "secret"                => $radiusSecret,
+                "domain"                => env('MIKROTIK_NAME'),
+                "service"               => "hotspot",
+                "authentication-port"   => env('MIKROTIK_AUTHENTICATION_PORT'),
+                "accounting-port"       => env('MIKROTIK_ACCOUNTING_PORT'),
+                "timeout"               => env('MIKROTIK_TIMEOUT'),
+                "comment"               => "Managed by AZMI. DO NOT EDIT!!!"
+            ));
+
+            // If there was an error in adding, set the error message
             if (isset($addResult['!trap'])) {
-                // Set the result to error if there is an error message
                 $result['message'] = "Error in adding RADIUS configuration: " . $addResult['!trap'][0]['message'];
             } else {
-                // If there is no error message, consider the operation successful
+                // If addition was successful, set status to true
                 $result['status'] = true;
             }
         }
 
+        // Return the result (success or failure, with any error message)
         return $result;
     }
+
 
     /**
      * The function creates a new user group with specific policies and returns a result indicating
@@ -184,7 +201,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
             $groupResult = $this->routerOsApi->comm("/user/group/add", array(
                 "name"     => env('MIKROTIK_NAME'),
                 "policy"   => "write,policy,read,test,api",
-                "comment"  => "managed by AZMI. DO NOT EDIT!!!"
+                "comment"  => "Managed by AZMI. DO NOT EDIT!!!"
             ));
 
             // Check if the group creation was successful
@@ -234,7 +251,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
                 "name"     => env('MIKROTIK_NAME'),
                 "password" => env('MIKROTIK_NAME'),
                 "group"    => env('MIKROTIK_NAME'),
-                "comment"  => "managed by AZMI. DO NOT EDIT!!!"
+                "comment"  => "Managed by AZMI. DO NOT EDIT!!!"
             ));
 
             // Check if the user creation was successful

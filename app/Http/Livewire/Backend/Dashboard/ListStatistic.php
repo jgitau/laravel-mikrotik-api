@@ -24,7 +24,6 @@ class ListStatistic extends Component
         $this->uptime = $this->prepareUptime($mikrotikApiService);
     }
 
-
     /**
      * This function returns a view for a polar chart in a backend dashboard.
      */
@@ -128,5 +127,4 @@ class ListStatistic extends Component
             return '0d 0:0:0';
         }
     }
-
 }

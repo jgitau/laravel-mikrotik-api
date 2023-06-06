@@ -221,7 +221,6 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
 
 
     // TODO:
-
     /**
      * Retrieves Mikrotik resource data via RouterOS API.
      * @param string $ip Mikrotik router IP address.

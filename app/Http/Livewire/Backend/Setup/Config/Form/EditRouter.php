@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Backend\Setup\Config\Form;
 
 use App\Services\Nas\NasService;
 use App\Traits\LivewireMessageEvents;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Termwind\Components\Dd;
@@ -114,7 +115,7 @@ class EditRouter extends Component
             'radiusPort' => $this->ports,
             'radiusSecret' => $this->secret,
             'tempUsername' => $this->temporary_username,
-            'tempPassword' => $this->temporary_password,
+            'tempPassword' => Crypt::encryptString($this->temporary_password),
             'username' => env('MIKROTIK_NAME'),
             'password' => Hash::make(env('MIKROTIK_NAME')),
             'groupname' => env('MIKROTIK_NAME'),

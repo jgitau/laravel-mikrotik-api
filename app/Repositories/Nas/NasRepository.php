@@ -8,7 +8,6 @@ interface NasRepository extends Repository{
 
     /**
      * getNasByShortname
-     *
      * @param  mixed $shortname
      * @return void
      */
@@ -21,7 +20,6 @@ interface NasRepository extends Repository{
 
     /**
      * editNasProcess
-     *
      * @param  mixed $data
      * @return void
      */
@@ -29,7 +27,6 @@ interface NasRepository extends Repository{
 
     /**
      * getSetting
-     *
      * @param  mixed $settingName
      * @param  mixed $moduleId
      * @return void
@@ -38,7 +35,6 @@ interface NasRepository extends Repository{
 
     /**
      * updateSetting
-     *
      * @param  mixed $settingName
      * @param  mixed $moduleId
      * @param  mixed $value
@@ -49,10 +45,18 @@ interface NasRepository extends Repository{
 
     /**
      * setupProcess
-     *
      * @param  mixed $record
      * @param  mixed $data
      * @return void
      */
     public function setupProcess($record, $data);
+
+    /**
+     * getMikrotikUserActive
+     * @param  mixed $ip
+     * @param  mixed $username
+     * @param  mixed $password
+     * @return void
+     */
+    public function getMikrotikUserActive($ip, $username, $password);
 }

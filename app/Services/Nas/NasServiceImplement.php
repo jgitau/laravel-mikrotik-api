@@ -116,4 +116,20 @@ class NasServiceImplement extends Service implements NasService
             return Log::debug($th->getMessage());
         }
     }
+
+    /**
+     * getMikrotikUserActive
+     * @param  mixed $ip
+     * @param  mixed $username
+     * @param  mixed $password
+     * @return void
+     */
+    public function getMikrotikUserActive($ip, $username, $password)
+    {
+        try {
+            return $this->mainRepository->getMikrotikUserActive($ip, $username, $password);
+        } catch (\Throwable $th) {
+            return Log::debug($th->getMessage());
+        }
+    }
 }

@@ -2,11 +2,12 @@
 
 namespace App\Repositories\Nas;
 
-use App\Libraries\Tiny;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Nas;
 use App\Models\RouterOsApi;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 
 class NasRepositoryImplement extends Eloquent implements NasRepository
 {
@@ -53,11 +54,11 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         // Check if the server IP address has changed
         if ($record->server_ip_address != $data['serverIP']) {
             // Extract required data from the input
-            $username = $data['tempUsername'];
-            $password = $data['tempPassword'];
-            $ipAdress = $data['mikrotikIP'];
-            $radiusServer   = $data['mikrotikIP'];
-            $radiusSecret   = $data['radiusSecret'];
+            $username       = $data['tempUsername'];
+            $password       = Crypt::decryptString($data['tempPassword']);
+            $ipAdress       = $data['mikrotikIP'];
+            $radiusServer    = $data['mikrotikIP'];
+            $radiusSecret    = $data['radiusSecret'];
 
             try {
                 // Attempt to connect to the Mikrotik device
@@ -353,8 +354,8 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         $this->updateSetting('mikrotik_ip', '0', $data['mikrotikIP']);
         $this->updateSetting('mikrotik_api_port', '0', $data['mikrotikAPIPort']);
         $this->updateSetting('server_ip', '0', $data['serverIP']);
-        $this->updateSetting('mikrotik_api_username', '0', $data['username']);
-        $this->updateSetting('mikrotik_api_password', '0', $data['password']);
+        $this->updateSetting('mikrotik_api_username', '0', $data['tempUsername']);
+        $this->updateSetting('mikrotik_api_password', '0', $data['tempPassword']);
     }
 
     /**
@@ -389,4 +390,48 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
         return $affectedRows;
     }
+
+
+    /**
+     * Retrieves Mikrotik interface data via RouterOS API.
+     *
+     * @param string $ip Mikrotik router IP address.
+     * @param string $username Authentication username.
+     * @param string $password Authentication password.
+     *
+     * @return array|null Mikrotik interface data or null on connection failure.
+     */
+    public function getMikrotikUserActive($ip, $username, $password)
+    {
+        try {
+            if (!$this->routerOsApi->connect($ip, $username, $password)) {
+                Log::error('Failed to connect to Mikrotik router: ' . $ip);
+                return null;
+            }
+
+            $userActive = $this->routerOsApi->comm("/ip/hotspot/active/print");
+            $ipBindings = $this->routerOsApi->comm("/ip/hotspot/ip-binding/print");
+
+            $ipBindingBypassed = array_filter($ipBindings, function ($binding) {
+                return isset($binding['type']) && $binding['type'] === 'bypassed';
+            });
+
+            $ipBindingBlocked = array_filter($ipBindings, function ($binding) {
+                return isset($binding['type']) && $binding['type'] === 'blocked';
+            });
+
+            return [
+                'userActive' => count($userActive),
+                'ipBindingBypassed' => count($ipBindingBypassed),
+                'ipBindingBlocked' => count($ipBindingBlocked),
+            ];
+        } catch (\Exception $e) {
+            // Log the error message
+            Log::error('Failed to get Mikrotik interface data: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+
+
 }

@@ -30,18 +30,10 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
 
     /**
-     * The function sets up a process by connecting to a Mikrotik device, adding RADIUS configuration,
-     * creating a user group and user, and returning the result of the operation.
-     *
-     * @param record It is a variable that contains the current record or data of a user in the system.
-     * It is used to check if the server IP address has changed or not.
-     * @param data The  parameter is an array that contains input data required for the setup
-     * process. It includes the temporary username and password, Mikrotik IP address, RADIUS server IP
-     * address, and RADIUS secret.
-     *
-     * @return array with two keys: 'status' and 'message'. The 'status' key indicates whether the
-     * setup process was successful or not, and the 'message' key provides additional information about
-     * the status of the process.
+     * Sets up a Mikrotik device process.
+     * @param record Current user data.
+     * @param data Required input data for the setup process.
+     * @return array 'status' indicating success or failure, and 'message' for additional info.
      */
     public function setupProcess($record, $data)
     {
@@ -176,12 +168,8 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
 
     /**
-     * The function creates a new user group with specific policies and returns a result indicating
-     * success or failure.
-     *
-     * @return array with two keys: 'status' and 'message'. The 'status' key indicates whether the
-     * user group creation was successful or not, and the 'message' key contains an error message if
-     * the creation was not successful.
+     * Creates a new user group with specific policies.
+     * @return array 'status' indicating success or failure, 'message' for error info.
      */
     public function createUserGroup()
     {
@@ -225,12 +213,8 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
     }
 
     /**
-     * The function creates a new user with a specified username, password, and group, and returns a
-     * result array indicating whether the creation was successful or not.
-     *
-     * @return array with two keys: 'status' and 'message'. The 'status' key indicates whether the
-     * user creation was successful or not, and the 'message' key contains an error message if the user
-     * creation was not successful.
+     * Creates a new user with specified username, password, and group.
+     * @return array 'status' indicating success or failure, 'message' for error info.
      */
     public function createUser()
     {
@@ -277,7 +261,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
     /**
      * Get NAS by its shortname
-     *
      * @param string $shortName
      * @return Nas|null
      */
@@ -288,7 +271,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
     /**
      * Retrieve NAS parameters for the given shortname
-     *
      * @return Nas|null
      */
     public function getNasParameters()
@@ -312,7 +294,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
     /**
      * Edit NAS process (updating NAS table and mikrotik API parameters)
-     *
      * @param array $data
      * @return bool
      */
@@ -330,7 +311,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
     /**
      * Update NAS table with the given data
-     *
      * @param array $data
      * @return void
      */
@@ -345,7 +325,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
     /**
      * Edit Mikrotik API parameters with the given data
-     *
      * @param array $data
      * @return void
      */
@@ -360,7 +339,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
     /**
      * Retrieve the setting value based on the setting name and module ID
-     *
      * @param string $settingName
      * @param int $moduleId
      * @return mixed
@@ -376,7 +354,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
     /**
      * Update the setting value based on the setting name, module ID, and new value
-     *
      * @param string $settingName
      * @param int $moduleId
      * @param mixed $value
@@ -394,44 +371,44 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
     /**
      * Retrieves Mikrotik interface data via RouterOS API.
-     *
      * @param string $ip Mikrotik router IP address.
      * @param string $username Authentication username.
      * @param string $password Authentication password.
-     *
      * @return array|null Mikrotik interface data or null on connection failure.
      */
     public function getMikrotikUserActive($ip, $username, $password)
     {
         try {
+            // Connect to the Mikrotik router. If connection fails, log the error and return null.
             if (!$this->routerOsApi->connect($ip, $username, $password)) {
                 Log::error('Failed to connect to Mikrotik router: ' . $ip);
                 return null;
             }
 
+            // Fetch list of active users and IP bindings
             $userActive = $this->routerOsApi->comm("/ip/hotspot/active/print");
             $ipBindings = $this->routerOsApi->comm("/ip/hotspot/ip-binding/print");
 
+            // Filter bypassed IP bindings
             $ipBindingBypassed = array_filter($ipBindings, function ($binding) {
                 return isset($binding['type']) && $binding['type'] === 'bypassed';
             });
 
+            // Filter blocked IP bindings
             $ipBindingBlocked = array_filter($ipBindings, function ($binding) {
                 return isset($binding['type']) && $binding['type'] === 'blocked';
             });
 
+            // Return the counts of active users, bypassed and blocked IP bindings
             return [
                 'userActive' => count($userActive),
                 'ipBindingBypassed' => count($ipBindingBypassed),
                 'ipBindingBlocked' => count($ipBindingBlocked),
             ];
         } catch (\Exception $e) {
-            // Log the error message
+            // If any error occurs, log the error message and return null
             Log::error('Failed to get Mikrotik interface data: ' . $e->getMessage());
             return null;
         }
     }
-
-
-
 }

@@ -25,8 +25,9 @@ class PolarChart extends Component
         }
     }
 
-
-
+    /**
+     * This function returns a view for a polar chart in a backend dashboard.
+     */
     public function render()
     {
         return view('livewire.backend.dashboard.polar-chart');

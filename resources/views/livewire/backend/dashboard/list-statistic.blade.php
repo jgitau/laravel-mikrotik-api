@@ -9,17 +9,17 @@
         <div class="card-body">
             <div class="row gy-3">
 
-                {{-- <div class="col-md-3 col-6">
+                <div class="col-md-3 col-6">
                     <div class="d-flex align-items-center">
                         <div class="badge rounded-pill bg-label-primary me-3 p-2">
-                            <i class="ti ti-chart-pie-2 ti-sm"></i>
+                            <i class="fa-solid fa-clock ti-sm"></i>
                         </div>
                         <div class="card-info">
-                            <h6 class="mb-0">CPU Load</h6>
+                            <h5 class="mb-0" wire:ignore id="cpuLoad">0%</h5>
+                            <small>CPU Load</small>
                         </div>
                     </div>
-                </div> --}}
-
+                </div>
                 {{-- <div class="col-md-3 col-6">
                     <div class="d-flex align-items-center">
                         <div class="badge rounded-pill bg-label-info me-3 p-2">
@@ -35,11 +35,10 @@
                 <div class="col-md-3 col-6">
                     <div class="d-flex align-items-center">
                         <div class="badge rounded-pill bg-label-danger me-3 p-2">
-                            {{-- <i class="fa-brands fa-hive ti-sm"></i> --}}
                             <i class="fa-solid fa-network-wired ti-sm"></i>
                         </div>
                         <div class="card-info">
-                            <h5 class="mb-0">1.423k</h5>
+                            <h5 class="mb-0">{{ $activeHotspots }}</h5>
                             <small>Hotspot Active</small>
                         </div>
                     </div>
@@ -51,7 +50,7 @@
                             <i class="fa-solid fa-clock ti-sm"></i>
                         </div>
                         <div class="card-info">
-                            <h5 class="mb-0">$9745</h5>
+                            <h5 class="mb-0">{{ $uptime }}</h5>
                             <small>Uptime</small>
                         </div>
                     </div>
@@ -75,8 +74,8 @@
                             <i class="fa-solid fa-memory ti-sm"></i>
                         </div>
                         <div class="card-info">
-                            <h5 class="mb-0">$9745</h5>
-                            <small>Free Memory / HDD</small>
+                            <h5 class="mb-0">{{ $freeMemoryPercentage }}</h5>
+                            <small>Free Memory</small>
                         </div>
                     </div>
                 </div>
@@ -93,7 +92,7 @@
                     </div>
                 </div> --}}
 
-                <div class="col-md-3 col-6">
+                {{-- <div class="col-md-3 col-6">
                     <div class="d-flex align-items-center">
                         <div class="badge rounded-pill bg-label-vimeo me-3 p-2">
                             <i class="fa-solid fa-wifi ti-sm"></i>
@@ -103,7 +102,7 @@
                             <small>Total User Hotspot</small>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
 
             </div>
@@ -111,3 +110,18 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        setInterval(function() {
+            @this.call('loadCpuData');
+        }, 3000); // Update every 3 seconds
+    });
+
+    window.livewire.on('cpuLoadUpdated', cpuLoad => {
+        document.getElementById('cpuLoad').innerText = cpuLoad;
+    });
+</script>
+
+@endpush

@@ -3,7 +3,7 @@
 namespace App\Http\Livewire\Backend\Dashboard;
 
 use App\Helpers\MikrotikConfigHelper;
-use App\Services\Nas\NasService;
+use App\Services\MikrotikApi\MikrotikApiService;
 use Livewire\Component;
 
 class PolarChart extends Component
@@ -13,13 +13,13 @@ class PolarChart extends Component
     public $chartData;
 
     /**
-     * Mounts a NAS service and retrieves data from Mikrotik API for chart population.
-     * @param NasService $nasService A service for NAS data retrieval.
+     * Mounts a MIKROTIK service and retrieves data from Mikrotik API for chart population.
+     * @param MikrotikApiService $mikrotikApiService A service for NAS data retrieval.
      */
-    public function mount(NasService $nasService)
+    public function mount(MikrotikApiService $mikrotikApiService)
     {
         // Retrieve the Mikrotik configuration settings from the helper.
-        $this->chartData = $this->prepareChartData($nasService);
+        $this->chartData = $this->prepareChartData($mikrotikApiService);
     }
 
     /**
@@ -33,10 +33,10 @@ class PolarChart extends Component
     /**
      * Retrieves Mikrotik configuration, validates it, and gets active user data from Mikrotik
      * or default data if configuration is invalid.
-     * @param NasService $nasService NAS service for data retrieval.
+     * @param MikrotikApiService $mikrotikApiService MIKROTIK service for data retrieval.
      * @return array Returns array with user data or default values.
      */
-    private function prepareChartData(NasService $nasService)
+    private function prepareChartData(MikrotikApiService $mikrotikApiService)
     {
         // Retrieve the Mikrotik configuration settings from the helper.
         $config = MikrotikConfigHelper::getMikrotikConfig();
@@ -44,7 +44,7 @@ class PolarChart extends Component
         // Check if the configuration exists and no values are empty.
         if ($config && !in_array("", $config, true)) {
             // If the config is valid, retrieve the Mikrotik user active data.
-            return $nasService->getMikrotikUserActive($config['ip'], $config['username'], $config['password']);
+            return $mikrotikApiService->getMikrotikUserActive($config['ip'], $config['username'], $config['password']);
         } else {
             // If the config is invalid or incomplete, set default values for chart data.
             return ['userActive' => 0, 'ipBindingBypassed' => 0, 'ipBindingBlocked' => 0];

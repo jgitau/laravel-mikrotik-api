@@ -8,7 +8,6 @@ interface NasService extends BaseService{
 
     /**
      * getNasByShortname
-     *
      * @param  mixed $shortname
      * @return void
      */
@@ -23,7 +22,6 @@ interface NasService extends BaseService{
 
     /**
      * editNasProcess
-     *
      * @param  mixed $data
      * @return void
      */
@@ -31,7 +29,6 @@ interface NasService extends BaseService{
 
     /**
      * getSetting
-     *
      * @param  mixed $settingName
      * @param  mixed $moduleId
      * @return void
@@ -40,7 +37,6 @@ interface NasService extends BaseService{
 
     /**
      * updateSetting
-     *
      * @param  mixed $settingName
      * @param  mixed $moduleId
      * @param  mixed $value
@@ -50,10 +46,18 @@ interface NasService extends BaseService{
 
     /**
      * setupProcess
-     *
      * @param  mixed $record
      * @param  mixed $data
      * @return void
      */
     public function setupProcess($record, $data);
+
+    /**
+     * getMikrotikUserActive
+     * @param  mixed $ip
+     * @param  mixed $username
+     * @param  mixed $password
+     * @return void
+     */
+    public function getMikrotikUserActive($ip, $username, $password);
 }

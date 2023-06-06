@@ -56,6 +56,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
                 // Attempt to connect to the Mikrotik device
                 if ($this->routerOsApi->connect($ipAdress, $username, $password)) {
                     // Add RADIUS configuration and check if successful
+                    // TODO:
                     $radiusResult = $this->addRadiusConfiguration($radiusServer, $radiusSecret);
                     if ($radiusResult['status']) {
                         // Create user group and check if successful

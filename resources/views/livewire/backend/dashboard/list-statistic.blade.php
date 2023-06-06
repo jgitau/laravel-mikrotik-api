@@ -12,7 +12,7 @@
                 <div class="col-md-3 col-6">
                     <div class="d-flex align-items-center">
                         <div class="badge rounded-pill bg-label-primary me-3 p-2">
-                            <i class="fa-solid fa-clock ti-sm"></i>
+                            <i class="fa-solid fa-server ti-sm"></i>
                         </div>
                         <div class="card-info">
                             <h5 class="mb-0" wire:ignore id="cpuLoad">0%</h5>

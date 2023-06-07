@@ -132,78 +132,119 @@
 @push('scripts')
 {{-- APEX CHART JS --}}
 <script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
-
 {{-- TODO: Change chart to chart.js plugin streaming --}}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    var ctx = document.getElementById('chartTraffic').getContext('2d');
-    var uploadTrafficData = [];
-    var downloadTrafficData = [];
+    document.addEventListener('livewire:load', function () {
+        var uploadTrafficData = [];
+        var downloadTrafficData = [];
 
-    // Inisialisasi Chart.js
-    var chartTraffic = new Chart(ctx, {
-        type: 'line',
-        data: {
-        datasets: [
-            {
-            label: 'Upload Traffic',
-            data: uploadTrafficData,
-            backgroundColor: 'rgba(75, 192, 192, 0.5)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-            fill: false
-            },
-            {
-            label: 'Download Traffic',
-            data: downloadTrafficData,
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-            fill: false
-            }
-        ]
-        },
-        options: {
-        scales: {
-            x: {
-            type: 'realtime',
-            realtime: {
-                duration: 20000,
-                refresh: 1000,
-                delay: 2000,
-                onRefresh: function(chart) {
-                window.livewire.emit('callLoadTrafficData');
+        // Add initial data to the chart
+        for (var i = 0; i < 100; i++) {
+            uploadTrafficData.push({
+                x: Date.now() - (100 - i) * 1000,
+                y: 0
+            });
+            downloadTrafficData.push({
+                x: Date.now() - (100 - i) * 1000,
+                y: 0
+            });
+        }
+
+        var chartOptions = {
+            series: [
+                {
+                    name: 'Upload Traffic',
+                    data: uploadTrafficData
+                },
+                {
+                    name: 'Download Traffic',
+                    data: downloadTrafficData
                 }
-            }
+            ],
+            chart: {
+                height: 300,
+                type: 'line',
+                animations: {
+                    enabled: true,
+                    easing: 'linear',
+                    dynamicAnimation: {
+                        speed: 2000
+                    }
+                },
+                toolbar: {
+                    show: false
+                },
+                zoom: {
+                    enabled: false
+                }
             },
-            y: {
-            title: {
-                display: true,
-                text: 'bits per second'
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 2.5
+            },
+            markers: {
+                size: 0
+            },
+            xaxis: {
+                type: 'datetime',
+                range: 10000,
+                labels: {
+                    format: 'dd MMM yyyy HH:mm'
+                }
+            },
+            yaxis: {
+                labels: {
+                    formatter: function (value) {
+                        return value.toFixed(2) + ' kbps';
+                    }
+                }
+            },
+            legend: {
+                show: true
             }
-            }
-        },
-        interaction: {
-            intersect: false
-        }
-        }
-    });
+        };
 
-    // Tambahkan listener untuk event livewire
-    window.livewire.on('uploadTrafficUpdated', function (uploadTraffic) {
-        uploadTrafficData.push({
-        x: Date.now(),
-        y: uploadTraffic
+        var chartTraffic = new ApexCharts(document.getElementById('chartTraffic'), chartOptions);
+        chartTraffic.render();
+
+        window.livewire.on('uploadTrafficUpdated', function (uploadTraffic) {
+            uploadTrafficData.push({
+                x: Date.now(),
+                y: uploadTraffic
+            });
+            updateChart();
         });
-    });
 
-    window.livewire.on('downloadTrafficUpdated', function (downloadTraffic) {
-        downloadTrafficData.push({
-        x: Date.now(),
-        y: downloadTraffic
+        window.livewire.on('downloadTrafficUpdated', function (downloadTraffic) {
+            downloadTrafficData.push({
+                x: Date.now(),
+                y: downloadTraffic
+            });
+            updateChart();
         });
-    });
-});
 
+        function updateChart() {
+            chartTraffic.updateSeries([
+                {
+                    name: 'Upload Traffic',
+                    data: uploadTrafficData.slice(-100)
+                },
+                {
+                    name: 'Download Traffic',
+                    data: downloadTrafficData.slice(-100)
+                }
+            ]);
+        }
+
+        setInterval(function () {
+            window.livewire.emit('callLoadTrafficData');
+        }, 1000);
+
+        // Add a slight delay to the chart update to make it smoother
+        setInterval(updateChart, 900);
+    });
 </script>
 @endpush

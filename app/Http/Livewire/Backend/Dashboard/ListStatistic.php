@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Livewire\Backend\Dashboard;
+
 use App\Helpers\MikrotikConfigHelper;
 use App\Services\MikrotikApi\MikrotikApiService;
 use Livewire\Component;
@@ -22,10 +23,7 @@ class ListStatistic extends Component
         // Check if the configuration exists and no values are empty.
         if ($config && !in_array("", $config, true)) {
             // Use the Mikrotik API service to fetch the current router statistics.
-            $data = $mikrotikApiService->getMikrotikResourceData($config['ip'],
-                $config['username'],
-                $config['password']
-            );
+            $data = $mikrotikApiService->getMikrotikResourceData($config['ip'], $config['username'], $config['password']);
         } else {
             // If the config is invalid or incomplete, set default values for data.
             $data = [
@@ -63,15 +61,25 @@ class ListStatistic extends Component
         // Retrieve the Mikrotik configuration settings.
         $config = MikrotikConfigHelper::getMikrotikConfig();
 
-        // Use the Mikrotik API service to fetch the current router statistics.
-        $data = $mikrotikApiService->getMikrotikResourceData($config['ip'], $config['username'], $config['password']);
+        // Check if the configuration exists and no values are empty.
+        if ($config && !in_array("", $config, true)) {
+            // Use the Mikrotik API service to fetch the current router statistics.
+            $data = $mikrotikApiService->getMikrotikResourceData($config['ip'], $config['username'], $config['password']);
+        } else {
+            // If the config is invalid or incomplete, set default values for data.
+            $data = [
+                'cpuLoad' => 0,
+                'uptime' => '0d 0:0:0'
+            ];
+        }
 
         // Update the cpuLoad property and emit an event with the updated CPU load.
-        $this->cpuLoad = $data['cpuLoad'] ?? 0;
+        $this->cpuLoad = $data['cpuLoad'];
         $this->emit('cpuLoadUpdated', $this->cpuLoad);
 
         // Update the uptime property and emit an event with the updated uptime.
-        $this->uptime = $data['uptime'] ?? '0d 0:0:0';
+        $this->uptime = $data['uptime'];
         $this->emit('uptimeUpdated', $this->uptime);
     }
+
 }

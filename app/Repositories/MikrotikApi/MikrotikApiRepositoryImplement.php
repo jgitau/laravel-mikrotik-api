@@ -15,6 +15,8 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     const ENDPOINT_ACTIVE = "/ip/hotspot/active/print";
     const ENDPOINT_IP_BINDING = "/ip/hotspot/ip-binding/print";
     const ENDPOINT_RESOURCE = "/system/resource/print";
+    const ENDPOINT_MONITOR_TRAFFIC = "/interface/monitor-traffic"; // Define Interface monitor traffic API endpoint
+
 
     /**
      * Model class to be used in this repository for the common methods inside Eloquent
@@ -192,5 +194,48 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
 
         return $uptime;
     }
+
+    /**
+     * Method to get current upload and download traffic data from a Mikrotik router.
+     * @param string $ip @param string $username @param string $password @param string $interface @return array
+     */
+    public function getTrafficData($ip, $username, $password, $interface = "ether2-wan")
+    {
+        // Connect to the Mikrotik router
+        if (!$this->model->connect($ip, $username, $password)) {
+            // If connection fails, return default values
+            return [
+                'uploadTraffic' => 0,
+                'downloadTraffic' => 0
+            ];
+        }
+
+        // Send the request to the monitor traffic endpoint
+        $response = $this->model->comm(self::ENDPOINT_MONITOR_TRAFFIC, [
+            "interface" => $interface,
+            "once" => ""
+        ]);
+
+        if (isset($response[0])) {
+            // Get the traffic data
+            $trafficData = $response[0];
+
+            $uploadTraffic = isset($trafficData['tx-bits-per-second']) ? round($trafficData['tx-bits-per-second'] / 1000) : 0;
+            $downloadTraffic = isset($trafficData['rx-bits-per-second']) ? round($trafficData['rx-bits-per-second'] / 1000) : 0;
+
+            return [
+                'uploadTraffic' => $uploadTraffic ,
+                'downloadTraffic' => $downloadTraffic
+            ];
+        }
+
+        return [
+            'uploadTraffic' => 0,
+            'downloadTraffic' => 0
+        ];
+    }
+
+
+
 
 }

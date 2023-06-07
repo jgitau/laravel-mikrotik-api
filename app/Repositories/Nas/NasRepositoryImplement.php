@@ -42,11 +42,11 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         ];
 
         // Extract required data from the input
-        $username       = $data['tempUsername'];
-        $password       = $data['tempPassword'];
-        $ipAdress       = $data['mikrotikIP'];
-        $radiusServer   = $data['serverIP'];
-        $radiusSecret   = $data['radiusSecret'];
+        $username               = $data['tempUsername'];
+        $password               = $data['tempPassword'];
+        $ipAdress               = $data['mikrotikIP'];
+        $radiusServer            = $data['serverIP'];
+        $radiusSecret            = $data['radiusSecret'];
         $usernameForAddUser       = $data['username'];
         $passwordForAddUser       = $data['password'];
 

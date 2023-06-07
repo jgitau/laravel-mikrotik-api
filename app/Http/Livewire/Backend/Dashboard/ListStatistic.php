@@ -85,5 +85,4 @@ class ListStatistic extends Component
         $this->emit('uptimeUpdated', $this->uptime);
     }
 
-
 }

@@ -70,4 +70,24 @@ class MikrotikApiServiceImplement extends Service implements MikrotikApiService
             throw new Exception("Error getting resource data : " . $exception->getMessage());
         }
     }
+
+    /**
+     * Fetches traffic data from the specified network interface of a device.
+     * @param string $ip IP address of the device.
+     * @param string $username Username for authentication.
+     * @param string $password Password for authentication.
+     * @param string $interface Network interface to monitor.
+     * @return array Returns traffic data or throws an exception if an error occurs.
+     * @throws Exception if unable to retrieve traffic data.
+     */
+    public function getTrafficData($ip, $username, $password, $interface)
+    {
+        try {
+            return $this->mainRepository->getTrafficData($ip, $username, $password, $interface);
+        } catch (Exception $exception) {
+            throw new Exception("Error getting traffic data : " . $exception->getMessage());
+        }
+    }
+
+
 }

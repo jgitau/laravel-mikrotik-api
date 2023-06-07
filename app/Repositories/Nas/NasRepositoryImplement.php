@@ -6,7 +6,6 @@ use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Nas;
 use App\Models\RouterOsApi;
 use App\Models\Setting;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 
 class NasRepositoryImplement extends Eloquent implements NasRepository
@@ -28,7 +27,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         $this->routerOsApi = $routerOsApi;
     }
 
-
     /**
      * Sets up a Mikrotik device process.
      * @param record Current user data.
@@ -43,56 +41,53 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
             'message' => ''
         ];
 
-        // Check if the server IP address has changed
-        if ($record->server_ip_address != $data['serverIP']) {
-            // Extract required data from the input
-            $username       = $data['tempUsername'];
-            $password       = Crypt::decryptString($data['tempPassword']);
-            $ipAdress       = $data['mikrotikIP'];
-            $radiusServer    = $data['mikrotikIP'];
-            $radiusSecret    = $data['radiusSecret'];
+        // Extract required data from the input
+        $username       = $data['tempUsername'];
+        $password       = $data['tempPassword'];
+        $ipAdress       = $data['mikrotikIP'];
+        $radiusServer   = $data['serverIP'];
+        $radiusSecret   = $data['radiusSecret'];
+        $usernameForAddUser       = $data['username'];
+        $passwordForAddUser       = $data['password'];
 
-            try {
-                // Attempt to connect to the Mikrotik device
-                if ($this->routerOsApi->connect($ipAdress, $username, $password)) {
-                    // Add RADIUS configuration and check if successful
-                    // TODO:
-                    $radiusResult = $this->addRadiusConfiguration($radiusServer, $radiusSecret);
-                    if ($radiusResult['status']) {
-                        // Create user group and check if successful
-                        $groupResult = $this->createUserGroup();
-                        if ($groupResult['status']) {
-                            // Create user and check if successful
-                            $userResult = $this->createUser();
-                            if ($userResult['status']) {
-                                // If all operations are successful, update the result status
-                                $result['status'] = true;
-                            } else {
-                                // Set error message for user creation
-                                $result['message'] = $userResult['message'];
-                            }
+        try {
+            // Attempt to connect to the Mikrotik device
+            if ($this->routerOsApi->connect($ipAdress, $username, $password)) {
+                // Add RADIUS configuration and check if successful
+                $radiusResult = $this->addRadiusConfiguration($radiusServer, $radiusSecret);
+                if ($radiusResult['status']) {
+                    // Create user group and check if successful
+                    $groupResult = $this->createUserGroup();
+                    if ($groupResult['status']) {
+                        // Create user and check if successful
+                        $userResult = $this->createUser($passwordForAddUser, $usernameForAddUser);
+                        if ($userResult['status']) {
+                            // If all operations are successful, update the result status
+                            $result['status'] = true;
                         } else {
-                            // Set error message for group creation
-                            $result['message'] = $groupResult['message'];
+                            // Set error message for user creation
+                            $result['message'] = $userResult['message'];
                         }
                     } else {
-                        // Set error message for RADIUS configuration
-                        $result['message'] = $radiusResult['message'];
+                        // Set error message for group creation
+                        $result['message'] = $groupResult['message'];
                     }
                 } else {
-                    // Set error message if unable to connect to Mikrotik device
-                    $result['message'] = "Unable to connect to the Mikrotik device.";
+                    // Set error message for RADIUS configuration
+                    $result['message'] = $radiusResult['message'];
                 }
-            } catch (\Exception $e) {
-                // Set error message if an exception occurs
-                $result['message'] = "Error: " . $e->getMessage();
+            } else {
+                // Set error message if unable to connect to Mikrotik device
+                $result['message'] = "Unable to connect to the Mikrotik device.";
             }
+        } catch (\Exception $e) {
+            // Set error message if an exception occurs
+            $result['message'] = "Error: " . $e->getMessage();
         }
 
         // Return the result of the operation
         return $result;
     }
-
 
     /**
      * Adds or updates a RADIUS configuration in RouterOS.
@@ -101,9 +96,8 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * @param string $radiusSecret Secret key for RADIUS authentication.
      * @return array Contains status and optional error message.
      */
-    public function addRadiusConfiguration($radiusServer, $radiusSecret)
+    protected function addRadiusConfiguration($radiusServer, $radiusSecret)
     {
-        // Prepare the result with initial values
         $result = [
             'status' => false,
             'message' => ''
@@ -112,11 +106,16 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         // Retrieve all current RADIUS configurations
         $radiusConfigs = $this->routerOsApi->comm("/radius/print");
 
-        // If there is at least one configuration present, update it
-        if (count($radiusConfigs) > 0) {
-            // Iterate through each existing configuration for updating
-            foreach ($radiusConfigs as $config) {
-                // Update the configuration with the provided parameters
+        // Set a variable to track if your configuration is found
+        $yourConfigFound = false;
+
+        foreach ($radiusConfigs as $config) {
+            // If the configuration address matches your server address, this is your configuration
+            if (isset($config['address']) && $config['address'] === $radiusServer) {
+                // Found your configuration, set the flag to true
+                $yourConfigFound = true;
+
+                // Update the configuration
                 $updateResult = $this->routerOsApi->comm("/radius/set", array(
                     ".id"                   => $config[".id"],  // Use existing configuration id
                     "address"               => $radiusServer,  // Set server address
@@ -131,19 +130,20 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
                     "comment"               => "Managed by AZMI. DO NOT EDIT!!!"
                 ));
 
-                // If there was an error, set the error message and return the result
                 if (isset($updateResult['!trap'])) {
                     $result['message'] = "Error in updating RADIUS configuration: " . $updateResult['!trap'][0]['message'];
                     return $result;
                 }
-            }
 
-            // If updates were successful, set status to true
-            $result['status'] = true;
-        } else {
-            // If there were no existing configurations, add a new one
+                // If updates were successful, set status to true
+                $result['status'] = true;
+                break;  // No need to process further, break the loop
+            }
+        }
+
+        // If your configuration was not found in the existing configs, add a new one
+        if (!$yourConfigFound) {
             $addResult = $this->routerOsApi->comm("/radius/add", array(
-                // Same parameters as the update operation above
                 "address"               => $radiusServer,
                 "secret"                => $radiusSecret,
                 "domain"                => env('MIKROTIK_NAME'),
@@ -154,25 +154,21 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
                 "comment"               => "Managed by AZMI. DO NOT EDIT!!!"
             ));
 
-            // If there was an error in adding, set the error message
             if (isset($addResult['!trap'])) {
                 $result['message'] = "Error in adding RADIUS configuration: " . $addResult['!trap'][0]['message'];
             } else {
-                // If addition was successful, set status to true
                 $result['status'] = true;
             }
         }
 
-        // Return the result (success or failure, with any error message)
         return $result;
     }
-
 
     /**
      * Creates a new user group with specific policies.
      * @return array 'status' indicating success or failure, 'message' for error info.
      */
-    public function createUserGroup()
+    protected function createUserGroup()
     {
         // Initialize the result array
         $result = [
@@ -217,7 +213,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * Creates a new user with specified username, password, and group.
      * @return array 'status' indicating success or failure, 'message' for error info.
      */
-    public function createUser()
+    protected function createUser($password, $username)
     {
         // Initialize the result array
         $result = [
@@ -227,16 +223,16 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
         // Check if the user already exists
         $userExists = $this->routerOsApi->comm("/user/print", array(
-            "?name" => env('MIKROTIK_NAME')
+            "?name" => $username
         ));
 
         // If the user does not exist, create the user
         if (empty($userExists)) {
             // Add the new user with the specified username, password, and group
             $userResult = $this->routerOsApi->comm("/user/add", array(
-                "name"     => env('MIKROTIK_NAME'),
-                "password" => env('MIKROTIK_NAME'),
-                "group"    => env('MIKROTIK_NAME'),
+                "name"     => $username,
+                "password" => $password,
+                "group"    => $username,
                 "comment"  => "Managed by AZMI. DO NOT EDIT!!!"
             ));
 
@@ -334,8 +330,8 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         $this->updateSetting('mikrotik_ip', '0', $data['mikrotikIP']);
         $this->updateSetting('mikrotik_api_port', '0', $data['mikrotikAPIPort']);
         $this->updateSetting('server_ip', '0', $data['serverIP']);
-        $this->updateSetting('mikrotik_api_username', '0', $data['tempUsername']);
-        $this->updateSetting('mikrotik_api_password', '0', $data['tempPassword']);
+        $this->updateSetting('mikrotik_api_username', '0', $data['username']);
+        $this->updateSetting('mikrotik_api_password', '0', $data['password']);
     }
 
     /**

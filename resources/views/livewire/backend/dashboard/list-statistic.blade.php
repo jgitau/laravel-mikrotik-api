@@ -50,7 +50,8 @@
                             <i class="fa-solid fa-clock ti-sm"></i>
                         </div>
                         <div class="card-info">
-                            <h5 class="mb-0">{{ $uptime }}</h5>
+                            <!-- Add id "uptime" to the h5 element -->
+                            <h5 id="uptime" class="mb-0">{{ $uptime }}</h5>
                             <small>Uptime</small>
                         </div>
                     </div>
@@ -115,13 +116,18 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         setInterval(function() {
-            @this.call('loadCpuData');
-        }, 3000); // Update every 3 seconds
+            // Call the Livewire method to load the new CPU data and uptime
+            @this.call('loadCpuDataAndUptime');
+        }, 2000); // Update every 2 seconds
     });
 
+    // Listen for the cpuLoadUpdated and uptimeUpdated events
     window.livewire.on('cpuLoadUpdated', cpuLoad => {
         document.getElementById('cpuLoad').innerText = cpuLoad;
     });
-</script>
 
+    window.livewire.on('uptimeUpdated', uptime => {
+        document.getElementById('uptime').innerText = uptime;
+    });
+</script>
 @endpush

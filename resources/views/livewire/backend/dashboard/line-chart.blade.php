@@ -14,237 +14,86 @@
             </div>
         </div>
         <div class="card-body" wire:ignore>
-            <div id="chartTraffic" class="chart-apex" data-height="300"></div>
+            <canvas id="chartTraffic"></canvas>
         </div>
     </div>
 </div>
 
-{{-- @push('scripts')
-<script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
-<script>
-    document.addEventListener('livewire:load', function () {
-        var uploadTrafficData = [];
-        var downloadTrafficData = [];
-
-        var chartOptions = {
-            series: [
-                {
-                    name: 'Upload Traffic',
-                    data: uploadTrafficData
-                },
-                {
-                    name: 'Download Traffic',
-                    data: downloadTrafficData
-                }
-            ],
-            chart: {
-                height: 300,
-                type: 'line',
-                animations: {
-                    enabled: true,
-                    easing: 'linear',
-                    dynamicAnimation: {
-                        speed: 2000
-                    }
-                },
-                toolbar: {
-                    show: false
-                },
-                zoom: {
-                    enabled: false
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2.5
-            },
-            markers: {
-                size: 0
-            },
-            xaxis: {
-                type: 'datetime',
-                range: 10000,
-                labels: {
-                    format: 'dd MMM yyyy HH:mm'
-                }
-            },
-            yaxis: {
-                labels: {
-                    formatter: function (value) {
-                        return value.toFixed(2) + ' kbps';
-                    }
-                }
-            },
-            legend: {
-                show: true
-            }
-        };
-
-        var chartTraffic = new ApexCharts(document.getElementById('chartTraffic'), chartOptions);
-        chartTraffic.render();
-
-        window.livewire.on('uploadTrafficUpdated', function (uploadTraffic) {
-            uploadTrafficData.push({
-                x: Date.now(),
-                y: uploadTraffic
-            });
-            chartTraffic.updateSeries([
-                {
-                    name: 'Upload Traffic',
-                    data: uploadTrafficData
-                },
-                {
-                    name: 'Download Traffic',
-                    data: downloadTrafficData
-                }
-            ]);
-        });
-
-        window.livewire.on('downloadTrafficUpdated', function (downloadTraffic) {
-            downloadTrafficData.push({
-                x: Date.now(),
-                y: downloadTraffic
-            });
-            chartTraffic.updateSeries([
-                {
-                    name: 'Upload Traffic',
-                    data: uploadTrafficData
-                },
-                {
-                    name: 'Download Traffic',
-                    data: downloadTrafficData
-                }
-            ]);
-        });
-
-        // This will call the loadTrafficData function every 1 second (1000ms)
-        setInterval(function () {
-            window.livewire.emit('callLoadTrafficData');
-        }, 1000);
-    });
-</script>
-@endpush --}}
-
-
 @push('scripts')
-{{-- APEX CHART JS --}}
-<script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
-{{-- TODO: Change chart to chart.js plugin streaming --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.27.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.0.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-streaming@2.0.0"></script>
 <script>
-    document.addEventListener('livewire:load', function () {
-        var uploadTrafficData = [];
-        var downloadTrafficData = [];
-
-        // Add initial data to the chart
-        for (var i = 0; i < 100; i++) {
-            uploadTrafficData.push({
-                x: Date.now() - (100 - i) * 1000,
-                y: 0
-            });
-            downloadTrafficData.push({
-                x: Date.now() - (100 - i) * 1000,
-                y: 0
-            });
-        }
-
-        var chartOptions = {
-            series: [
-                {
-                    name: 'Upload Traffic',
-                    data: uploadTrafficData
-                },
-                {
-                    name: 'Download Traffic',
-                    data: downloadTrafficData
-                }
-            ],
-            chart: {
-                height: 300,
-                type: 'line',
-                animations: {
-                    enabled: true,
-                    easing: 'linear',
-                    dynamicAnimation: {
-                        speed: 2000
+    document.addEventListener('DOMContentLoaded', function () {
+    var ctx = document.getElementById('chartTraffic').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Upload Traffic',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [],
+            },{
+                label: 'Download Traffic',
+                backgroundColor: 'rgb(75, 192, 192)',
+                borderColor: 'rgb(75, 192, 192)',
+                data: [],
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'realtime',
+                    realtime: {
+                        // TODO:
+                        // duration: 20000,
+                        // refresh: 1000,
+                        // delay: 2000,
+                        onRefresh: function(chart) {
+                            chart.data.datasets[0].data.push({
+                                x: Date.now(),
+                                y: @this.uploadTraffic
+                            });
+                            chart.data.datasets[1].data.push({
+                                x: Date.now(),
+                                y: @this.downloadTraffic
+                            });
+                        },
+                        delay: 2000
                     }
                 },
-                toolbar: {
-                    show: false
-                },
-                zoom: {
-                    enabled: false
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2.5
-            },
-            markers: {
-                size: 0
-            },
-            xaxis: {
-                type: 'datetime',
-                range: 10000,
-                labels: {
-                    format: 'dd MMM yyyy HH:mm'
-                }
-            },
-            yaxis: {
-                labels: {
-                    formatter: function (value) {
-                        return value.toFixed(2) + ' kbps';
+                y: {
+
+                    title: {
+                        display: true,
+                        text: 'Traffic (kbps)'
                     }
-                }
-            },
-            legend: {
-                show: true
+                },
+
             }
-        };
-
-        var chartTraffic = new ApexCharts(document.getElementById('chartTraffic'), chartOptions);
-        chartTraffic.render();
-
-        window.livewire.on('uploadTrafficUpdated', function (uploadTraffic) {
-            uploadTrafficData.push({
-                x: Date.now(),
-                y: uploadTraffic
-            });
-            updateChart();
-        });
-
-        window.livewire.on('downloadTrafficUpdated', function (downloadTraffic) {
-            downloadTrafficData.push({
-                x: Date.now(),
-                y: downloadTraffic
-            });
-            updateChart();
-        });
-
-        function updateChart() {
-            chartTraffic.updateSeries([
-                {
-                    name: 'Upload Traffic',
-                    data: uploadTrafficData.slice(-100)
-                },
-                {
-                    name: 'Download Traffic',
-                    data: downloadTrafficData.slice(-100)
-                }
-            ]);
         }
-
-        setInterval(function () {
-            window.livewire.emit('callLoadTrafficData');
-        }, 1000);
-
-        // Add a slight delay to the chart update to make it smoother
-        setInterval(updateChart, 900);
     });
+
+    window.livewire.on('updateTrafficData', function (uploadTraffic, downloadTraffic) {
+        console.log(uploadTraffic, downloadTraffic);
+        chart.data.datasets[0].data.push({
+            x: Date.now(),
+            y: uploadTraffic
+        });
+        chart.data.datasets[1].data.push({
+            x: Date.now(),
+            y: downloadTraffic
+        });
+        chart.update('quiet');
+    });
+
+    // Set interval to refresh data every 5 seconds
+    setInterval(() => {
+        window.livewire.emit('loadTrafficData');
+    }, 1000); // Update every 5 seconds
+
+});
 </script>
 @endpush

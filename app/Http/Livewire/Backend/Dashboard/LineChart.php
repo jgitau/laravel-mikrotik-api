@@ -2,69 +2,71 @@
 
 namespace App\Http\Livewire\Backend\Dashboard;
 
-use App\Helpers\MikrotikConfigHelper;
 use App\Services\MikrotikApi\MikrotikApiService;
+use App\Helpers\MikrotikConfigHelper;
 use Livewire\Component;
 
 class LineChart extends Component
 {
-    public $uploadTraffic, $downloadTraffic;
+    // Arrays for storing upload and download traffic data.
+    public $uploadTraffic = [];
+    public $downloadTraffic = [];
 
-    protected $listeners = ['callLoadTrafficData' => 'loadTrafficData'];
+    // Associative array for mapping event listeners to their handling methods.
+    protected $listeners = ['loadTrafficData' => 'loadTrafficData'];
 
+    /**
+     * This method is called when the component is created.
+     * @param MikrotikApiService $mikrotikApiService A service for MIKROTIK data retrieval.
+     */
     public function mount(MikrotikApiService $mikrotikApiService)
     {
-        // Retrieve the Mikrotik configuration settings.
-        $config = MikrotikConfigHelper::getMikrotikConfig();
-
-        if ($config && !in_array("", $config, true)) {
-            // Use the Mikrotik API service to fetch the current traffic data.
-            $data = $mikrotikApiService->getTrafficData($config['ip'], $config['username'], $config['password'], 'ether2-wan');
-        } else {
-            // If the config is invalid or incomplete, set default values for data.
-            $data = [
-                'uploadTraffic' => 0,
-                'downloadTraffic' => 0
-            ];
-
-            // Emit an error event
-            $this->emit('error', 'Invalid or incomplete Mikrotik configuration.');
-            return;
-        }
-
-        // Update the uploadTraffic and downloadTraffic properties.
-        $this->uploadTraffic = $data['uploadTraffic'];
-        $this->downloadTraffic = $data['downloadTraffic'];
+        // Load traffic data using the provided service.
+        $this->loadTrafficData($mikrotikApiService);
     }
 
+    /**
+     * Render the associated view for this component.
+     * @return View The view instance for 'livewire.backend.dashboard.line-chart'.
+     */
     public function render()
     {
+        // Return the specific view for this component.
         return view('livewire.backend.dashboard.line-chart');
     }
 
     /**
-     * Loads traffic data from the specified network interface of a Mikrotik device.
-     * @param MikrotikApiService $mikrotikApiService The service used for communicating with a Mikrotik router.
-     * @param string $interface Network interface to monitor.
+     * Load traffic data using the provided MikrotikApiService instance.
+     * @param MikrotikApiService $mikrotikApiService An instance of MikrotikApiService for MIKROTIK data retrieval.
      */
     public function loadTrafficData(MikrotikApiService $mikrotikApiService)
     {
+        // Retrieve MikroTik configuration.
         $config = MikrotikConfigHelper::getMikrotikConfig();
-        if ($config && !in_array("", $config, true)) {
-            $data = $mikrotikApiService->getTrafficData($config['ip'], $config['username'], $config['password'], 'ether2-wan');
-        } else {
-            $data = [
-                'uploadTraffic' => 0,
-                'downloadTraffic' => 0
-            ];
-            $this->emit('error', 'Invalid or incomplete Mikrotik configuration.');
-            return;
-        }
-        $this->uploadTraffic = $data['uploadTraffic'];
-        $this->downloadTraffic = $data['downloadTraffic'];
 
-        // Emit events with the updated traffic data.
-        $this->emit('uploadTrafficUpdated', $this->uploadTraffic);
-        $this->emit('downloadTrafficUpdated', $this->downloadTraffic);
+        // Check if the configuration is valid.
+        if ($config && !in_array("", $config, true)) {
+            // Retrieve traffic data using the MikroTik API service.
+            $trafficData = $mikrotikApiService->getTrafficData($config['ip'], $config['username'], $config['password'], 'ether2-wan');
+
+            // If traffic data was successfully retrieved, update the component's properties and emit events.
+            if ($trafficData) {
+                $this->uploadTraffic = $trafficData['uploadTraffic'];
+                $this->downloadTraffic = $trafficData['downloadTraffic'];
+
+                // Emit an event to update the traffic data.
+                $this->emit('updateTrafficData', $this->uploadTraffic, $this->downloadTraffic);
+
+                // Emit events for updated upload and download traffic.
+                $this->emit('uploadTrafficUpdated', $this->uploadTraffic);
+                $this->emit('downloadTrafficUpdated', $this->downloadTraffic);
+            } else {
+                // If traffic data retrieval failed, emit an error event.
+                $this->emit('error', 'Failed to fetch traffic data.');
+            }
+        } else {
+            // If the configuration is invalid or incomplete, emit an error event.
+            $this->emit('error', 'Invalid or incomplete Mikrotik configuration.');
+        }
     }
 }

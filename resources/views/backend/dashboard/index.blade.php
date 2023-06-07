@@ -38,7 +38,7 @@ $configData = Helper::appClasses();
 
 @push('scripts')
 <!-- Vendors JS -->
-<script src="{{ asset('assets/vendor/libs/chartjs/chartjs.js') }}"></script>
+{{-- <script src="{{ asset('assets/vendor/libs/chartjs/chartjs.js') }}"></script> --}}
 
 <!-- Page JS -->
 <script src="{{ asset('assets/js/charts-chartjs.js') }}"></script>

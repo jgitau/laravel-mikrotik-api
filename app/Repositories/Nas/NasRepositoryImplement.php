@@ -98,69 +98,63 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      */
     protected function addRadiusConfiguration($radiusServer, $radiusSecret)
     {
+        // Initialize the result to be returned by this function
         $result = [
             'status' => false,
             'message' => ''
         ];
 
-        // Retrieve all current RADIUS configurations
+        // Fetch all current RADIUS configurations from the RouterOS
         $radiusConfigs = $this->routerOsApi->comm("/radius/print");
 
-        // Set a variable to track if your configuration is found
-        $yourConfigFound = false;
+        // Initialize a variable to store the id of the configuration if a matching configuration is found
+        $configId = null;
 
+        // Look for a configuration that has the same server address as the input
         foreach ($radiusConfigs as $config) {
-            // If the configuration address matches your server address, this is your configuration
+            // If the configuration server address matches the input, store its id
             if (isset($config['address']) && $config['address'] === $radiusServer) {
-                // Found your configuration, set the flag to true
-                $yourConfigFound = true;
-
-                // Update the configuration
-                $updateResult = $this->routerOsApi->comm("/radius/set", array(
-                    ".id"                   => $config[".id"],  // Use existing configuration id
-                    "address"               => $radiusServer,  // Set server address
-                    "secret"                => $radiusSecret,  // Set secret key
-                    // The following values are from the environment variables
-                    "domain"                => env('MIKROTIK_NAME'),
-                    "service"               => "hotspot",
-                    "authentication-port"   => env('MIKROTIK_AUTHENTICATION_PORT'),
-                    "accounting-port"       => env('MIKROTIK_ACCOUNTING_PORT'),
-                    "timeout"               => env('MIKROTIK_TIMEOUT'),
-                    // Comment for configuration
-                    "comment"               => "Managed by AZMI. DO NOT EDIT!!!"
-                ));
-
-                if (isset($updateResult['!trap'])) {
-                    $result['message'] = "Error in updating RADIUS configuration: " . $updateResult['!trap'][0]['message'];
-                    return $result;
-                }
-
-                // If updates were successful, set status to true
-                $result['status'] = true;
-                break;  // No need to process further, break the loop
+                $configId = $config[".id"];
+                break;  // Stop the search, as we've found a matching configuration
             }
         }
 
-        // If your configuration was not found in the existing configs, add a new one
-        if (!$yourConfigFound) {
-            $addResult = $this->routerOsApi->comm("/radius/add", array(
-                "address"               => $radiusServer,
-                "secret"                => $radiusSecret,
-                "domain"                => env('MIKROTIK_NAME'),
-                "service"               => "hotspot",
-                "authentication-port"   => env('MIKROTIK_AUTHENTICATION_PORT'),
-                "accounting-port"       => env('MIKROTIK_ACCOUNTING_PORT'),
-                "timeout"               => env('MIKROTIK_TIMEOUT'),
-                "comment"               => "Managed by AZMI. DO NOT EDIT!!!"
-            ));
+        // Prepare configuration data for adding or updating a RADIUS configuration
+        $configData = [
+            "address"               => $radiusServer,  // The RADIUS server address
+            "secret"                => $radiusSecret,  // The secret key for RADIUS authentication
+            "domain"                => env('MIKROTIK_NAME'),  // The Mikrotik domain name
+            "service"               => "hotspot",  // The service type, which is "hotspot" in this case
+            "authentication-port"   => env('MIKROTIK_AUTHENTICATION_PORT'),  // The port for authentication
+            "accounting-port"       => env('MIKROTIK_ACCOUNTING_PORT'),  // The port for accounting
+            "timeout"               => env('MIKROTIK_TIMEOUT'),  // The timeout value
+            "comment"               => "Managed by AZMI. DO NOT EDIT!!!"  // A comment for this configuration
+        ];
 
-            if (isset($addResult['!trap'])) {
-                $result['message'] = "Error in adding RADIUS configuration: " . $addResult['!trap'][0]['message'];
-            } else {
-                $result['status'] = true;
+        // If a matching configuration was found, update it
+        if ($configId !== null) {
+            $configData[".id"] = $configId;
+            $resultData = $this->routerOsApi->comm("/radius/set", $configData);
+
+            // If there was a problem with the update operation, return an error message
+            if (isset($resultData['!trap'])) {
+                $result['message'] = "Error in updating RADIUS configuration: " . $resultData['!trap'][0]['message'];
+                return $result;
+            }
+        } else {  // If no matching configuration was found, add a new one
+            $resultData = $this->routerOsApi->comm("/radius/add", $configData);
+
+            // If there was a problem with the add operation, return an error message
+            if (isset($resultData['!trap'])) {
+                $result['message'] = "Error in adding RADIUS configuration: " . $resultData['!trap'][0]['message'];
+                return $result;
             }
         }
 
+        // If the operation was successful, update the status to true
+        $result['status'] = true;
+
+        // Return the result of the operation
         return $result;
     }
 

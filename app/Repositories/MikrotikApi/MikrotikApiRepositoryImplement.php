@@ -10,6 +10,13 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
 {
 
     /**
+     * Define RouterOS API endpoints
+     */
+    const ENDPOINT_ACTIVE = "/ip/hotspot/active/print";
+    const ENDPOINT_IP_BINDING = "/ip/hotspot/ip-binding/print";
+    const ENDPOINT_RESOURCE = "/system/resource/print";
+
+    /**
      * Model class to be used in this repository for the common methods inside Eloquent
      * Don't remove or change $this->model variable name
      * @property Model|mixed $model;
@@ -38,8 +45,8 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
             }
 
             // Fetch list of active users and IP bindings
-            $userActive = $this->model->comm("/ip/hotspot/active/print");
-            $ipBindings = $this->model->comm("/ip/hotspot/ip-binding/print");
+            $userActive = $this->model->comm(self::ENDPOINT_ACTIVE);
+            $ipBindings = $this->model->comm(self::ENDPOINT_IP_BINDING);
 
             // Filter bypassed IP bindings
             $ipBindingBypassed = array_filter($ipBindings, function ($binding) {
@@ -92,7 +99,6 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
         }
     }
 
-    // TODO:
     /**
      * Retrieves Mikrotik resource data via RouterOS API.
      * @param string $ip Mikrotik router IP address.
@@ -110,7 +116,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
             }
 
             // Fetch system resource data
-            $systemResource = $this->model->comm("/system/resource/print");
+            $systemResource = $this->model->comm(self::ENDPOINT_RESOURCE);
 
             if (empty($systemResource[0])) {
                 Log::error('Failed to get Mikrotik resource data: Empty response.');
@@ -118,34 +124,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
             }
 
             // Extract the data from the response
-            $uptime = $systemResource[0]['uptime'] ?? null;
-            $freeMemory = $systemResource[0]['free-memory'] ?? null;
-            $totalMemory = $systemResource[0]['total-memory'] ?? null;
-            $cpuLoad = $systemResource[0]['cpu-load'] ?? null;
-
-            // Calculate the free memory percentage
-            $freeMemoryPercentage = $freeMemory && $totalMemory ? number_format(($freeMemory / $totalMemory) * 100, 2) . "%" : null;
-
-            // Parse Mikrotik uptime format to a more common format
-            if ($uptime) {
-                $pattern = "/(?:(\d+)w)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/";
-                preg_match($pattern, $uptime, $matches);
-
-                $weeks = intval($matches[1] ?? 0);
-                $days = intval($matches[2] ?? 0);
-                $hours = intval($matches[3] ?? 0);
-                $minutes = intval($matches[4] ?? 0);
-                $seconds = intval($matches[5] ?? 0);
-
-                // Convert weeks to days
-                $days += 7 * $weeks;
-
-                // Construct uptime string in format "dd hh:mm:ss"
-                $uptime = sprintf("%dd %02d:%02d:%02d", $days, $hours, $minutes, $seconds);
-            }
-
-            // Add a percent sign to the CPU Load percentage before returning
-            $cpuLoad .= "%";
+            ['uptime' => $uptime, 'freeMemoryPercentage' => $freeMemoryPercentage, 'cpuLoad' => $cpuLoad] = $this->processSystemResource($systemResource[0]);
 
             // Fetch active hotspot data
             $activeHotspot = $this->getMikrotikActiveHotspot($ip, $username, $password);
@@ -161,6 +140,57 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
             Log::error('Failed to get Mikrotik resource data: ' . $e->getMessage());
             return null;
         }
+    }
+
+    /**
+     * Process system resource data.
+     * @param array $resourceData
+     * @return array processed data
+     */
+    protected function processSystemResource(array $resourceData): array
+    {
+        $uptime = $resourceData['uptime'] ?? null;
+        $freeMemory = $resourceData['free-memory'] ?? null;
+        $totalMemory = $resourceData['total-memory'] ?? null;
+        $cpuLoad = $resourceData['cpu-load'] ?? null;
+
+        // Calculate the free memory percentage
+        $freeMemoryPercentage = $freeMemory && $totalMemory ? number_format(($freeMemory / $totalMemory) * 100, 2) . "%" : null;
+
+        // Parse Mikrotik uptime format to a more common format
+        $uptime = $this->parseUptime($uptime);
+
+        // Add a percent sign to the CPU Load percentage before returning
+        $cpuLoad .= "%";
+
+        return compact('uptime', 'freeMemoryPercentage', 'cpuLoad');
+    }
+
+    /**
+     * Parse Mikrotik uptime format to a more common format.
+     * @param string|null $uptime
+     * @return string
+     */
+    protected function parseUptime(?string $uptime): string
+    {
+        if ($uptime) {
+            $pattern = "/(?:(\d+)w)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/";
+            preg_match($pattern, $uptime, $matches);
+
+            $weeks = intval($matches[1] ?? 0);
+            $days = intval($matches[2] ?? 0);
+            $hours = intval($matches[3] ?? 0);
+            $minutes = intval($matches[4] ?? 0);
+            $seconds = intval($matches[5] ?? 0);
+
+            // Convert weeks to days
+            $days += 7 * $weeks;
+
+            // Construct uptime string in format "dd hh:mm:ss"
+            $uptime = sprintf("%dd %02d:%02d:%02d", $days, $hours, $minutes, $seconds);
+        }
+
+        return $uptime;
     }
 
 }

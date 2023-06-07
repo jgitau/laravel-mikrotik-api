@@ -1,9 +1,6 @@
 <?php
 
-// Namespace defines where the file is located in relation to the application's root folder.
 namespace App\Http\Livewire\Backend\Dashboard;
-
-// Import necessary classes.
 use App\Helpers\MikrotikConfigHelper;
 use App\Services\MikrotikApi\MikrotikApiService;
 use Livewire\Component;

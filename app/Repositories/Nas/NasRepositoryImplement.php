@@ -103,7 +103,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      */
     public function addRadiusConfiguration($radiusServer, $radiusSecret)
     {
-        // Prepare the result with initial values
         $result = [
             'status' => false,
             'message' => ''
@@ -112,11 +111,16 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         // Retrieve all current RADIUS configurations
         $radiusConfigs = $this->routerOsApi->comm("/radius/print");
 
-        // If there is at least one configuration present, update it
-        if (count($radiusConfigs) > 0) {
-            // Iterate through each existing configuration for updating
-            foreach ($radiusConfigs as $config) {
-                // Update the configuration with the provided parameters
+        // Set a variable to track if your configuration is found
+        $yourConfigFound = false;
+
+        foreach ($radiusConfigs as $config) {
+            // If the configuration address matches your server address, this is your configuration
+            if (isset($config['address']) && $config['address'] === $radiusServer) {
+                // Found your configuration, set the flag to true
+                $yourConfigFound = true;
+
+                // Update the configuration
                 $updateResult = $this->routerOsApi->comm("/radius/set", array(
                     ".id"                   => $config[".id"],  // Use existing configuration id
                     "address"               => $radiusServer,  // Set server address
@@ -131,19 +135,20 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
                     "comment"               => "Managed by AZMI. DO NOT EDIT!!!"
                 ));
 
-                // If there was an error, set the error message and return the result
                 if (isset($updateResult['!trap'])) {
                     $result['message'] = "Error in updating RADIUS configuration: " . $updateResult['!trap'][0]['message'];
                     return $result;
                 }
-            }
 
-            // If updates were successful, set status to true
-            $result['status'] = true;
-        } else {
-            // If there were no existing configurations, add a new one
+                // If updates were successful, set status to true
+                $result['status'] = true;
+                break;  // No need to process further, break the loop
+            }
+        }
+
+        // If your configuration was not found in the existing configs, add a new one
+        if (!$yourConfigFound) {
             $addResult = $this->routerOsApi->comm("/radius/add", array(
-                // Same parameters as the update operation above
                 "address"               => $radiusServer,
                 "secret"                => $radiusSecret,
                 "domain"                => env('MIKROTIK_NAME'),
@@ -154,18 +159,17 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
                 "comment"               => "Managed by AZMI. DO NOT EDIT!!!"
             ));
 
-            // If there was an error in adding, set the error message
             if (isset($addResult['!trap'])) {
                 $result['message'] = "Error in adding RADIUS configuration: " . $addResult['!trap'][0]['message'];
             } else {
-                // If addition was successful, set status to true
                 $result['status'] = true;
             }
         }
 
-        // Return the result (success or failure, with any error message)
         return $result;
     }
+
+
 
 
     /**

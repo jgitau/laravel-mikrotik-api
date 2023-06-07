@@ -30,7 +30,7 @@
                         placeholder="Enter a Temporary Username.." required />
                 </div>
                 <div class="col-6">
-                    <x-input-field id="temporaryPassword" label="Temporary Password" model="temporary_password"
+                    <x-input-field type="password" id="temporaryPassword" label="Temporary Password" model="temporary_password"
                         placeholder="Enter a Temporary Password.." />
                 </div>
             </div>

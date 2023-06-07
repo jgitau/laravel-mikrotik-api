@@ -28,7 +28,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         $this->routerOsApi = $routerOsApi;
     }
 
-
     /**
      * Sets up a Mikrotik device process.
      * @param record Current user data.
@@ -43,55 +42,52 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
             'message' => ''
         ];
 
-        // Check if the server IP address has changed
-        if ($record->server_ip_address != $data['serverIP']) {
-            // Extract required data from the input
-            $username       = $data['tempUsername'];
-            $password       = Crypt::decryptString($data['tempPassword']);
-            $ipAdress       = $data['mikrotikIP'];
-            $radiusServer    = $data['mikrotikIP'];
-            $radiusSecret    = $data['radiusSecret'];
+        // Extract required data from the input
+        $username       = $data['tempUsername'];
+        $password       = Crypt::decryptString($data['tempPassword']);
+        $ipAdress       = $data['mikrotikIP'];
+        $radiusServer   = $data['serverIP'];
+        $radiusSecret   = $data['radiusSecret'];
 
-            try {
-                // Attempt to connect to the Mikrotik device
-                if ($this->routerOsApi->connect($ipAdress, $username, $password)) {
-                    // Add RADIUS configuration and check if successful
-                    // TODO:
-                    $radiusResult = $this->addRadiusConfiguration($radiusServer, $radiusSecret);
-                    if ($radiusResult['status']) {
-                        // Create user group and check if successful
-                        $groupResult = $this->createUserGroup();
-                        if ($groupResult['status']) {
-                            // Create user and check if successful
-                            $userResult = $this->createUser();
-                            if ($userResult['status']) {
-                                // If all operations are successful, update the result status
-                                $result['status'] = true;
-                            } else {
-                                // Set error message for user creation
-                                $result['message'] = $userResult['message'];
-                            }
+        try {
+            // Attempt to connect to the Mikrotik device
+            if ($this->routerOsApi->connect($ipAdress, $username, $password)) {
+                // Add RADIUS configuration and check if successful
+                $radiusResult = $this->addRadiusConfiguration($radiusServer, $radiusSecret);
+                if ($radiusResult['status']) {
+                    // Create user group and check if successful
+                    $groupResult = $this->createUserGroup();
+                    if ($groupResult['status']) {
+                        // Create user and check if successful
+                        $userResult = $this->createUser();
+                        if ($userResult['status']) {
+                            // If all operations are successful, update the result status
+                            $result['status'] = true;
                         } else {
-                            // Set error message for group creation
-                            $result['message'] = $groupResult['message'];
+                            // Set error message for user creation
+                            $result['message'] = $userResult['message'];
                         }
                     } else {
-                        // Set error message for RADIUS configuration
-                        $result['message'] = $radiusResult['message'];
+                        // Set error message for group creation
+                        $result['message'] = $groupResult['message'];
                     }
                 } else {
-                    // Set error message if unable to connect to Mikrotik device
-                    $result['message'] = "Unable to connect to the Mikrotik device.";
+                    // Set error message for RADIUS configuration
+                    $result['message'] = $radiusResult['message'];
                 }
-            } catch (\Exception $e) {
-                // Set error message if an exception occurs
-                $result['message'] = "Error: " . $e->getMessage();
+            } else {
+                // Set error message if unable to connect to Mikrotik device
+                $result['message'] = "Unable to connect to the Mikrotik device.";
             }
+        } catch (\Exception $e) {
+            // Set error message if an exception occurs
+            $result['message'] = "Error: " . $e->getMessage();
         }
 
         // Return the result of the operation
         return $result;
     }
+
 
 
     /**
@@ -101,7 +97,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * @param string $radiusSecret Secret key for RADIUS authentication.
      * @return array Contains status and optional error message.
      */
-    public function addRadiusConfiguration($radiusServer, $radiusSecret)
+    protected function addRadiusConfiguration($radiusServer, $radiusSecret)
     {
         $result = [
             'status' => false,

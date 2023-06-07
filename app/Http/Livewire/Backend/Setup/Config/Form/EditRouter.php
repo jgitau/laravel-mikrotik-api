@@ -83,7 +83,6 @@ class EditRouter extends Component
         return view('livewire.backend.setup.config.form.edit-router');
     }
 
-
     /**
      * closeModal
      *

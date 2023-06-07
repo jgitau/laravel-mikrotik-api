@@ -88,8 +88,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         return $result;
     }
 
-
-
     /**
      * Adds or updates a RADIUS configuration in RouterOS.
      *
@@ -164,9 +162,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
         return $result;
     }
-
-
-
 
     /**
      * Creates a new user group with specific policies.

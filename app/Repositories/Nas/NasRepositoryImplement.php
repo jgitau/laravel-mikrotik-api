@@ -6,7 +6,6 @@ use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Nas;
 use App\Models\RouterOsApi;
 use App\Models\Setting;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 
 class NasRepositoryImplement extends Eloquent implements NasRepository
@@ -44,10 +43,12 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
         // Extract required data from the input
         $username       = $data['tempUsername'];
-        $password       = Crypt::decryptString($data['tempPassword']);
+        $password       = $data['tempPassword'];
         $ipAdress       = $data['mikrotikIP'];
         $radiusServer   = $data['serverIP'];
         $radiusSecret   = $data['radiusSecret'];
+        $usernameForAddUser       = $data['username'];
+        $passwordForAddUser       = $data['password'];
 
         try {
             // Attempt to connect to the Mikrotik device
@@ -59,7 +60,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
                     $groupResult = $this->createUserGroup();
                     if ($groupResult['status']) {
                         // Create user and check if successful
-                        $userResult = $this->createUser();
+                        $userResult = $this->createUser($passwordForAddUser, $usernameForAddUser);
                         if ($userResult['status']) {
                             // If all operations are successful, update the result status
                             $result['status'] = true;
@@ -167,7 +168,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * Creates a new user group with specific policies.
      * @return array 'status' indicating success or failure, 'message' for error info.
      */
-    public function createUserGroup()
+    protected function createUserGroup()
     {
         // Initialize the result array
         $result = [
@@ -212,7 +213,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * Creates a new user with specified username, password, and group.
      * @return array 'status' indicating success or failure, 'message' for error info.
      */
-    public function createUser()
+    protected function createUser($password, $username)
     {
         // Initialize the result array
         $result = [
@@ -222,16 +223,16 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
         // Check if the user already exists
         $userExists = $this->routerOsApi->comm("/user/print", array(
-            "?name" => env('MIKROTIK_NAME')
+            "?name" => $username
         ));
 
         // If the user does not exist, create the user
         if (empty($userExists)) {
             // Add the new user with the specified username, password, and group
             $userResult = $this->routerOsApi->comm("/user/add", array(
-                "name"     => env('MIKROTIK_NAME'),
-                "password" => env('MIKROTIK_NAME'),
-                "group"    => env('MIKROTIK_NAME'),
+                "name"     => $username,
+                "password" => $password,
+                "group"    => $username,
                 "comment"  => "Managed by AZMI. DO NOT EDIT!!!"
             ));
 
@@ -329,8 +330,8 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         $this->updateSetting('mikrotik_ip', '0', $data['mikrotikIP']);
         $this->updateSetting('mikrotik_api_port', '0', $data['mikrotikAPIPort']);
         $this->updateSetting('server_ip', '0', $data['serverIP']);
-        $this->updateSetting('mikrotik_api_username', '0', $data['tempUsername']);
-        $this->updateSetting('mikrotik_api_password', '0', $data['tempPassword']);
+        $this->updateSetting('mikrotik_api_username', '0', $data['username']);
+        $this->updateSetting('mikrotik_api_password', '0', $data['password']);
     }
 
     /**

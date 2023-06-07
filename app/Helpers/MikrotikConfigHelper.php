@@ -24,7 +24,8 @@ class MikrotikConfigHelper
             $config['username'] = Setting::where('setting', 'mikrotik_api_username')->first()->value;
 
             // Decrypt and fetch the password
-            $config['password'] = Crypt::decryptString(Setting::where('setting', 'mikrotik_api_password')->first()->value);
+            // $config['password'] = Crypt::decryptString(Setting::where('setting', 'mikrotik_api_password')->first()->value);
+            $config['password'] = Setting::where('setting', 'mikrotik_api_password')->first()->value;
 
             // If any configuration setting is missing, throw an exception
             if (in_array(null, $config, true)) {

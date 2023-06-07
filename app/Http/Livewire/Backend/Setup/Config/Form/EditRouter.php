@@ -4,10 +4,8 @@ namespace App\Http\Livewire\Backend\Setup\Config\Form;
 
 use App\Services\Nas\NasService;
 use App\Traits\LivewireMessageEvents;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
-use Termwind\Components\Dd;
 
 class EditRouter extends Component
 {
@@ -114,7 +112,7 @@ class EditRouter extends Component
             'radiusPort' => $this->ports,
             'radiusSecret' => $this->secret,
             'tempUsername' => $this->temporary_username,
-            'tempPassword' => Crypt::encryptString($this->temporary_password),
+            'tempPassword' => $this->temporary_password,
             'username' => env('MIKROTIK_NAME'),
             'password' => Hash::make(env('MIKROTIK_NAME')),
             'groupname' => env('MIKROTIK_NAME'),
@@ -135,6 +133,8 @@ class EditRouter extends Component
                     $this->dispatchSuccessEvent('Router settings updated successfully.');
                     // Close the modal
                     $this->closeModal();
+                    // Reset the form fields
+                    $this->resetFields();
                     // Emit the 'nasUpdated' event with a true status
                     $this->emitUp('nasUpdated', true);
                 } else {

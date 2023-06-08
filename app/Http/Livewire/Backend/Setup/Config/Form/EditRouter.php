@@ -10,6 +10,8 @@ use Livewire\Component;
 class EditRouter extends Component
 {
     use LivewireMessageEvents;
+
+    // Public properties
     public $nas_id, $server_ip_address, $mikrotik_ip_address, $mikrotik_api_port, $ports, $secret, $temporary_username, $temporary_password;
 
     // Livewire properties
@@ -179,11 +181,10 @@ class EditRouter extends Component
          * @var Nas $nas
          */
         $nas = $nasService->getNasParameters();
-
         // Assign the NAS properties to the Livewire properties
         $this->nas_id = $nas->id ? $nas->id : 1;
-        $this->server_ip_address = $nas->server_ip_address ? $nas->server_ip_address : '';
-        $this->mikrotik_ip_address = $nas->mikrotik_ip_address ? $nas->mikrotik_ip_address : '';
+        $this->server_ip_address = $nas->server_ip ? $nas->server_ip : '';
+        $this->mikrotik_ip_address = $nas->mikrotik_ip ? $nas->mikrotik_ip : '';
         $this->mikrotik_api_port = $nas->mikrotik_api_port ? $nas->mikrotik_api_port : '8728';
         $this->ports = $nas->ports;
         $this->secret = $nas->secret;

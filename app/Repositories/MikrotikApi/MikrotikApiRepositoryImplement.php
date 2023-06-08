@@ -230,7 +230,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
      * Method to get current upload and download traffic data from a Mikrotik router.
      * @param string $ip @param string $username @param string $password @param string $interface @return array
      */
-    public function getTrafficData($ip, $username, $password, $interface = "ether2-wan")
+    public function getTrafficData($ip, $username, $password, $interface)
     {
         // Connect to the Mikrotik router
         if (!$this->model->connect($ip, $username, $password)) {
@@ -241,6 +241,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
             ];
         }
 
+        $interface  = env('MIKROTIK_INTERFACE');
         // Send the request to the monitor traffic endpoint
         $response = $this->model->comm(self::ENDPOINT_MONITOR_TRAFFIC, [
             "interface" => $interface,
@@ -279,7 +280,6 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
         try {
             // Establish a connection and retrieve active users data
             $userActive = $this->model->connectCurl($ip, $username, $password, 'ip/hotspot/active/print', ['count-only' => 'true']);
-
             // If connection fails, log the error and return null
             if (!$userActive) {
                 Log::error('Failed to connect to Mikrotik router or fetch active users data: ' . $ip);
@@ -314,22 +314,32 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     }
 
     /**
-     * Retrieves the count of IP bindings for a given IP address, username, password, and type using a MikroTik RouterOS API command.
-     * @param string $ip The IP address of the device to connect to.
-     * @param string $username The username used to authenticate the connection to a MikroTik router.
-     * @param string $password The password used to authenticate the connection to a MikroTik router.
-     * @param string $type The type of IP bindings to count.
-     * @return int The count of IP bindings that match the specified criteria. Returns 0 if no matching IP bindings found.
+     * Retrieves the count of IP bindings based on the type.
+     * @param string $ip The IP address of the device.
+     * @param string $username The username for authentication.
+     * @param string $password The password for authentication.
+     * @param string $type The type of IP binding (e.g. 'blocked', 'bypassed').
+     * @return int The count of IP bindings, or 0 if the connection fails.
      */
     private function getIpBindingsCount($ip, $username, $password, $type)
     {
-        $command = 'ip/hotspot/ip-binding/print where ' . $type;
-        $data = ['count-only' => 'true'];
+        // Define the MikroTik API command.
+        $command = 'ip/hotspot/ip-binding/print';
 
+        // Define the data for the command (request the count only).
+        $data = [
+            'count-only' => 'true',
+            '.query' => [
+                'type=' . $type,
+                'disabled=false'
+                ]
+        ];
+
+        // Establish a connection and retrieve the IP bindings data.
         $ipBindings = $this->model->connectCurl($ip, $username, $password, $command, $data);
 
+        // Return the count of IP bindings, or 0 if the connection failed.
         return $ipBindings !== null ? intval($ipBindings['ret']) : 0;
     }
-
 
 }

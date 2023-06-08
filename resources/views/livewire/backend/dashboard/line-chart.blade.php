@@ -2,21 +2,22 @@
     <div class="card">
         <div class="card-header header-elements">
             <div>
-                <h5 class="card-title mb-0">Statistics</h5>
-                <small class="text-muted">Commercial networks and enterprises</small>
+                <h5 class="card-title mb-0">Traffic Monitor</h5>
+                {{-- <small class="text-muted">Commercial networks and enterprises</small> --}}
             </div>
-            <div class="card-header-elements ms-auto py-0">
+            {{-- TODO: --}}
+            {{-- <div class="card-header-elements ms-auto py-0">
                 <h5 class="fw-bold mb-0 me-3">$ 78,000</h5>
                 <span class="badge bg-label-secondary">
                     <i class="ti ti-arrow-up ti-xs text-success"></i>
                     <span class="align-middle">37%</span>
                 </span>
-            </div>
+            </div> --}}
         </div>
         <div class="card-body" wire:ignore>
             @if ($uploadTraffic && $downloadTraffic)
             <canvas id="chartTraffic" data-upload='@json($uploadTraffic)'
-                data-download='@json($downloadTraffic)'></canvas>
+                data-download='@json($downloadTraffic)' height="100"></canvas>
             @endif
             {{-- <canvas id="chartTraffic"></canvas> --}}
         </div>
@@ -49,13 +50,13 @@ document.addEventListener('DOMContentLoaded', function () {
         data: {
             datasets: [{
                 label: 'Upload Traffic',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(26, 159, 227,0.8)',
+                borderColor: 'rgba(26, 159, 227,1)',
                 data: [],
             },{
                 label: 'Download Traffic',
-                backgroundColor: 'rgb(75, 192, 192)',
-                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(40, 206, 97, 0.8)',
+                borderColor: 'rgba(40, 206, 97, 1)',
                 data: [],
             }]
         },
@@ -119,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     window.livewire.on('updateTrafficData', function (uploadTraffic, downloadTraffic) {
-        console.log(uploadTraffic, downloadTraffic);
         chart.data.datasets[0].data.push({
             x: Date.now(),
             y: uploadTraffic

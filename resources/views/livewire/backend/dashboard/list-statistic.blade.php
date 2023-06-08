@@ -114,8 +114,10 @@
 
 @push('scripts')
 <script>
+    let updateInterval;
+
     document.addEventListener('DOMContentLoaded', function () {
-        setInterval(function() {
+        updateInterval = setInterval(function() {
             // Call the Livewire method to load the new CPU data and uptime
             @this.call('loadCpuDataAndUptime');
         }, 2000); // Update every 2 seconds
@@ -128,6 +130,11 @@
 
     window.livewire.on('uptimeUpdated', uptime => {
         document.getElementById('uptime').innerText = uptime;
+    });
+
+    // Listen for the error event and stop updates if an error occurs
+    window.livewire.on('error', error => {
+        clearInterval(updateInterval);
     });
 </script>
 @endpush

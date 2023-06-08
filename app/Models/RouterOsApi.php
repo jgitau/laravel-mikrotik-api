@@ -74,6 +74,15 @@ class RouterOsApi extends Model
         return $length;
     }
 
+    /**
+     * Check if currently connected to RouterOS.
+     *
+     * @return boolean If we are currently connected or not
+     */
+    public function isConnected()
+    {
+        return $this->connected;
+    }
 
     /**
      * Login to RouterOS

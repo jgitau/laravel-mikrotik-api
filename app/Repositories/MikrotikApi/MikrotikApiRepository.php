@@ -33,4 +33,14 @@ interface MikrotikApiRepository extends Repository{
      */
     public function getMikrotikResourceData($ip, $username, $password);
 
+    /**
+     * getTrafficData
+     * @param  mixed $ip
+     * @param  mixed $username
+     * @param  mixed $password
+     * @param  mixed $interface
+     * @return void
+     */
+    public function getTrafficData($ip, $username, $password, $interface);
+
 }

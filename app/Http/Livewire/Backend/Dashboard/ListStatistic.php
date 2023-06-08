@@ -23,24 +23,23 @@ class ListStatistic extends Component
         // Check if the configuration exists and no values are empty.
         if ($config && !in_array("", $config, true)) {
             // Use the Mikrotik API service to fetch the current router statistics.
-            $data = $mikrotikApiService->getMikrotikResourceData($config['ip'], $config['username'], $config['password']);
+            try {
+                $data = $mikrotikApiService->getMikrotikResourceData($config['ip'], $config['username'], $config['password']);
+            } catch (\Exception $e) {
+                // On error, set $data to null.
+                $data = null;
+            }
         } else {
-            // If the config is invalid or incomplete, set default values for data.
-            $data = [
-                'cpuLoad' => 0,
-                'activeHotspot' => 0,
-                'freeMemoryPercentage' => '0%',
-                'uptime' => '0d 0:0:0'
-            ];
+            // If the config is invalid or incomplete, set $data to null.
+            $data = null;
         }
 
-        // Assign the fetched data to the public properties.
-        $this->cpuLoad = $data['cpuLoad'];
-        $this->activeHotspots = $data['activeHotspot'];
-        $this->freeMemoryPercentage = $data['freeMemoryPercentage'];
-        $this->uptime = $data['uptime'];
+        // If data was fetched successfully, assign it to the public properties.
+        $this->cpuLoad = $data['cpuLoad'] ?? 0;
+        $this->activeHotspots = $data['activeHotspot'] ?? 0;
+        $this->freeMemoryPercentage = $data['freeMemoryPercentage'] ?? '0%';
+        $this->uptime = $data['uptime'] ?? '0d 0:0:0';
     }
-
 
     /**
      * The render method returns the view that should be rendered.
@@ -61,7 +60,6 @@ class ListStatistic extends Component
         // Retrieve the Mikrotik configuration settings.
         $config = MikrotikConfigHelper::getMikrotikConfig();
 
-        // Check if the configuration exists and no values are empty.
         if ($config && !in_array("", $config, true)) {
             // Use the Mikrotik API service to fetch the current router statistics.
             $data = $mikrotikApiService->getMikrotikResourceData($config['ip'], $config['username'], $config['password']);
@@ -71,6 +69,10 @@ class ListStatistic extends Component
                 'cpuLoad' => 0,
                 'uptime' => '0d 0:0:0'
             ];
+
+            // Emit an error event
+            $this->emit('error', 'Invalid or incomplete Mikrotik configuration.');
+            return;
         }
 
         // Update the cpuLoad property and emit an event with the updated CPU load.
@@ -81,5 +83,4 @@ class ListStatistic extends Component
         $this->uptime = $data['uptime'];
         $this->emit('uptimeUpdated', $this->uptime);
     }
-
 }

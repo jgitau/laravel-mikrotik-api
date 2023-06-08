@@ -133,6 +133,7 @@ mix.js('resources/js/laravel-user-management.js', 'public/js/');
 
 mix.copy('node_modules/@fortawesome/fontawesome-free/webfonts/*', 'public/assets/vendor/fonts/fontawesome');
 mix.copy('node_modules/katex/dist/fonts/*', 'public/assets/vendor/libs/quill/fonts');
+// mix.copy('node_modules/chart.js/chart.min.js', 'public/assets/js/');
 
 mix.version();
 

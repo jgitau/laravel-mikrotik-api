@@ -144,7 +144,6 @@ class RouterOsApi extends Model
         return $this->connected;
     }
 
-
     /**
      * Disconnect from RouterOS
      *

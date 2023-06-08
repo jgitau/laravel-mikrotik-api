@@ -204,7 +204,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
     }
 
     /**
-     * Creates a new user with specified username, password, and group.
+     * Creates a new user with specified username, password, and group, or updates existing one.
      * @return array 'status' indicating success or failure, 'message' for error info.
      */
     protected function createUser($password, $username)
@@ -220,35 +220,39 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
             "?name" => $username
         ));
 
-        // If the user does not exist, create the user
-        if (empty($userExists)) {
-            // Add the new user with the specified username, password, and group
+        // If the user exists, update it, else create a new user
+        if (!empty($userExists)) {
+            // The user exists, so update it
+            $userResult = $this->routerOsApi->comm("/user/set", array(
+                ".id"      => $username,
+                "password" => $password,
+                "group"    => $username,
+                "comment"  => "Managed by AZMI. DO NOT EDIT!!!"
+            ));
+        } else {
+            // The user does not exist, so add a new user
             $userResult = $this->routerOsApi->comm("/user/add", array(
                 "name"     => $username,
                 "password" => $password,
                 "group"    => $username,
                 "comment"  => "Managed by AZMI. DO NOT EDIT!!!"
             ));
+        }
 
-            // Check if the user creation was successful
-            if (isset($userResult['!re']) && $userResult['!re'] === 0) {
-                $result['status'] = true;
-            } else {
-                // Handle errors during user creation
-                if (isset($userResult['!trap'])) {
-                    $result['message'] = "Error in adding user: " . $userResult['!trap'][0]['message'];
-                } else {
-                    $result['status'] = true;
-                }
-            }
-        } else {
+        // Check if the user operation was successful
+        if (isset($userResult['!re']) && $userResult['!re'] === 0) {
             $result['status'] = true;
-            $result['message'] = "User already exists.";
+        } else {
+            // Handle errors during user operation
+            if (isset($userResult['!trap'])) {
+                $result['message'] = "Error in user operation: " . $userResult['!trap'][0]['message'];
+            } else {
+                $result['status'] = true;
+            }
         }
 
         return $result;
     }
-
 
     /**
      * Get NAS by its shortname

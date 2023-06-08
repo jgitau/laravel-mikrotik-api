@@ -10,6 +10,7 @@ class ListStatistic extends Component
 {
     // These public properties will be available to the Livewire view.
     public $cpuLoad, $activeHotspots, $freeMemoryPercentage, $uptime;
+    protected $isConnected = false; // Track connection status
 
     /**
      * The mount method is called when the component is created.
@@ -21,7 +22,9 @@ class ListStatistic extends Component
         $config = MikrotikConfigHelper::getMikrotikConfig();
 
         // Check if the configuration exists and no values are empty.
-        if ($config && !in_array("", $config, true)) {
+        if ($config && $mikrotikApiService->connect($config['ip'], $config['username'], $config['password'])) {
+            $this->isConnected = true; // Update connection status.
+
             // Use the Mikrotik API service to fetch the current router statistics.
             try {
                 $data = $mikrotikApiService->getMikrotikResourceData($config['ip'], $config['username'], $config['password']);
@@ -51,36 +54,38 @@ class ListStatistic extends Component
     }
 
     /**
-     * The loadCpuDataAndUptime method updates the cpuLoad and uptime properties
-     * and emits events to notify other components of these changes.
-     * @param MikrotikApiService $mikrotikApiService The service used for communicating with a Mikrotik router.
+     * Updates CPU load and uptime. Emits events for changes.
+     * @param MikrotikApiService $mikrotikApiService Service for Mikrotik router communication.
      */
     public function loadCpuDataAndUptime(MikrotikApiService $mikrotikApiService)
     {
-        // Retrieve the Mikrotik configuration settings.
+        // Default values for data
+        $data = [
+            'cpuLoad' => 0,
+            'uptime' => '0d 0:0:0'
+        ];
+
         $config = MikrotikConfigHelper::getMikrotikConfig();
 
-        if ($config && !in_array("", $config, true)) {
-            // Use the Mikrotik API service to fetch the current router statistics.
-            $data = $mikrotikApiService->getMikrotikResourceData($config['ip'], $config['username'], $config['password']);
+        // If connected and config is valid, fetch current router statistics
+        if ($this->isConnected && $config) {
+            try {
+                $data = $mikrotikApiService->getMikrotikResourceData($config['ip'], $config['username'], $config['password']);
+            } catch (\Exception $e) {
+                // On exception, maintain default data values
+            }
         } else {
-            // If the config is invalid or incomplete, set default values for data.
-            $data = [
-                'cpuLoad' => 0,
-                'uptime' => '0d 0:0:0'
-            ];
-
             // Emit an error event
             $this->emit('error', 'Invalid or incomplete Mikrotik configuration.');
-            return;
         }
 
-        // Update the cpuLoad property and emit an event with the updated CPU load.
+        // Update cpuLoad and emit event with the updated CPU load
         $this->cpuLoad = $data['cpuLoad'];
         $this->emit('cpuLoadUpdated', $this->cpuLoad);
 
-        // Update the uptime property and emit an event with the updated uptime.
+        // Update uptime and emit an event with the updated uptime
         $this->uptime = $data['uptime'];
         $this->emit('uptimeUpdated', $this->uptime);
     }
+
 }

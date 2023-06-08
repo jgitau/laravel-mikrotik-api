@@ -89,5 +89,22 @@ class MikrotikApiServiceImplement extends Service implements MikrotikApiService
         }
     }
 
+    /**
+     * Try to connect from the specified network interface of a device.
+     * @param string $ip IP address of the device.
+     * @param string $username Username for authentication.
+     * @param string $password Password for authentication.
+     * @return array Returns connect or throws an exception if an error occurs.
+     * @throws Exception if unable to retrieve connect.
+     */
+    public function connect($ip, $username, $password)
+    {
+        try {
+            return $this->mainRepository->connect($ip, $username, $password);
+        } catch (Exception $exception) {
+            throw new Exception("Error connect to mikrotik : " . $exception->getMessage());
+        }
+    }
+
 
 }

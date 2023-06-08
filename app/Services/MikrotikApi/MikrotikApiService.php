@@ -43,4 +43,13 @@ interface MikrotikApiService extends BaseService{
      */
     public function getTrafficData($ip, $username, $password, $interface);
 
+    /**
+     * connect
+     * @param  mixed $ip
+     * @param  mixed $username
+     * @param  mixed $password
+     * @return void
+     */
+    public function connect($ip, $username, $password);
+
 }

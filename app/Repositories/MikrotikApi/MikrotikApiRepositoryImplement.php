@@ -24,11 +24,42 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
      * @property Model|mixed $model;
      */
     protected $model;
+    protected $isConnected = false;
 
     public function __construct(RouterOsApi $model)
     {
         $this->model = $model;
     }
+
+    /**
+     * Connect to a Mikrotik router.
+     *
+     * @param string $ip Router IP
+     * @param string $username Username for authentication
+     * @param string $password Password for authentication
+     *
+     * @return bool Connection status
+     */
+    public function connect($ip, $username, $password)
+    {
+        // If already connected, return true
+        if ($this->isConnected) {
+            return true;
+        }
+
+        // Try to connect, log error and return false on failure
+        if (!$this->model->connect($ip, $username, $password)) {
+            Log::error('Failed to connect to Mikrotik router: ' . $ip);
+            return false;
+        }
+
+        // Mark as connected on success
+        $this->isConnected = true;
+
+        // Return connection success
+        return true;
+    }
+
 
     /**
      * Retrieves Mikrotik interface data via RouterOS API.
@@ -52,12 +83,12 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
 
             // Filter bypassed IP bindings
             $ipBindingBypassed = array_filter($ipBindings, function ($binding) {
-                return isset($binding['type']) && $binding['type'] === 'bypassed';
+                return isset($binding['type']) && $binding['type'] === 'bypassed' && isset($binding['disabled']) && $binding['disabled'] === "false";
             });
 
             // Filter blocked IP bindings
             $ipBindingBlocked = array_filter($ipBindings, function ($binding) {
-                return isset($binding['type']) && $binding['type'] === 'blocked';
+                return isset($binding['type']) && $binding['type'] === 'blocked' && isset($binding['disabled']) && $binding['disabled'] === "false";
             });
 
             // Return the counts of active users, bypassed and blocked IP bindings

@@ -176,8 +176,8 @@ class RouterOsApi extends Model
         // Make sure we get the response back as a string
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        // If a command is provided, set the necessary options for a POST request
-        if ($command !== null) {
+        // If a command and data are provided, set the necessary options for a POST request
+        if ($command !== null && $data !== null) {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -195,8 +195,9 @@ class RouterOsApi extends Model
             return false;
         }
 
-        // If a command was provided, return the result. Otherwise, return the cURL handle.
-        return $command !== null ? $result : $ch;
+        // Decode the response
+        $decodedResult = json_decode($result, true);
+        return $decodedResult ?? $result;
 
         // *** EXAMPLE USAGE ***
         /**

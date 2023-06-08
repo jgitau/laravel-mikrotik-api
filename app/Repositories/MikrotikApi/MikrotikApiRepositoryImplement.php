@@ -230,7 +230,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
      * Method to get current upload and download traffic data from a Mikrotik router.
      * @param string $ip @param string $username @param string $password @param string $interface @return array
      */
-    public function getTrafficData($ip, $username, $password, $interface = "ether2-wan")
+    public function getTrafficData($ip, $username, $password, $interface)
     {
         // Connect to the Mikrotik router
         if (!$this->model->connect($ip, $username, $password)) {
@@ -241,6 +241,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
             ];
         }
 
+        $interface  = env('MIKROTIK_INTERFACE');
         // Send the request to the monitor traffic endpoint
         $response = $this->model->comm(self::ENDPOINT_MONITOR_TRAFFIC, [
             "interface" => $interface,
@@ -328,7 +329,10 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
         // Define the data for the command (request the count only).
         $data = [
             'count-only' => 'true',
-            '.query' => ['type=' . $type]
+            '.query' => [
+                'type=' . $type,
+                'disabled=false'
+                ]
         ];
 
         // Establish a connection and retrieve the IP bindings data.

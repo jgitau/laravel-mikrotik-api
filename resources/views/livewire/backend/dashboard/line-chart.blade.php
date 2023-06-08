@@ -52,11 +52,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 label: 'Upload Traffic',
                 backgroundColor: 'rgba(26, 159, 227,0.8)',
                 borderColor: 'rgba(26, 159, 227,1)',
+                cubicInterpolationMode: 'monotone',
                 data: [],
             },{
                 label: 'Download Traffic',
                 backgroundColor: 'rgba(40, 206, 97, 0.8)',
                 borderColor: 'rgba(40, 206, 97, 1)',
+                cubicInterpolationMode: 'monotone',
                 data: [],
             }]
         },

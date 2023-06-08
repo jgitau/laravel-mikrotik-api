@@ -50,13 +50,4 @@ interface NasRepository extends Repository{
      * @return void
      */
     public function setupProcess($record, $data);
-
-    /**
-     * getMikrotikUserActive
-     * @param  mixed $ip
-     * @param  mixed $username
-     * @param  mixed $password
-     * @return void
-     */
-    public function getMikrotikUserActive($ip, $username, $password);
 }

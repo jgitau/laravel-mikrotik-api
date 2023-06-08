@@ -314,22 +314,26 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     }
 
     /**
-     * Retrieves the count of IP bindings for a given IP address, username, password, and type using a MikroTik RouterOS API command.
-     * @param string $ip The IP address of the device to connect to.
-     * @param string $username The username used to authenticate the connection to a MikroTik router.
-     * @param string $password The password used to authenticate the connection to a MikroTik router.
-     * @param string $type The type of IP bindings to count.
-     * @return int The count of IP bindings that match the specified criteria. Returns 0 if no matching IP bindings found.
+     * Retrieves the count of IP bindings based on the type.
+     * @param string $ip The IP address of the device.
+     * @param string $username The username for authentication.
+     * @param string $password The password for authentication.
+     * @param string $type The type of IP binding (e.g. 'blocked', 'bypassed').
+     * @return int The count of IP bindings, or 0 if the connection fails.
      */
     private function getIpBindingsCount($ip, $username, $password, $type)
     {
+        // Define the MikroTik API command.
         $command = 'ip/hotspot/ip-binding/print where ' . $type;
+
+        // Define the data for the command (request the count only).
         $data = ['count-only' => 'true'];
 
+        // Establish a connection and retrieve the IP bindings data.
         $ipBindings = $this->model->connectCurl($ip, $username, $password, $command, $data);
 
+        // Return the count of IP bindings, or 0 if the connection failed.
         return $ipBindings !== null ? intval($ipBindings['ret']) : 0;
     }
-
 
 }

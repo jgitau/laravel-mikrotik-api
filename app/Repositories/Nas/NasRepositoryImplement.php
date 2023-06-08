@@ -35,58 +35,51 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      */
     public function setupProcess($record, $data)
     {
-        // Initialize the result array
-        $result = [
-            'status' => false,
-            'message' => ''
-        ];
-
-        // Extract required data from the input
-        $username               = $data['tempUsername'];
-        $password               = $data['tempPassword'];
-        $ipAdress               = $data['mikrotikIP'];
-        $radiusServer            = $data['serverIP'];
-        $radiusSecret            = $data['radiusSecret'];
-        $usernameForAddUser       = $data['username'];
-        $passwordForAddUser       = $data['password'];
+        // Initialize the result.
+        $result = ['status' => false, 'message' => ''];
+        // Get the required data.
+        $username = $data['tempUsername'];
+        $password = $data['tempPassword'];
+        $ipAddress = $data['mikrotikIP'];
+        $radiusServer = $data['serverIP'];
+        $radiusSecret = $data['radiusSecret'];
+        $usernameForAddUser = $data['username'];
+        $passwordForAddUser = $data['password'];
 
         try {
-            // Attempt to connect to the Mikrotik device
-            if ($this->routerOsApi->connect($ipAdress, $username, $password)) {
-                // Add RADIUS configuration and check if successful
-                $radiusResult = $this->addRadiusConfiguration($radiusServer, $radiusSecret);
-                if ($radiusResult['status']) {
-                    // Create user group and check if successful
-                    $groupResult = $this->createUserGroup();
-                    if ($groupResult['status']) {
-                        // Create user and check if successful
-                        $userResult = $this->createUser($passwordForAddUser, $usernameForAddUser);
-                        if ($userResult['status']) {
-                            // If all operations are successful, update the result status
-                            $result['status'] = true;
-                        } else {
-                            // Set error message for user creation
-                            $result['message'] = $userResult['message'];
-                        }
-                    } else {
-                        // Set error message for group creation
-                        $result['message'] = $groupResult['message'];
-                    }
-                } else {
-                    // Set error message for RADIUS configuration
-                    $result['message'] = $radiusResult['message'];
-                }
-            } else {
-                // Set error message if unable to connect to Mikrotik device
+            // Attempt to connect to the Mikrotik device.
+            if (!$this->routerOsApi->connect($ipAddress, $username, $password)) {
                 $result['message'] = "Unable to connect to the Mikrotik device.";
+                return $result;
             }
-        } catch (\Exception $e) {
-            // Set error message if an exception occurs
-            $result['message'] = "Error: " . $e->getMessage();
-        }
 
-        // Return the result of the operation
-        return $result;
+            // Add RADIUS configuration.
+            $radiusResult = $this->addRadiusConfiguration($radiusServer, $radiusSecret);
+            if (!$radiusResult['status']) {
+                $result['message'] = $radiusResult['message'];
+                return $result;
+            }
+
+            // Create user group.
+            $groupResult = $this->createUserGroup();
+            if (!$groupResult['status']) {
+                $result['message'] = $groupResult['message'];
+                return $result;
+            }
+
+            // Create user.
+            $userResult = $this->createUser($passwordForAddUser, $usernameForAddUser);
+            if (!$userResult['status']) {
+                $result['message'] = $userResult['message'];
+                return $result;
+            }
+
+            // If all operations are successful, update the result status.
+            $result['status'] = true;
+            return $result;
+        } catch (\Exception $e) {
+            return ['status' => false, 'message' => "Error: " . $e->getMessage()];
+        }
     }
 
     /**
@@ -98,157 +91,178 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      */
     protected function addRadiusConfiguration($radiusServer, $radiusSecret)
     {
-        // Initialize the result to be returned by this function
-        $result = [
-            'status' => false,
-            'message' => ''
-        ];
+        // Initialize result array with default values.
+        $result = ['status' => false, 'message' => ''];
 
+        // Retrieve the configuration ID corresponding to the given radius server.
+        $configId = $this->getConfigId($radiusServer);
+
+        // Prepare the configuration data for the RADIUS server.
+        $configData = $this->prepareConfigData($radiusServer, $radiusSecret);
+
+        // If no configuration exists for the given radius server, create a new one.
+        if (is_null($configId)) {
+            // Send a command to the RouterOS API to add a new configuration.
+            $resultData = $this->routerOsApi->comm("/radius/add", $configData);
+
+            // Update the result message based on the operation's outcome.
+            $result['message'] = $this->getErrorMsg("adding", $resultData);
+        } else {
+            // Add the configuration ID to the data if a configuration exists.
+            $configData[".id"] = $configId;
+
+            // Send a command to the RouterOS API to update the existing configuration.
+            $resultData = $this->routerOsApi->comm("/radius/set", $configData);
+
+            // Update the result message based on the operation's outcome.
+            $result['message'] = $this->getErrorMsg("updating", $resultData);
+        }
+
+        // If no error message was generated, update the status to true.
+        if ($result['message'] == '') {
+            $result['status'] = true;
+        }
+
+        // Return the result of the operation.
+        return $result;
+    }
+
+    /**
+     * Get Config ID of matching server address.
+     *
+     * @param string $radiusServer
+     * @return string|null
+     */
+    private function getConfigId($radiusServer)
+    {
         // Fetch all current RADIUS configurations from the RouterOS
         $radiusConfigs = $this->routerOsApi->comm("/radius/print");
 
-        // Initialize a variable to store the id of the configuration if a matching configuration is found
-        $configId = null;
-
-        // Look for a configuration that has the same server address as the input
+        // Loop through the fetched configurations.
         foreach ($radiusConfigs as $config) {
-            // If the configuration server address matches the input, store its id
+            // If a matching server address is found, return its configuration ID.
             if (isset($config['address']) && $config['address'] === $radiusServer) {
-                $configId = $config[".id"];
-                break;  // Stop the search, as we've found a matching configuration
+                return $config[".id"];
             }
         }
 
-        // Prepare configuration data for adding or updating a RADIUS configuration
-        $configData = [
-            "address"               => $radiusServer,  // The RADIUS server address
-            "secret"                => $radiusSecret,  // The secret key for RADIUS authentication
-            "domain"                => env('MIKROTIK_NAME'),  // The Mikrotik domain name
-            "service"               => "hotspot",  // The service type, which is "hotspot" in this case
-            "authentication-port"   => env('MIKROTIK_AUTHENTICATION_PORT'),  // The port for authentication
-            "accounting-port"       => env('MIKROTIK_ACCOUNTING_PORT'),  // The port for accounting
-            "timeout"               => env('MIKROTIK_TIMEOUT'),  // The timeout value
-            "comment"               => "Managed by AZMI. DO NOT EDIT!!!"  // A comment for this configuration
+        // If no matching server address is found, return null.
+        return null;
+    }
+
+    /**
+     * Prepares the configuration data for RADIUS.
+     *
+     * @param string $radiusServer
+     * @param string $radiusSecret
+     * @return array The prepared configuration data.
+     */
+    private function prepareConfigData($radiusServer, $radiusSecret)
+    {
+        // Creates and returns an array with the required configuration data
+        return [
+            "address" => $radiusServer,  // The RADIUS server address
+            "secret" => $radiusSecret,  // The secret key for RADIUS authentication
+            "domain" => env('MIKROTIK_NAME'),  // The Mikrotik domain name
+            "service" => "hotspot",  // The service type, which is "hotspot" in this case
+            "authentication-port" => env('MIKROTIK_AUTHENTICATION_PORT'),  // The port for authentication
+            "accounting-port" => env('MIKROTIK_ACCOUNTING_PORT'),  // The port for accounting
+            "timeout" => env('MIKROTIK_TIMEOUT'),  // The timeout value
+            "comment" => "Managed by AZMI. DO NOT EDIT!!!"  // A comment for this configuration
         ];
+    }
 
-        // If a matching configuration was found, update it
-        if ($configId !== null) {
-            $configData[".id"] = $configId;
-            $resultData = $this->routerOsApi->comm("/radius/set", $configData);
-
-            // If there was a problem with the update operation, return an error message
-            if (isset($resultData['!trap'])) {
-                $result['message'] = "Error in updating RADIUS configuration: " . $resultData['!trap'][0]['message'];
-                return $result;
-            }
-        } else {  // If no matching configuration was found, add a new one
-            $resultData = $this->routerOsApi->comm("/radius/add", $configData);
-
-            // If there was a problem with the add operation, return an error message
-            if (isset($resultData['!trap'])) {
-                $result['message'] = "Error in adding RADIUS configuration: " . $resultData['!trap'][0]['message'];
-                return $result;
-            }
+    /**
+     * Get error message if operation fails.
+     *
+     * @param string $operation
+     * @param array $resultData
+     * @return string The error message, or an empty string if no error occurred.
+     */
+    private function getErrorMsg($operation, $resultData)
+    {
+        // Checks if there is an error ('!trap') in the result data
+        if (isset($resultData['!trap'])) {
+            // Returns a formatted error message
+            return "Error in {$operation} RADIUS configuration: " . $resultData['!trap'][0]['message'];
         }
 
-        // If the operation was successful, update the status to true
-        $result['status'] = true;
-
-        // Return the result of the operation
-        return $result;
+        // If no error was found, returns an empty string
+        return '';
     }
 
     /**
      * Creates a new user group with specific policies.
+     *
      * @return array 'status' indicating success or failure, 'message' for error info.
      */
     protected function createUserGroup()
     {
-        // Initialize the result array
-        $result = [
-            'status' => false,
-            'message' => ''
-        ];
+        // Initialize result with default values
+        $result = ['status' => false, 'message' => ''];
 
         // Check if the group already exists
-        $groupExists = $this->routerOsApi->comm("/user/group/print", array(
+        $groupExists = $this->routerOsApi->comm("/user/group/print", [
             "?name" => env('MIKROTIK_NAME')
-        ));
+        ]);
 
-        // If the group does not exist, create the group
+        // Create the group if it does not exist
         if (empty($groupExists)) {
-            // Create the new group with the required policies
-            $groupResult = $this->routerOsApi->comm("/user/group/add", array(
-                "name"     => env('MIKROTIK_NAME'),
-                "policy"   => "write,policy,read,test,api",
-                "comment"  => "Managed by AZMI. DO NOT EDIT!!!"
-            ));
+            $groupResult = $this->routerOsApi->comm("/user/group/add", [
+                "name"    => env('MIKROTIK_NAME'),
+                "policy"  => "write,policy,read,test,api",
+                "comment" => "Managed by AZMI. DO NOT EDIT!!!"
+            ]);
 
-            // Check if the group creation was successful
-            if (isset($groupResult['!re']) && $groupResult['!re'] === 0) {
+            // If no error, set status to true
+            if (!isset($groupResult['!trap'])) {
                 $result['status'] = true;
             } else {
-                // Handle errors during group creation
-                if (isset($groupResult['!trap'])) {
-                    $result['message'] = "Error in adding user group: " . $groupResult['!trap'][0]['message'];
-                } else {
-                    $result['status'] = true;
-                }
+                // Set error message if group creation failed
+                $result['message'] = "Error in adding user group: " . $groupResult['!trap'][0]['message'];
             }
         } else {
-            $result['status'] = true;
-            $result['message'] = "User group already exists.";
+            // Group already exists, set status to true
+            $result = ['status' => true, 'message' => 'User group already exists.'];
         }
 
         return $result;
     }
 
     /**
-     * Creates a new user with specified username, password, and group, or updates existing one.
+     * Creates a new user with specified username, password, and group, or updates an existing one.
+     *
+     * @param string $password
+     * @param string $username
      * @return array 'status' indicating success or failure, 'message' for error info.
      */
-    protected function createUser($password, $username)
+    protected function createUser(string $password, string $username)
     {
-        // Initialize the result array
-        $result = [
-            'status' => false,
-            'message' => ''
-        ];
+        // Initialize result with default values
+        $result = ['status' => false, 'message' => ''];
 
         // Check if the user already exists
-        $userExists = $this->routerOsApi->comm("/user/print", array(
-            "?name" => $username
-        ));
+        $userExists = $this->routerOsApi->comm("/user/print", ["?name" => $username]);
 
-        // If the user exists, update it, else create a new user
-        if (!empty($userExists)) {
-            // The user exists, so update it
-            $userResult = $this->routerOsApi->comm("/user/set", array(
-                ".id"      => $username,
-                "password" => $password,
-                "group"    => $username,
-                "comment"  => "Managed by AZMI. DO NOT EDIT!!!"
-            ));
-        } else {
-            // The user does not exist, so add a new user
-            $userResult = $this->routerOsApi->comm("/user/add", array(
-                "name"     => $username,
-                "password" => $password,
-                "group"    => $username,
-                "comment"  => "Managed by AZMI. DO NOT EDIT!!!"
-            ));
-        }
+        // Create a user object for the add/update operation
+        $user = [
+            "name"     => $username,
+            "password" => $password,
+            "group"    => $username,
+            "comment"  => "Managed by AZMI. DO NOT EDIT!!!"
+        ];
 
-        // Check if the user operation was successful
-        if (isset($userResult['!re']) && $userResult['!re'] === 0) {
+        // Update the user if it exists, else add a new user
+        $userResult = !empty($userExists)
+            ? $this->routerOsApi->comm("/user/set", [".id" => $username] + $user)
+            : $this->routerOsApi->comm("/user/add", $user);
+
+        // If no error, set status to true
+        if (!isset($userResult['!trap'])) {
             $result['status'] = true;
         } else {
-            // Handle errors during user operation
-            if (isset($userResult['!trap'])) {
-                $result['message'] = "Error in user operation: " . $userResult['!trap'][0]['message'];
-            } else {
-                $result['status'] = true;
-            }
+            // Set error message if user operation failed
+            $result['message'] = "Error in user operation: " . $userResult['!trap'][0]['message'];
         }
 
         return $result;
@@ -270,140 +284,103 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      */
     public function getNasParameters()
     {
-        // Retrieve NAS record by its shortname
+        // Get NAS by shortname 'megalos' using a separate function (getNasByShortname)
         $record = $this->getNasByShortname('megalos');
 
-        // Get settings for mikrotik_ip, mikrotik_api_port, and server_ip
-        $mikrotik_api_username = $this->getSetting('mikrotik_api_username', '0');
-        $mikrotik_ip = $this->getSetting('mikrotik_ip', '0');
-        $mikrotik_api_port = $this->getSetting('mikrotik_api_port', '0');
-        $server_ip = $this->getSetting('server_ip', '0');
+        // Array of settings we want to retrieve from the database
+        $settings = ['mikrotik_api_username', 'mikrotik_ip', 'mikrotik_api_port', 'server_ip'];
 
-        // Assign the retrieved settings to the NAS record properties
-        $record->mikrotik_api_username = $mikrotik_api_username;
-        $record->mikrotik_ip_address = $mikrotik_ip;
-        $record->mikrotik_api_port = $mikrotik_api_port;
-        $record->server_ip_address = $server_ip;
+        // For each setting in our array
+        foreach ($settings as $setting) {
+            // Retrieve the setting from the database using a separate function (getSetting)
+            // And set it as a property of our $record object
+            $record->$setting = $this->getSetting($setting, '0');
+        }
+
+        // Return the $record object, now with its properties set according to the retrieved settings
         return $record;
     }
-
     /**
-     * Edit NAS process (updating NAS table and mikrotik API parameters)
-     * @param array $data
-     * @return bool
+     * Edits the NAS process which includes updating the NAS table and mikrotik API parameters.=
+     * @return bool|string Returns true on success, error message on exception.
      */
     public function editNasProcess($data)
     {
         try {
+            // Updates NAS table and Mikrotik API parameters.
             $this->_updateNasTable($data);
             $this->_editMikrotikApiParameters($data);
         } catch (\Exception $e) {
-            return $e->getMessage(); // Return the error message on failure
+            // In case of exception, return the exception message.
+            return $e->getMessage();
         }
 
-        return true; // Return true on success
+        // If no exception, return true indicating successful operation.
+        return true;
     }
 
     /**
-     * Update NAS table with the given data
-     * @param array $data
-     * @return void
+     * Updates NAS table with the provided data.
+     * @param array $data The data to update.
      */
-    private function _updateNasTable($data)
+    private function _updateNasTable(array $data)
     {
-        $nas = array(
+        // Maps provided data to the database column names.
+        $nasData = [
             'ports' => $data['radiusPort'],
             'secret' => $data['radiusSecret']
-        );
-        $this->model->where('id', $data['id'])->update($nas);
+        ];
+
+        // Updates the NAS record in the database using the id in the provided data.
+        $this->model->where('id', $data['id'])->update($nasData);
     }
 
     /**
-     * Edit Mikrotik API parameters with the given data
-     * @param array $data
-     * @return void
+     * Edits Mikrotik API parameters with the provided data.
+     * @param array $data The data to update.
      */
     private function _editMikrotikApiParameters($data)
     {
-        $this->updateSetting('mikrotik_ip', '0', $data['mikrotikIP']);
-        $this->updateSetting('mikrotik_api_port', '0', $data['mikrotikAPIPort']);
-        $this->updateSetting('server_ip', '0', $data['serverIP']);
-        $this->updateSetting('mikrotik_api_username', '0', $data['username']);
-        $this->updateSetting('mikrotik_api_password', '0', $data['password']);
+        // Array of settings we want to update
+        $settings = [
+            'mikrotik_ip' => 'mikrotikIP',
+            'mikrotik_api_port' => 'mikrotikAPIPort',
+            'server_ip' => 'serverIP',
+            'mikrotik_api_username' => 'username',
+            'mikrotik_api_password' => 'password'
+        ];
+
+        // For each setting in our array
+        foreach ($settings as $dbSetting => $providedSetting) {
+            // Update the setting in the database using the data provided
+            $this->updateSetting($dbSetting, '0', $data[$providedSetting]);
+        }
     }
 
     /**
-     * Retrieve the setting value based on the setting name and module ID
-     * @param string $settingName
-     * @param int $moduleId
-     * @return mixed
+     * Retrieves a setting based on the setting name and module ID.
+     * @param string $settingName The setting name.
+     * @param string $moduleId The module id.
+     * @return string Returns the setting value.
      */
     public function getSetting($settingName, $moduleId)
     {
-        $query = $this->setting
-            ->where('module_id', $moduleId)
-            ->where('setting', $settingName)
-            ->first();
-        return (!empty($query->value)) ? $query->value : "";
+        // Retrieves the setting value based on setting name and module id.
+        $query = $this->setting->where('module_id', $moduleId)->where('setting', $settingName)->first();
+        return $query->value ?? "";
     }
 
     /**
-     * Update the setting value based on the setting name, module ID, and new value
-     * @param string $settingName
-     * @param int $moduleId
-     * @param mixed $value
-     * @return int
+     * Updates a setting based on the setting name, module ID, and new value.
+     * @param string $settingName The setting name.
+     * @param string $moduleId The module id.
+     * @param string $value The new value.
+     * @return int The number of affected rows.
      */
     public function updateSetting($settingName, $moduleId, $value)
     {
-        $affectedRows = $this->setting->where('module_id', $moduleId)
-            ->where('setting', $settingName)
-            ->update(['value' => $value]);
-
-        return $affectedRows;
+        // Updates the setting value in the database and returns the number of affected rows.
+        return $this->setting->where('module_id', $moduleId)->where('setting', $settingName)->update(['value' => $value]);
     }
 
-
-    /**
-     * Retrieves Mikrotik interface data via RouterOS API.
-     * @param string $ip Mikrotik router IP address.
-     * @param string $username Authentication username.
-     * @param string $password Authentication password.
-     * @return array|null Mikrotik interface data or null on connection failure.
-     */
-    public function getMikrotikUserActive($ip, $username, $password)
-    {
-        try {
-            // Connect to the Mikrotik router. If connection fails, log the error and return null.
-            if (!$this->routerOsApi->connect($ip, $username, $password)) {
-                Log::error('Failed to connect to Mikrotik router: ' . $ip);
-                return null;
-            }
-
-            // Fetch list of active users and IP bindings
-            $userActive = $this->routerOsApi->comm("/ip/hotspot/active/print");
-            $ipBindings = $this->routerOsApi->comm("/ip/hotspot/ip-binding/print");
-
-            // Filter bypassed IP bindings
-            $ipBindingBypassed = array_filter($ipBindings, function ($binding) {
-                return isset($binding['type']) && $binding['type'] === 'bypassed';
-            });
-
-            // Filter blocked IP bindings
-            $ipBindingBlocked = array_filter($ipBindings, function ($binding) {
-                return isset($binding['type']) && $binding['type'] === 'blocked';
-            });
-
-            // Return the counts of active users, bypassed and blocked IP bindings
-            return [
-                'userActive' => count($userActive),
-                'ipBindingBypassed' => count($ipBindingBypassed),
-                'ipBindingBlocked' => count($ipBindingBlocked),
-            ];
-        } catch (\Exception $e) {
-            // If any error occurs, log the error message and return null
-            Log::error('Failed to get Mikrotik interface data: ' . $e->getMessage());
-            return null;
-        }
-    }
 }

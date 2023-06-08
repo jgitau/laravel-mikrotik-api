@@ -68,41 +68,41 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
      * @param string $password Authentication password.
      * @return array|null Mikrotik interface data or null on connection failure.
      */
-    public function getMikrotikUserActive($ip, $username, $password)
-    {
-        try {
-            // Connect to the Mikrotik router. If connection fails, log the error and return null.
-            if (!$this->model->connect($ip, $username, $password)) {
-                Log::error('Failed to connect to Mikrotik router: ' . $ip);
-                return null;
-            }
+    // public function getMikrotikUserActive($ip, $username, $password)
+    // {
+    //     try {
+    //         // Connect to the Mikrotik router. If connection fails, log the error and return null.
+    //         if (!$this->model->connect($ip, $username, $password)) {
+    //             Log::error('Failed to connect to Mikrotik router: ' . $ip);
+    //             return null;
+    //         }
 
-            // Fetch list of active users and IP bindings
-            $userActive = $this->model->comm(self::ENDPOINT_ACTIVE);
-            $ipBindings = $this->model->comm(self::ENDPOINT_IP_BINDING);
+    //         // Fetch list of active users and IP bindings
+    //         $userActive = $this->model->comm(self::ENDPOINT_ACTIVE);
+    //         $ipBindings = $this->model->comm(self::ENDPOINT_IP_BINDING);
 
-            // Filter bypassed IP bindings
-            $ipBindingBypassed = array_filter($ipBindings, function ($binding) {
-                return isset($binding['type']) && $binding['type'] === 'bypassed' && isset($binding['disabled']) && $binding['disabled'] === "false";
-            });
+    //         // Filter bypassed IP bindings
+    //         $ipBindingBypassed = array_filter($ipBindings, function ($binding) {
+    //             return isset($binding['type']) && $binding['type'] === 'bypassed' && isset($binding['disabled']) && $binding['disabled'] === "false";
+    //         });
 
-            // Filter blocked IP bindings
-            $ipBindingBlocked = array_filter($ipBindings, function ($binding) {
-                return isset($binding['type']) && $binding['type'] === 'blocked' && isset($binding['disabled']) && $binding['disabled'] === "false";
-            });
+    //         // Filter blocked IP bindings
+    //         $ipBindingBlocked = array_filter($ipBindings, function ($binding) {
+    //             return isset($binding['type']) && $binding['type'] === 'blocked' && isset($binding['disabled']) && $binding['disabled'] === "false";
+    //         });
 
-            // Return the counts of active users, bypassed and blocked IP bindings
-            return [
-                'userActive' => count($userActive),
-                'ipBindingBypassed' => count($ipBindingBypassed),
-                'ipBindingBlocked' => count($ipBindingBlocked),
-            ];
-        } catch (\Exception $e) {
-            // If any error occurs, log the error message and return null
-            Log::error('Failed to get Mikrotik interface data: ' . $e->getMessage());
-            return null;
-        }
-    }
+    //         // Return the counts of active users, bypassed and blocked IP bindings
+    //         return [
+    //             'userActive' => count($userActive),
+    //             'ipBindingBypassed' => count($ipBindingBypassed),
+    //             'ipBindingBlocked' => count($ipBindingBlocked),
+    //         ];
+    //     } catch (\Exception $e) {
+    //         // If any error occurs, log the error message and return null
+    //         Log::error('Failed to get Mikrotik interface data: ' . $e->getMessage());
+    //         return null;
+    //     }
+    // }
 
     /**
      * Retrieves active hotspot data from a Mikrotik router.
@@ -266,7 +266,70 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
         ];
     }
 
+    // TODO: GET MIKROTIK USER ACTIVE WITH CURL
+    /**
+     * Retrieves Mikrotik interface data via RouterOS API CURL.
+     * @param string $ip Mikrotik router IP address.
+     * @param string $username Authentication username.
+     * @param string $password Authentication password.
+     * @return array|null Mikrotik interface data or null on connection failure.
+     */
+    public function getMikrotikUserActive($ip, $username, $password)
+    {
+        try {
+            // Establish a connection and retrieve active users data
+            $userActive = $this->model->connectCurl($ip, $username, $password, 'ip/hotspot/active/print', ['count-only' => 'true']);
 
+            // If connection fails, log the error and return null
+            if (!$userActive) {
+                Log::error('Failed to connect to Mikrotik router or fetch active users data: ' . $ip);
+                return null;
+            }
+
+            // Establish a connection and retrieve IP bindings data for blocked users
+            $ipBindingsBlocked = $this->getIpBindingsCount($ip, $username, $password, 'blocked');
+            if ($ipBindingsBlocked === null) {
+                Log::error('Failed to connect to Mikrotik router or fetch IP bindings data Blocked: ' . $ip);
+                return null;
+            }
+
+            // Establish a connection and retrieve IP bindings data for bypassed users
+            $ipBindingsBypassed = $this->getIpBindingsCount($ip, $username, $password, 'bypassed');
+            if ($ipBindingsBypassed === null) {
+                Log::error('Failed to connect to Mikrotik router or fetch IP bindings data Bypassed: ' . $ip);
+                return null;
+            }
+
+            // Return the counts of active users, bypassed and blocked IP bindings
+            return [
+                'userActive' => $userActive !== null ? intval($userActive['ret']) : 0,
+                'ipBindingBypassed' => intval($ipBindingsBypassed),
+                'ipBindingBlocked' => intval($ipBindingsBlocked),
+            ];
+        } catch (\Exception $e) {
+            // If any error occurs, log the error message and return null
+            Log::error('Failed to get Mikrotik interface data: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Retrieves the count of IP bindings for a given IP address, username, password, and type using a MikroTik RouterOS API command.
+     * @param string $ip The IP address of the device to connect to.
+     * @param string $username The username used to authenticate the connection to a MikroTik router.
+     * @param string $password The password used to authenticate the connection to a MikroTik router.
+     * @param string $type The type of IP bindings to count.
+     * @return int The count of IP bindings that match the specified criteria. Returns 0 if no matching IP bindings found.
+     */
+    private function getIpBindingsCount($ip, $username, $password, $type)
+    {
+        $command = 'ip/hotspot/ip-binding/print where ' . $type;
+        $data = ['count-only' => 'true'];
+
+        $ipBindings = $this->model->connectCurl($ip, $username, $password, $command, $data);
+
+        return $ipBindings !== null ? intval($ipBindings['ret']) : 0;
+    }
 
 
 }

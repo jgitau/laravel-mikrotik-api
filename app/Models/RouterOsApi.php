@@ -145,10 +145,76 @@ class RouterOsApi extends Model
     }
 
     /**
-     * Disconnect from RouterOS
-     *
-     * @return void
+     * Login to RouterOS using cURL and optionally send a command
+     * @param string      $ip         Hostname (IP or domain) of the RouterOS server
+     * @param string      $login      The RouterOS username
+     * @param string      $password   The RouterOS password
+     * @param string      $command    Optional command to send
+     * @param array       $data       Optional data to send with the command
+     * @return mixed      The response if a command was sent and the connection is successful,
+     *                    cURL handle if no command was sent and the connection is successful,
+     *                    false otherwise
      */
+    public function connectCurl($ip, $login, $password, $command = null, $data = null, $port = 451)
+    {
+        // Create a new cURL resource
+        $ch = curl_init();
+
+        // Set the URL
+        curl_setopt($ch, CURLOPT_URL, "https://{$ip}:{$port}/rest/{$command}");
+
+        // Enable SSL
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        // Set the authentication method to Basic
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+
+        // Set the username and password
+        curl_setopt($ch, CURLOPT_USERPWD, "{$login}:{$password}");
+
+        // Make sure we get the response back as a string
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // If a command is provided, set the necessary options for a POST request
+        if ($command !== null) {
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json'
+            ));
+        }
+
+        // Execute the request
+        $result = curl_exec($ch);
+
+        // Check if the request was successful
+        if (curl_errno($ch)) {
+            // If there was an error, close the cURL resource and return false
+            curl_close($ch);
+            return false;
+        }
+
+        // If a command was provided, return the result. Otherwise, return the cURL handle.
+        return $command !== null ? $result : $ch;
+
+        // *** EXAMPLE USAGE ***
+        /**
+         * $command = 'ip/hotspot/ip-binding/print';
+         * $data = array('count-only' => 'true', '.query' => array('type' => 'bypassed'));
+         * Try to connect and fetch the data, log error and return false on failure
+         * $result = $this->model->connectCurl($ip, $username, $password, $command, $data);
+         * Print the result
+         * dd($result);
+         * */
+    }
+
+
+    /**
+         * Disconnect from RouterOS
+         *
+         * @return void
+         */
     public function disconnect()
     {
         // let's make sure this socket is still valid.  it may have been closed by something else

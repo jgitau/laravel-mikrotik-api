@@ -48,7 +48,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
         }
 
         // Try to connect, log error and return false on failure
-        if (!$this->model->connect($ip, $username, $password)) {
+        if (!$this->model->connectCurl($ip, $username, $password)) {
             Log::error('Failed to connect to Mikrotik router: ' . $ip);
             return false;
         }

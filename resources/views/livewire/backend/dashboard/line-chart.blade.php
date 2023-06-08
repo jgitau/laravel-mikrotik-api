@@ -17,7 +17,7 @@
         <div class="card-body" wire:ignore>
             @if ($uploadTraffic && $downloadTraffic)
             <canvas id="chartTraffic" data-upload='@json($uploadTraffic)'
-                data-download='@json($downloadTraffic)' height="100"></canvas>
+                data-download='@json($downloadTraffic)' height="80"></canvas>
             @endif
             {{-- <canvas id="chartTraffic"></canvas> --}}
         </div>
@@ -44,7 +44,7 @@ function bitToSize(bit) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    var ctx = document.getElementById('chartTraffic').getContext('2d');
+    var ctx = document.getElementById('chartTraffic');
     var chart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -52,13 +52,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 label: 'Upload Traffic',
                 backgroundColor: 'rgba(26, 159, 227,0.8)',
                 borderColor: 'rgba(26, 159, 227,1)',
-                cubicInterpolationMode: 'monotone',
+                fill: false,
+                tension: 0.4,
+                pointRadius: 0,
                 data: [],
             },{
                 label: 'Download Traffic',
                 backgroundColor: 'rgba(40, 206, 97, 0.8)',
                 borderColor: 'rgba(40, 206, 97, 1)',
-                cubicInterpolationMode: 'monotone',
+                fill: false,
+                tension: 0.4,
+                pointRadius: 0,
                 data: [],
             }]
         },
@@ -84,7 +88,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     title: {
                         display: true,
                         text: 'Time'
-                    }
+                    },
+
                 },
                 y: {
                     title: {
@@ -133,12 +138,11 @@ document.addEventListener('DOMContentLoaded', function () {
         chart.update('quiet');
     });
 
-    // Set interval to refresh data every 5 seconds
+    // Set interval to refresh data every 2 seconds
     setInterval(() => {
         window.livewire.emit('loadTrafficData');
-    }, 1000); // Update every 5 seconds
+    }, 2000); // Update every 2 seconds
 
 });
-
 </script>
 @endpush

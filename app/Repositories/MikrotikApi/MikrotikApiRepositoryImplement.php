@@ -279,7 +279,6 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
         try {
             // Establish a connection and retrieve active users data
             $userActive = $this->model->connectCurl($ip, $username, $password, 'ip/hotspot/active/print', ['count-only' => 'true']);
-
             // If connection fails, log the error and return null
             if (!$userActive) {
                 Log::error('Failed to connect to Mikrotik router or fetch active users data: ' . $ip);
@@ -324,10 +323,13 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     private function getIpBindingsCount($ip, $username, $password, $type)
     {
         // Define the MikroTik API command.
-        $command = 'ip/hotspot/ip-binding/print where ' . $type;
+        $command = 'ip/hotspot/ip-binding/print';
 
         // Define the data for the command (request the count only).
-        $data = ['count-only' => 'true'];
+        $data = [
+            'count-only' => 'true',
+            '.query' => ['type=' . $type]
+        ];
 
         // Establish a connection and retrieve the IP bindings data.
         $ipBindings = $this->model->connectCurl($ip, $username, $password, $command, $data);

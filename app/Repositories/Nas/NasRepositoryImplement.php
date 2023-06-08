@@ -300,6 +300,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         // Return the $record object, now with its properties set according to the retrieved settings
         return $record;
     }
+
     /**
      * Edits the NAS process which includes updating the NAS table and mikrotik API parameters.=
      * @return bool|string Returns true on success, error message on exception.

@@ -10,6 +10,8 @@ use Livewire\Component;
 class EditRouter extends Component
 {
     use LivewireMessageEvents;
+
+    // Public properties
     public $nas_id, $server_ip_address, $mikrotik_ip_address, $mikrotik_api_port, $ports, $secret, $temporary_username, $temporary_password;
 
     // Livewire properties

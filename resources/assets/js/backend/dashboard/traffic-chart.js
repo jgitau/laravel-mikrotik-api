@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
           label: 'Upload Traffic',
           backgroundColor: 'rgba(26, 159, 227,0.8)',
           borderColor: 'rgba(26, 159, 227,1)',
-          fill: false,
           tension: 0.4,
           pointRadius: 0,
           data: []
@@ -41,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
           label: 'Download Traffic',
           backgroundColor: 'rgba(40, 206, 97, 0.8)',
           borderColor: 'rgba(40, 206, 97, 1)',
-          fill: false,
           tension: 0.4,
           pointRadius: 0,
           data: []
@@ -75,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         y: {
           title: {
-            display: true,
+            display: true
             // text: 'Traffic'
           },
           ticks: {
@@ -101,6 +99,12 @@ document.addEventListener('DOMContentLoaded', function () {
               label += bitToSize(value);
               return label;
             }
+          }
+        },
+        legend: {
+          position: 'top',
+          labels: {
+            usePointStyle: true
           }
         },
         streaming: {

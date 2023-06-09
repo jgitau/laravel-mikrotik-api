@@ -155,42 +155,27 @@ class RouterOsApi extends Model
      *                    cURL handle if no command was sent and the connection is successful,
      *                    false otherwise
      */
-    public function connectCurl($ip, $login, $password, $command = null, $data = null, $port = 451)
+    public function connectCurl($ip, $username, $password, $command = null, $data = null, $port = 451)
     {
         // Create a new cURL resource
         $ch = curl_init();
 
         // Set the URL
         curl_setopt($ch, CURLOPT_URL, "https://{$ip}:{$port}/rest/{$command}");
-
-        // Enable SSL
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-        // Set the authentication method to Basic
-        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-
-        // Set the username and password
-        curl_setopt($ch, CURLOPT_USERPWD, "{$login}:{$password}");
-
         // Make sure we get the response back as a string
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // Set the username and password
+        curl_setopt($ch, CURLOPT_USERPWD, "{$username}:{$password}");
 
         // If a command and data are provided, set the necessary options for a POST request
         if ($command !== null && $data !== null) {
-            curl_setopt($ch, CURLOPT_POST, true);
+            // curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-
-            // *** TODO: Remove this once MikroTik fixes their API ***
-            // $jsonData = json_encode($data);
-            // $jsonData = str_replace(':null', ':""', $jsonData);
-            // $jsonData = str_replace(':\"\"', ':null', $jsonData);
-            // curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json'
-            ));
         }
+        // Enable SSL
+        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         // Execute the request
         $result = curl_exec($ch);
@@ -205,7 +190,6 @@ class RouterOsApi extends Model
         // Decode the response
         $decodedResult = json_decode($result, true);
         return $decodedResult ?? $result;
-
         // *** EXAMPLE USAGE ***
         /**
          * $command = 'ip/hotspot/ip-binding/print';

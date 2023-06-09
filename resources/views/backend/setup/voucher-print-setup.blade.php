@@ -23,7 +23,7 @@ $configData = Helper::appClasses();
             {{-- TODO: Voucher Print Setup FORM --}}
             {{-- Start Form Vouchers Print Setup --}}
             <div class="card-body">
-                {{-- @livewire('backend.setup.config.set-url-redirect.form') --}}
+                @livewire('backend.setup.config.voucher-print-setup.form')
             </div>
             {{-- End Form Vouchers Print Setup --}}
 

@@ -11,7 +11,7 @@ $configData = Helper::appClasses();
 
     {{-- *** TODO: *** --}}
     {{-- Start Lise Statictics --}}
-    {{-- @livewire('backend.dashboard.list-statistic') --}}
+    @livewire('backend.dashboard.list-statistic')
     {{-- End Lise Statictics --}}
 
 </div>

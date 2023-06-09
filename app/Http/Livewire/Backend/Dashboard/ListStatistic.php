@@ -22,7 +22,7 @@ class ListStatistic extends Component
         $config = MikrotikConfigHelper::getMikrotikConfig();
 
         // Check if the configuration exists and no values are empty.
-        if ($config && $mikrotikApiService->connect($config['ip'], $config['username'], $config['password'])) {
+        if ($config && !in_array("", $config, true)) {
             $this->isConnected = true; // Update connection status.
 
             // Use the Mikrotik API service to fetch the current router statistics.
@@ -69,7 +69,7 @@ class ListStatistic extends Component
         // Retrieve the Mikrotik configuration settings.
         $config = MikrotikConfigHelper::getMikrotikConfig();
 
-        if ($config && $mikrotikApiService->connect($config['ip'], $config['username'], $config['password'])) {
+        if ($config && !in_array("", $config, true)) {
             $this->isConnected = true; // Update connection status.
 
             // Use the Mikrotik API service to fetch the current router statistics.

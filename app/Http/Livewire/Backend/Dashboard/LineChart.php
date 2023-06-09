@@ -48,7 +48,7 @@ class LineChart extends Component
         if ($config && !in_array("", $config, true)) {
             // Retrieve traffic data using the MikroTik API service.
             $trafficData = $mikrotikApiService->getTrafficData($config['ip'], $config['username'], $config['password'], 'ether2-wan');
-
+            // dd($trafficData);
             // If traffic data was successfully retrieved, update the component's properties and emit events.
             if ($trafficData) {
                 $this->uploadTraffic = $trafficData['uploadTraffic'];

@@ -267,6 +267,38 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
         ];
     }
 
+    // TODO: getTrafficData() method using CURL
+    // public function getTrafficData($ip, $username, $password, $interface)
+    // {
+    //     // Monitor the traffic on the interface
+    //     $response = $this->model->connectCurl($ip, $username, $password, '/interface/monitor-traffic', [
+    //         'interface' => $interface,
+    //         'once' => '' // send an empty object
+
+    //     ]);
+    //     dd($response);
+
+    //     // If the request was not successful, return zero traffic
+    //     if ($response === false || !is_array($response) || empty($response) || $response['error'] == 400) {
+    //         return [
+    //             'uploadTraffic' => 0,
+    //             'downloadTraffic' => 0
+    //         ];
+    //     }
+
+    //     // Get the first item in the response (assuming that the response is an array of items)
+    //     $trafficData = $response[0];
+
+    //     $uploadTraffic = isset($trafficData['tx-bits-per-second']) ? round($trafficData['tx-bits-per-second'] / 1000) : 0;
+    //     $downloadTraffic = isset($trafficData['rx-bits-per-second']) ? round($trafficData['rx-bits-per-second'] / 1000) : 0;
+
+    //     return [
+    //         'uploadTraffic' => $uploadTraffic,
+    //         'downloadTraffic' => $downloadTraffic
+    //     ];
+    // }
+
+
     // TODO: GET MIKROTIK USER ACTIVE WITH CURL
     /**
      * Retrieves Mikrotik interface data via RouterOS API CURL.

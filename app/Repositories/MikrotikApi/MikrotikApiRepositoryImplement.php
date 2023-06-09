@@ -272,10 +272,12 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
      * Method to get current upload and download traffic data from a Mikrotik router with CURL.
      * @param string $ip @param string $username @param string $password @param string $interface @return array
      */
-    public function getTrafficData($ip, $username, $password, $interface = null)
+    public function getTrafficData($ip, $username, $password, $interface)
     {
         // Set the interface to monitor traffic on (if not set, use the default interface)
-        $interface = env('MIKROTIK_INTERFACE');
+        if(!$interface){
+            $interface = env('MIKROTIK_INTERFACE');
+        }
 
         // Monitor the traffic on the interface
         $command    = 'interface/monitor-traffic';

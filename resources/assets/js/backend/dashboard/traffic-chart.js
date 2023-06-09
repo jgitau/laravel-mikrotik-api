@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
         y: {
           title: {
             display: true,
-            text: 'Traffic'
+            // text: 'Traffic'
           },
           ticks: {
             callback: function (value, index, values) {

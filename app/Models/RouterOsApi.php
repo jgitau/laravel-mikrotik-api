@@ -180,6 +180,13 @@ class RouterOsApi extends Model
         if ($command !== null && $data !== null) {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+            // *** TODO: Remove this once MikroTik fixes their API ***
+            // $jsonData = json_encode($data);
+            // $jsonData = str_replace(':null', ':""', $jsonData);
+            // $jsonData = str_replace(':\"\"', ':null', $jsonData);
+            // curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/json'
             ));

@@ -26,8 +26,10 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     protected $model;
     protected $isConnected = false;
 
+    // Construct function initializes Mikrotik Model
     public function __construct(RouterOsApi $model)
     {
+        // Assuming this is where you're initializing the object to interact with Mikrotik API.
         $this->model = $model;
     }
 
@@ -221,40 +223,29 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
      ******* GET request to the Mikrotik router. WITH CURL **
      */
 
-
     /**
-     * This PHP function fetches the count of active hotspots from a Mikrotik router using cURL.
-     * @param ip The IP address of the Mikrotik router.
-     * @param username The username used to authenticate with the Mikrotik device.
-     * @param password The password is a string that is used to authenticate the user when connecting
-     * @return the count of active hotspots on a Mikrotik device.
+     * Fetches active hotspot data from a Mikrotik device using cURL.
+     * @param string $ip The IP address of the Mikrotik device.
+     * @param string $username The username for the Mikrotik device.
+     * @param string $password The password for the Mikrotik device.
+     * @return int|null Returns the number of active hotspots, or null if the connection fails.
      */
     public function getMikrotikActiveHotspot($ip, $username, $password)
     {
-        try {
-            // Set the command to fetch active hotspot data
-            $command = 'ip/hotspot/active/print';
-            $data = ['count-only' => 'true'];
+        // Retrieve active hotspot data from the Mikrotik device
+        $hotspotActive = $this->connectAndRetrieveData($ip, $username, $password, 'ip/hotspot/active/print', ['count-only' => 'true']);
 
-            // Fetch active hotspot data
-            $activeHotspot = $this->model->connectCurl($ip, $username, $password, $command, $data);
-
-            if ($activeHotspot === false || !is_array($activeHotspot) || empty($activeHotspot) || isset($activeHotspot['error'])) {
-                Log::error('Failed to get Mikrotik active hotspot: Empty response.');
-                return null;
-            }
-
-            // Return the active hotspot data count
-            return $activeHotspot['ret'];
-        } catch (\Exception $e) {
-            // If any error occurs, log the error message and return null
-            Log::error('Failed to get Mikrotik active hotspot: ' . $e->getMessage());
+        // Return null if the connection failed
+        if ($hotspotActive === null) {
             return null;
         }
+
+        // Return the number of active hotspots
+        return $hotspotActive['ret'];
     }
 
     /**
-     * Fetches system resource and active hotspot data from a Mikrotik device WITH CURLLL.
+     * Fetches system resource and active hotspot data from a Mikrotik device using cURL.
      * @param string $ip The IP address of the Mikrotik device.
      * @param string $username The username for the Mikrotik device.
      * @param string $password The password for the Mikrotik device.
@@ -262,43 +253,28 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
      */
     public function getMikrotikResourceData($ip, $username, $password)
     {
-        try {
-            // Set the command and data to fetch system resource data
-            $command = 'system/resource/print';
-            $data = [
-                ".proplist" => [
-                    "uptime",
-                    "cpu-load",
-                    "free-memory",
-                    "total-memory"
-                ]
-            ];
+        // Retrieve system resource data from the Mikrotik device
+        $systemResource = $this->connectAndRetrieveData($ip, $username, $password, 'system/resource/print', [".proplist" => ["uptime", "cpu-load", "free-memory", "total-memory"]]);
 
-            // Fetch system resource data
-            $systemResource = $this->model->connectCurl($ip, $username, $password, $command, $data);
-
-            if ($systemResource === false || !is_array($systemResource) || empty($systemResource) || isset($systemResource['error'])) {
-                Log::error('Failed to get Mikrotik resource data: Empty response.');
-                return null;
-            }
-
-            // Extract the data from the response
-            ['uptime' => $uptime, 'freeMemoryPercentage' => $freeMemoryPercentage, 'cpuLoad' => $cpuLoad] = $this->processSystemResource($systemResource[0]);
-
-            // Fetch active hotspot data
-            $activeHotspot = $this->getMikrotikActiveHotspot($ip, $username, $password);
-
-            return [
-                'uptime' => $uptime,
-                'freeMemoryPercentage' => $freeMemoryPercentage,
-                'cpuLoad' => $cpuLoad,
-                'activeHotspot' => $activeHotspot,
-            ];
-        } catch (\Exception $e) {
-            // If any error occurs, log the error message and return null
-            Log::error('Failed to get Mikrotik resource data: ' . $e->getMessage());
+        // Check if the system resource data is valid
+        if ($systemResource === null) {
+            // Return null if system resource data is not valid
             return null;
         }
+
+        // Process the system resource data and get the needed values
+        ['uptime' => $uptime, 'freeMemoryPercentage' => $freeMemoryPercentage, 'cpuLoad' => $cpuLoad] = $this->processSystemResource($systemResource[0]);
+
+        // Retrieve active hotspot count
+        $activeHotspot = $this->getMikrotikActiveHotspot($ip, $username, $password);
+
+        // Return an array with all the retrieved and processed data
+        return [
+            'uptime' => $uptime,
+            'freeMemoryPercentage' => $freeMemoryPercentage,
+            'cpuLoad' => $cpuLoad,
+            'activeHotspot' => $activeHotspot
+        ];
     }
 
     /**
@@ -352,7 +328,6 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
         return $uptime;
     }
 
-    // TODO: getTrafficData() method using CURL
     /**
      * Method to get current upload and download traffic data from a Mikrotik router with CURL.
      * @param string $ip @param string $username @param string $password @param string $interface @return array
@@ -407,10 +382,11 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     {
         try {
             // Establish a connection and retrieve active users data
-            $userActive = $this->model->connectCurl($ip, $username, $password, 'ip/hotspot/active/print', ['count-only' => 'true']);
-            // If connection fails, log the error and return null
-            if (!$userActive) {
-                Log::error('Failed to connect to Mikrotik router or fetch active users data: ' . $ip);
+            $userActive = $this->connectAndRetrieveData($ip, $username, $password, 'ip/hotspot/ip-binding/print', ['count-only' => 'true']);
+
+            // Check if the system resource data is valid
+            if ($userActive === null) {
+                // Return null if system resource data is not valid
                 return null;
             }
 
@@ -427,7 +403,6 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
                 Log::error('Failed to connect to Mikrotik router or fetch IP bindings data Bypassed: ' . $ip);
                 return null;
             }
-
             // Return the counts of active users, bypassed and blocked IP bindings
             return [
                 'userActive' => $userActive !== null ? intval($userActive['ret']) : 0,
@@ -468,6 +443,38 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
 
         // Return the count of IP bindings, or 0 if the connection failed.
         return $ipBindings !== null ? intval($ipBindings['ret']) : 0;
+    }
+
+    /**
+     * Handles cURL connections to the Mikrotik router
+     * @param string $ip The IP address of the Mikrotik device.
+     * @param string $username The username for the Mikrotik device.
+     * @param string $password The password for the Mikrotik device.
+     * @param string $command The command to execute on the Mikrotik device.
+     * @param array $data The data to send with the command.
+     * @return array|null Returns the response from the Mikrotik device, or null if the connection fails.
+     */
+    private function connectAndRetrieveData($ip, $username, $password, $command, $data)
+    {
+        // Try block for error handling
+        try {
+            // Using model function to connect to Mikrotik device and retrieve data
+            $response = $this->model->connectCurl($ip, $username, $password, $command, $data);
+
+            // Checking if the response is valid
+            if ($response === false || !is_array($response) || empty($response) || isset($response['error'])) {
+                throw new \Exception("Failed to get data. Empty response or error.");
+            }
+
+            // Return the valid response data
+            return $response;
+        } catch (\Exception $e) {
+            // Logging the error message for debugging purposes
+            Log::error('Failed to get data: ' . $e->getMessage());
+
+            // Return null on failure
+            return null;
+        }
     }
 
 }

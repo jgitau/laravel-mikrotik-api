@@ -245,90 +245,6 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     }
 
     /**
-     * Fetches system resource and active hotspot data from a Mikrotik device using cURL.
-     * @param string $ip The IP address of the Mikrotik device.
-     * @param string $username The username for the Mikrotik device.
-     * @param string $password The password for the Mikrotik device.
-     * @return array|null Returns an array with keys 'uptime', 'freeMemoryPercentage', 'cpuLoad', 'activeHotspot'
-     */
-    public function getMikrotikResourceData($ip, $username, $password)
-    {
-        // Retrieve system resource data from the Mikrotik device
-        $systemResource = $this->connectAndRetrieveData($ip, $username, $password, 'system/resource/print', [".proplist" => ["uptime", "cpu-load", "free-memory", "total-memory"]]);
-
-        // Check if the system resource data is valid
-        if ($systemResource === null) {
-            // Return null if system resource data is not valid
-            return null;
-        }
-
-        // Process the system resource data and get the needed values
-        ['uptime' => $uptime, 'freeMemoryPercentage' => $freeMemoryPercentage, 'cpuLoad' => $cpuLoad] = $this->processSystemResource($systemResource[0]);
-
-        // Retrieve active hotspot count
-        $activeHotspot = $this->getMikrotikActiveHotspot($ip, $username, $password);
-
-        // Return an array with all the retrieved and processed data
-        return [
-            'uptime' => $uptime,
-            'freeMemoryPercentage' => $freeMemoryPercentage,
-            'cpuLoad' => $cpuLoad,
-            'activeHotspot' => $activeHotspot
-        ];
-    }
-
-    /**
-     * Process system resource data.
-     * @param array $resourceData
-     * @return array processed data
-     */
-    protected function processSystemResource(array $resourceData): array
-    {
-        $uptime = $resourceData['uptime'] ?? null;
-        $freeMemory = $resourceData['free-memory'] ?? null;
-        $totalMemory = $resourceData['total-memory'] ?? null;
-        $cpuLoad = $resourceData['cpu-load'] ?? null;
-
-        // Calculate the free memory percentage
-        $freeMemoryPercentage = $freeMemory && $totalMemory ? number_format(($freeMemory / $totalMemory) * 100, 2) . "%" : null;
-
-        // Parse Mikrotik uptime format to a more common format
-        $uptime = $this->parseUptime($uptime);
-
-        // Add a percent sign to the CPU Load percentage before returning
-        $cpuLoad .= "%";
-
-        return compact('uptime', 'freeMemoryPercentage', 'cpuLoad');
-    }
-
-    /**
-     * Parse Mikrotik uptime format to a more common format.
-     * @param string|null $uptime
-     * @return string
-     */
-    protected function parseUptime(?string $uptime): string
-    {
-        if ($uptime) {
-            $pattern = "/(?:(\d+)w)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/";
-            preg_match($pattern, $uptime, $matches);
-
-            $weeks = intval($matches[1] ?? 0);
-            $days = intval($matches[2] ?? 0);
-            $hours = intval($matches[3] ?? 0);
-            $minutes = intval($matches[4] ?? 0);
-            $seconds = intval($matches[5] ?? 0);
-
-            // Convert weeks to days
-            $days += 7 * $weeks;
-
-            // Construct uptime string in format "dd hh:mm:ss"
-            $uptime = sprintf("%dd %02d:%02d:%02d", $days, $hours, $minutes, $seconds);
-        }
-
-        return $uptime;
-    }
-
-    /**
      * Method to get current upload and download traffic data from a Mikrotik router with CURL.
      * @param string $ip @param string $username @param string $password @param string $interface @return array
      */
@@ -414,6 +330,93 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
             Log::error('Failed to get Mikrotik interface data: ' . $e->getMessage());
             return null;
         }
+    }
+
+    /**
+     * Fetches system resource and active hotspot data from a Mikrotik device using cURL.
+     * @param string $ip The IP address of the Mikrotik device.
+     * @param string $username The username for the Mikrotik device.
+     * @param string $password The password for the Mikrotik device.
+     * @return array|null Returns an array with keys 'uptime', 'freeMemoryPercentage', 'cpuLoad', 'activeHotspot'
+     */
+    public function getMikrotikResourceData($ip, $username, $password)
+    {
+        // Retrieve system resource data from the Mikrotik device
+        $systemResource = $this->connectAndRetrieveData($ip, $username, $password, 'system/resource/print', [".proplist" => ["uptime", "cpu-load", "free-memory", "total-memory"]]);
+
+        // Check if the system resource data is valid
+        if ($systemResource === null) {
+            // Return null if system resource data is not valid
+            return null;
+        }
+
+        // Process the system resource data and get the needed values
+        ['uptime' => $uptime, 'freeMemoryPercentage' => $freeMemoryPercentage, 'cpuLoad' => $cpuLoad] = $this->processSystemResource($systemResource[0]);
+
+        // Retrieve active hotspot count
+        $activeHotspot = $this->getMikrotikActiveHotspot($ip, $username, $password);
+
+        // Return an array with all the retrieved and processed data
+        return [
+            'uptime' => $uptime,
+            'freeMemoryPercentage' => $freeMemoryPercentage,
+            'cpuLoad' => $cpuLoad,
+            'activeHotspot' => $activeHotspot
+        ];
+    }
+
+    /**
+     * Process system resource data.
+     * @param array $resourceData
+     * @return array processed data
+     */
+    protected function processSystemResource(array $resourceData): array
+    {
+        // Get the needed values from the system resource data
+        $uptime = $resourceData['uptime'] ?? null;
+        $freeMemory = $resourceData['free-memory'] ?? null;
+        $totalMemory = $resourceData['total-memory'] ?? null;
+        $cpuLoad = $resourceData['cpu-load'] ?? null;
+
+        // Calculate the free memory percentage
+        $freeMemoryPercentage = $freeMemory && $totalMemory ? number_format(($freeMemory / $totalMemory) * 100, 2) . "%" : null;
+
+        // Parse Mikrotik uptime format to a more common format
+        $uptime = $this->parseUptime($uptime);
+
+        // Add a percent sign to the CPU Load percentage before returning
+        $cpuLoad .= "%";
+
+        return compact('uptime', 'freeMemoryPercentage', 'cpuLoad');
+    }
+
+    /**
+     * Parse Mikrotik uptime format to a more common format.
+     * @param string|null $uptime
+     * @return string
+     */
+    protected function parseUptime($uptime)
+    {
+        if ($uptime) {
+            // Parse the uptime string using a regex pattern
+            $pattern = "/(?:(\d+)w)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/";
+            preg_match($pattern, $uptime, $matches);
+
+            // Get the values from the matches
+            $weeks = intval($matches[1] ?? 0);
+            $days = intval($matches[2] ?? 0);
+            $hours = intval($matches[3] ?? 0);
+            $minutes = intval($matches[4] ?? 0);
+            $seconds = intval($matches[5] ?? 0);
+
+            // Convert weeks to days
+            $days += 7 * $weeks;
+
+            // Construct uptime string in format "dd hh:mm:ss"
+            $uptime = sprintf("%dd %02d:%02d:%02d", $days, $hours, $minutes, $seconds);
+        }
+        // Return the parsed uptime string
+        return $uptime;
     }
 
     /**

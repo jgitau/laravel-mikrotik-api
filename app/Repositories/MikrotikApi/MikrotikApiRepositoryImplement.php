@@ -230,10 +230,65 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
      * Method to get current upload and download traffic data from a Mikrotik router.
      * @param string $ip @param string $username @param string $password @param string $interface @return array
      */
-    public function getTrafficData($ip, $username, $password, $interface)
+    // public function getTrafficData($ip, $username, $password, $interface = null)
+    // {
+    //     // Connect to the Mikrotik router
+    //     if (!$this->model->connect($ip, $username, $password)) {
+    //         // If connection fails, return default values
+    //         return [
+    //             'uploadTraffic' => 0,
+    //             'downloadTraffic' => 0
+    //         ];
+    //     }
+
+    //     $interface  = env('MIKROTIK_INTERFACE');
+    //     // Send the request to the monitor traffic endpoint
+    //     $response = $this->model->comm(self::ENDPOINT_MONITOR_TRAFFIC, [
+    //         "interface" => $interface,
+    //         "once" => ""
+    //     ]);
+
+    //     if (isset($response[0])) {
+    //         // Get the traffic data
+    //         $trafficData = $response[0];
+
+    //         $uploadTraffic = isset($trafficData['tx-bits-per-second']) ? round($trafficData['tx-bits-per-second'] / 1000) : 0;
+    //         $downloadTraffic = isset($trafficData['rx-bits-per-second']) ? round($trafficData['rx-bits-per-second'] / 1000) : 0;
+
+    //         return [
+    //             'uploadTraffic' => $uploadTraffic ,
+    //             'downloadTraffic' => $downloadTraffic
+    //         ];
+    //     }
+
+    //     return [
+    //         'uploadTraffic' => 0,
+    //         'downloadTraffic' => 0
+    //     ];
+    // }
+
+    // TODO: getTrafficData() method using CURL
+    /**
+     * Method to get current upload and download traffic data from a Mikrotik router with CURL.
+     * @param string $ip @param string $username @param string $password @param string $interface @return array
+     */
+    public function getTrafficData($ip, $username, $password, $interface = null)
     {
-        // Connect to the Mikrotik router
-        if (!$this->model->connect($ip, $username, $password)) {
+        // Set the interface to monitor traffic on (if not set, use the default interface)
+        $interface = env('MIKROTIK_INTERFACE');
+
+        // Monitor the traffic on the interface
+        $command    = 'interface/monitor-traffic';
+        $data       = [
+            "interface" => $interface,
+            "once" => "",
+            ".proplist" => ["rx-bits-per-second","tx-bits-per-second"]
+        ];
+        // Send the request to the monitor traffic endpoint
+        $response = $this->model->connectCurl($ip, $username, $password, $command, $data);
+
+        // If the request was not successful, return zero traffic
+        if ($response === false || !is_array($response) || empty($response) || isset($response['error']) == 400) {
             // If connection fails, return default values
             return [
                 'uploadTraffic' => 0,
@@ -241,62 +296,18 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
             ];
         }
 
-        $interface  = env('MIKROTIK_INTERFACE');
-        // Send the request to the monitor traffic endpoint
-        $response = $this->model->comm(self::ENDPOINT_MONITOR_TRAFFIC, [
-            "interface" => $interface,
-            "once" => ""
-        ]);
+        // Get the first item in the response (assuming that the response is an array of items)
+        $trafficData = $response[0];
+        // Get the traffic data from the response
+        $uploadTraffic = isset($trafficData['tx-bits-per-second']) ? round($trafficData['tx-bits-per-second'] / 1000) : 0;
+        $downloadTraffic = isset($trafficData['rx-bits-per-second']) ? round($trafficData['rx-bits-per-second'] / 1000) : 0;
 
-        if (isset($response[0])) {
-            // Get the traffic data
-            $trafficData = $response[0];
-
-            $uploadTraffic = isset($trafficData['tx-bits-per-second']) ? round($trafficData['tx-bits-per-second'] / 1000) : 0;
-            $downloadTraffic = isset($trafficData['rx-bits-per-second']) ? round($trafficData['rx-bits-per-second'] / 1000) : 0;
-
-            return [
-                'uploadTraffic' => $uploadTraffic ,
-                'downloadTraffic' => $downloadTraffic
-            ];
-        }
-
+        // Return the traffic data
         return [
-            'uploadTraffic' => 0,
-            'downloadTraffic' => 0
+            'uploadTraffic' => $uploadTraffic,
+            'downloadTraffic' => $downloadTraffic
         ];
     }
-
-    // TODO: getTrafficData() method using CURL
-    // public function getTrafficData($ip, $username, $password, $interface)
-    // {
-    //     // Monitor the traffic on the interface
-    //     $response = $this->model->connectCurl($ip, $username, $password, '/interface/monitor-traffic', [
-    //         'interface' => $interface,
-    //         'once' => '' // send an empty object
-
-    //     ]);
-    //     dd($response);
-
-    //     // If the request was not successful, return zero traffic
-    //     if ($response === false || !is_array($response) || empty($response) || $response['error'] == 400) {
-    //         return [
-    //             'uploadTraffic' => 0,
-    //             'downloadTraffic' => 0
-    //         ];
-    //     }
-
-    //     // Get the first item in the response (assuming that the response is an array of items)
-    //     $trafficData = $response[0];
-
-    //     $uploadTraffic = isset($trafficData['tx-bits-per-second']) ? round($trafficData['tx-bits-per-second'] / 1000) : 0;
-    //     $downloadTraffic = isset($trafficData['rx-bits-per-second']) ? round($trafficData['rx-bits-per-second'] / 1000) : 0;
-
-    //     return [
-    //         'uploadTraffic' => $uploadTraffic,
-    //         'downloadTraffic' => $downloadTraffic
-    //     ];
-    // }
 
 
     // TODO: GET MIKROTIK USER ACTIVE WITH CURL

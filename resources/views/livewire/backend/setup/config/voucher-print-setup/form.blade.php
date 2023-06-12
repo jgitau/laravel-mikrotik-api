@@ -1,43 +1,21 @@
 <div>
-    <form action="#" class="invoice-repeater">
+    <form wire:submit.prevent="updateVoucher" method="POST" class="invoice-repeater">
         <div class="d-flex">
             <div data-repeater-list="invoice" class="flex-grow-1">
+                @foreach($invoice as $index => $item)
                 <div data-repeater-item>
-                    <div class="d-flex align-items-center mb-3">
+                    <div class="d-flex align-items-center mb-2">
                         <div class="flex-grow-1">
-                            <input type="text" class="form-control" name="name" aria-describedby="name"
-                                value="Turn on Wifi" />
+                            <x-input-field id="name{{$index}}" label="Name" model="invoice.{{$index}}.name" type="text"
+                                placeholder="Input value" required />
                         </div>
-                        <button type="button" class="btn btn-danger ms-2" data-repeater-delete>
+                        <button type="button" class="btn btn-danger ms-2 mt-4" data-repeater-delete>
                             <i data-feather="x" class="me-25"></i>
                             <span><i class="fas fa-trash"></i></span>
                         </button>
                     </div>
                 </div>
-                <div data-repeater-item>
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="flex-grow-1">
-                            <input type="text" class="form-control" name="name" aria-describedby="name"
-                                placeholder="Open internet browser" value="Open internet browser" />
-                        </div>
-                        <button type="button" class="btn btn-danger ms-2" data-repeater-delete>
-                            <i data-feather="x" class="me-25"></i>
-                            <span><i class="fas fa-trash"></i></span>
-                        </button>
-                    </div>
-                </div>
-                <div data-repeater-item>
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="flex-grow-1">
-                            <input type="text" class="form-control" name="name" aria-describedby="name"
-                                placeholder="Input username password" value="Input username password" />
-                        </div>
-                        <button type="button" class="btn btn-danger ms-2" data-repeater-delete>
-                            <i data-feather="x" class="me-25"></i>
-                            <span><i class="fas fa-trash"></i></span>
-                        </button>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
         <button type="button" class="btn btn-icon btn-primary" data-repeater-create>
@@ -45,6 +23,9 @@
             <span><i class="fas fa-plus"></i></span>
         </button>
         <span id="max-item-message" class="ms-2 text-danger"></span>
+        <div class="d-flex justify-content-end mt-2">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
     </form>
 </div>
 
@@ -53,6 +34,7 @@
 <script>
     // Initialize the repeater functionality
     $('.invoice-repeater, .repeater-default').repeater({
+        isFirstItemUndeletable: true,
         show: function () {
             $(this).slideDown(); // Show the repeated item
             checkMaxItemCount(); // Check the maximum item count

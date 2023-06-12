@@ -45,10 +45,18 @@ class UpdateMikrotikStats implements ShouldQueue
 
             $cpuLoad = $data['cpuLoad'] ?? 0;
             $uptime = $data['uptime'] ?? '0d 0:0:0';
+            $freeMemory = $data['freeMemoryPercentage'] ?? '0%';
+            $activeHotspots = $data['activeHotspot'] ?? 0;
 
             // Save the data in cache
             Cache::put('mikrotik.cpuLoad', $cpuLoad, 60); // Keep the data for 60 minutes
             Cache::put('mikrotik.uptime', $uptime, 60); // Keep the data for 60 minutes
+
+            // Session
+            session([
+                'mikrotik.freeMemory' => $freeMemory,
+                'mikrotik.activeHotspots' => $activeHotspots,
+            ]);
         }
     }
 }

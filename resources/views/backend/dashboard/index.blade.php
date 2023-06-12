@@ -21,11 +21,11 @@ $configData = Helper::appClasses();
 {{-- START CHART --}}
 <div class="row">
     <!-- Line Charts -->
-    @livewire('backend.dashboard.line-chart')
+    {{-- @livewire('backend.dashboard.line-chart') --}}
     <!-- /Line Charts -->
 
     <!-- Polar Area Chart -->
-    @livewire('backend.dashboard.polar-chart')
+    {{-- @livewire('backend.dashboard.polar-chart') --}}
     <!-- /Polar Area Chart -->
 
     <!-- Radar Chart -->

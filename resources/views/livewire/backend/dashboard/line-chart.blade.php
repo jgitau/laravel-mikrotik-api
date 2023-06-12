@@ -17,7 +17,7 @@
         <div class="card-body" wire:ignore>
             @if ($uploadTraffic && $downloadTraffic)
             <canvas id="chartTraffic" data-upload='@json($uploadTraffic)'
-                data-download='@json($downloadTraffic)' style="min-height:200px;"></canvas>
+                data-download='@json($downloadTraffic)' style="min-height:250px;"></canvas>
             @endif
             {{-- <canvas id="chartTraffic"></canvas> --}}
         </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Helpers\AccessControlHelper;
 use App\Http\Controllers\Controller;
 use App\Helpers\MikrotikConfigHelper;
 use App\Services\Nas\NasService;
@@ -22,7 +23,11 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('backend.dashboard.index');
+        // Check if the user is allowed to see Statistics
+        $isAllowedToAdministrator = AccessControlHelper::isAllowedAdministrator();
+        return view('backend.dashboard.index', [
+            'isAllowedToAdministrator' => $isAllowedToAdministrator
+        ]);
     }
 
 

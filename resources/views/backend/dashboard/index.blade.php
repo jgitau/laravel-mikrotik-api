@@ -11,7 +11,9 @@ $configData = Helper::appClasses();
 
     {{-- *** TODO: *** --}}
     {{-- Start Lise Statictics --}}
+    @if($isAllowedToAdministrator)
     @livewire('backend.dashboard.list-statistic')
+    @endif
     {{-- End Lise Statictics --}}
 
 </div>

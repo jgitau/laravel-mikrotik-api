@@ -4,12 +4,12 @@
             <div data-repeater-list="invoice" class="flex-grow-1">
                 @foreach($invoice as $index => $item)
                 <div data-repeater-item>
-                    <div class="d-flex align-items-center mb-2">
+                    <div class="d-flex align-items-center mb-3">
                         <div class="flex-grow-1">
-                            <x-input-field id="name{{$index}}" label="Name" model="invoice.{{$index}}.name" type="text"
-                                placeholder="Input value" required />
+                            <x-input-field id="name{{$index}}" model="invoice.{{$index}}.name" type="text"
+                                placeholder="Input value" />
                         </div>
-                        <button type="button" class="btn btn-danger ms-2 mt-4" data-repeater-delete>
+                        <button type="button" class="btn btn-danger ms-2" data-repeater-delete>
                             <i data-feather="x" class="me-25"></i>
                             <span><i class="fas fa-trash"></i></span>
                         </button>

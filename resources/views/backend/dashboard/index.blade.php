@@ -11,31 +11,32 @@ $configData = Helper::appClasses();
 
     {{-- *** TODO: *** --}}
     {{-- Start Lise Statictics --}}
+    @if($isAllowedToAdministrator)
     @livewire('backend.dashboard.list-statistic')
+    @endif
     {{-- End Lise Statictics --}}
 
 </div>
 
 {{-- START CHART --}}
 <div class="row">
-
     <!-- Line Charts -->
-    @livewire('backend.dashboard.line-chart')
+    {{-- @livewire('backend.dashboard.line-chart') --}}
     <!-- /Line Charts -->
 
     <!-- Polar Area Chart -->
-    @livewire('backend.dashboard.polar-chart')
+    {{-- @livewire('backend.dashboard.polar-chart') --}}
     <!-- /Polar Area Chart -->
 
     <!-- Radar Chart -->
-    @livewire('backend.dashboard.radar-chart')
+    {{-- @livewire('backend.dashboard.radar-chart') --}}
     <!-- /Radar Chart -->
 
 </div>
 {{-- END CHART --}}
 
 @push('scripts')
-<!-- Chart JS -->
-<script src="{{ asset('assets/js/charts-chartjs.js') }}"></script>
+<!-- Apex Chart -->
+<script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
 @endpush
 @endsection

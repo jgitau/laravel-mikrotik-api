@@ -6,7 +6,7 @@
                 {{-- <small class="text-muted">Updated 1 month ago</small> --}}
             </div>
         </div>
-        <div class="card-body">
+        <div class="card-body" wire:poll.2000ms="loadCpuDataAndUptime">
             <div class="row gy-3">
 
                 <div class="col-md-3 col-6">
@@ -15,22 +15,11 @@
                             <i class="fa-solid fa-server ti-sm"></i>
                         </div>
                         <div class="card-info">
-                            <h5 class="mb-0" wire:ignore id="cpuLoad">0%</h5>
+                            <h5 class="mb-0" wire:ignore id="cpuLoad">{{ $cpuLoad }}</h5>
                             <small>CPU Load</small>
                         </div>
                     </div>
                 </div>
-                {{-- <div class="col-md-3 col-6">
-                    <div class="d-flex align-items-center">
-                        <div class="badge rounded-pill bg-label-info me-3 p-2">
-                            <i class="fa-solid fa-network-wired ti-sm"></i>
-                        </div>
-                        <div class="card-info">
-                            <h5 class="mb-0">8.549k</h5>
-                            <small>Total PPPoE Secret</small>
-                        </div>
-                    </div>
-                </div> --}}
 
                 <div class="col-md-3 col-6">
                     <div class="d-flex align-items-center">
@@ -57,18 +46,6 @@
                     </div>
                 </div>
 
-                {{-- <div class="col-md-3 col-6">
-                    <div class="d-flex align-items-center">
-                        <div class="badge rounded-pill bg-label-twitter me-3 p-2">
-                            <i class="fa-solid fa-circle-info ti-sm"></i>
-                        </div>
-                        <div class="card-info">
-                            <h5 class="mb-0">Info</h5>
-                            <small class="mb-0">Model :</small>
-                        </div>
-                    </div>
-                </div> --}}
-
                 <div class="col-md-3 col-6">
                     <div class="d-flex align-items-center">
                         <div class="badge rounded-pill bg-label-google-plus me-3 p-2">
@@ -81,30 +58,6 @@
                     </div>
                 </div>
 
-                {{-- <div class="col-md-3 col-6">
-                    <div class="d-flex align-items-center">
-                        <div class="badge rounded-pill bg-label-instagram me-3 p-2">
-                            <i class="fa-solid fa-ethernet ti-sm"></i>
-                        </div>
-                        <div class="card-info">
-                            <h5 class="mb-0">$9745</h5>
-                            <small>PPPoE Active</small>
-                        </div>
-                    </div>
-                </div> --}}
-
-                {{-- <div class="col-md-3 col-6">
-                    <div class="d-flex align-items-center">
-                        <div class="badge rounded-pill bg-label-vimeo me-3 p-2">
-                            <i class="fa-solid fa-wifi ti-sm"></i>
-                        </div>
-                        <div class="card-info">
-                            <h5 class="mb-0">$9745</h5>
-                            <small>Total User Hotspot</small>
-                        </div>
-                    </div>
-                </div> --}}
-
 
             </div>
 
@@ -115,14 +68,6 @@
 @push('scripts')
 <script>
     let updateInterval;
-
-    document.addEventListener('DOMContentLoaded', function () {
-        updateInterval = setInterval(function() {
-            // Call the Livewire method to load the new CPU data and uptime
-            @this.call('loadCpuDataAndUptime');
-        }, 2000); // Update every 2 seconds
-    });
-
     // Listen for the cpuLoadUpdated and uptimeUpdated events
     window.livewire.on('cpuLoadUpdated', cpuLoad => {
         document.getElementById('cpuLoad').innerText = cpuLoad;

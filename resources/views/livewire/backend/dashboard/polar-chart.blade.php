@@ -5,9 +5,9 @@
         </div>
         <div class="card-body">
             @if ($chartData)
-            <canvas id="userActiveChart" class="chartjs" data-height="355" data-chart='@json($chartData)'></canvas>
+            <div id="userActiveChart" data-chart='@json($chartData)'></div>
             @endif
-
+            {{-- <div id="userActiveChart"></div> --}}
         </div>
 
     </div>

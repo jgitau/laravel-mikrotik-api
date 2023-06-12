@@ -12,11 +12,16 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     /**
      * Define RouterOS API endpoints
      */
+    // END POINT ROUTER API OS
     const ENDPOINT_ACTIVE = "/ip/hotspot/active/print";
     const ENDPOINT_IP_BINDING = "/ip/hotspot/ip-binding/print";
     const ENDPOINT_RESOURCE = "/system/resource/print";
-    const ENDPOINT_MONITOR_TRAFFIC = "/interface/monitor-traffic"; // Define Interface monitor traffic API endpoint
-
+    const ENDPOINT_MONITOR_TRAFFIC = "/interface/monitor-traffic";
+    // END POINT CURL
+    const ENDPOINT_ACTIVE_CURL = "ip/hotspot/active/print";
+    const ENDPOINT_IP_BINDING_CURL = "ip/hotspot/ip-binding/print";
+    const ENDPOINT_RESOURCE_CURL = "system/resource/print";
+    const ENDPOINT_MONITOR_TRAFFIC_CURL = "interface/monitor-traffic";
 
     /**
      * Model class to be used in this repository for the common methods inside Eloquent
@@ -124,7 +129,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     //         }
 
     //         // Fetch active hotspot data
-    //         $activeHotspot = $this->model->comm("/ip/hotspot/active/print");
+    //         $activeHotspot = $this->model->comm("/ip/hotspot/active/prnt");
 
     //         // Return the active hotspot data
     //         return count($activeHotspot);
@@ -132,7 +137,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     //         // If any error occurs, log the error message and return null
     //         Log::error('Failed to get Mikrotik active hotspot: ' . $e->getMessage());
     //         return null;
-    //     }
+    //     }i
     // }
 
     /**
@@ -256,7 +261,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
         }
 
         // Monitor the traffic on the interface
-        $command    = 'interface/monitor-traffic';
+        $command    = self::ENDPOINT_MONITOR_TRAFFIC_CURL;
         $data       = [
             "interface" => $interface,
             "once" => "",
@@ -298,7 +303,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     {
         try {
             // Establish a connection and retrieve active users data
-            $userActive = $this->connectAndRetrieveData($ip, $username, $password, 'ip/hotspot/ip-binding/print', ['count-only' => 'true']);
+            $userActive = $this->connectAndRetrieveData($ip, $username, $password, self::ENDPOINT_ACTIVE_CURL, ['count-only' => 'true']);
 
             // Check if the system resource data is valid
             if ($userActive === null) {
@@ -342,7 +347,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     public function getMikrotikResourceData($ip, $username, $password)
     {
         // Retrieve system resource data from the Mikrotik device
-        $systemResource = $this->connectAndRetrieveData($ip, $username, $password, 'system/resource/print', [".proplist" => ["uptime", "cpu-load", "free-memory", "total-memory"]]);
+        $systemResource = $this->connectAndRetrieveData($ip, $username, $password, self::ENDPOINT_RESOURCE_CURL, [".proplist" => ["uptime", "cpu-load", "free-memory", "total-memory"]]);
 
         // Check if the system resource data is valid
         if ($systemResource === null) {
@@ -430,7 +435,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     private function getIpBindingsCount($ip, $username, $password, $type)
     {
         // Define the MikroTik API command.
-        $command = 'ip/hotspot/ip-binding/print';
+        $command = self::ENDPOINT_IP_BINDING_CURL;
 
         // Define the data for the command (request the count only).
         $data = [

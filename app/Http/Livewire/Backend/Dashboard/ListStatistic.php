@@ -3,45 +3,25 @@
 namespace App\Http\Livewire\Backend\Dashboard;
 
 use App\Helpers\MikrotikConfigHelper;
+use App\Jobs\UpdateMikrotikStats;
 use App\Services\MikrotikApi\MikrotikApiService;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class ListStatistic extends Component
 {
     // These public properties will be available to the Livewire view.
-    public $cpuLoad, $activeHotspots, $freeMemoryPercentage, $uptime;
+    public $cpuLoad = 0, $activeHotspots = 0, $freeMemoryPercentage = '0%', $uptime = '0d 0:0:0';
     protected $isConnected = false; // Track connection status
 
     /**
      * The mount method is called when the component is created.
-     * @param MikrotikApiService $mikrotikApiService A service for MIKROTIK data retrieval.
      */
-    public function mount(MikrotikApiService $mikrotikApiService)
+    public function mount()
     {
-        // Retrieve the Mikrotik configuration settings.
-        $config = MikrotikConfigHelper::getMikrotikConfig();
-
-        // Check if the configuration exists and no values are empty.
-        if ($config && !in_array("", $config, true)) {
-            $this->isConnected = true; // Update connection status.
-
-            // Use the Mikrotik API service to fetch the current router statistics.
-            try {
-                $data = $mikrotikApiService->getMikrotikResourceData($config['ip'], $config['username'], $config['password']);
-            } catch (\Exception $e) {
-                // On error, set $data to null.
-                $data = null;
-            }
-        } else {
-            // If the config is invalid or incomplete, set $data to null.
-            $data = null;
-        }
-
-        // If data was fetched successfully, assign it to the public properties.
-        $this->cpuLoad = $data['cpuLoad'] ?? 0;
-        $this->activeHotspots = $data['activeHotspot'] ?? 0;
-        $this->freeMemoryPercentage = $data['freeMemoryPercentage'] ?? '0%';
-        $this->uptime = $data['uptime'] ?? '0d 0:0:0';
+        // Attempt to fetch data from session
+        $this->freeMemoryPercentage = session('mikrotik.freeMemory');
+        $this->activeHotspots = session('mikrotik.activeHotspots');
     }
 
     /**
@@ -54,38 +34,19 @@ class ListStatistic extends Component
     }
 
     /**
-     * The loadCpuDataAndUptime method updates the cpuLoad and uptime properties
-     * and emits events to notify other components of these changes.
-     * @param MikrotikApiService $mikrotikApiService The service used for communicating with a Mikrotik router.
+     * This function loads CPU data and uptime from cache and emits events to notify other components
+     * of the changes.
      */
-    public function loadCpuDataAndUptime(MikrotikApiService $mikrotikApiService)
+    public function loadCpuDataAndUptime()
     {
+        // Dispatch the UpdateMikrotikStats job to update the data in cache.
+        dispatch(new UpdateMikrotikStats());
 
-        // If the config is invalid or incomplete, set default values for data.
-        $data = [
-            'cpuLoad' => 0,
-            'uptime' => '0d 0:0:0'
-        ];
-        // Retrieve the Mikrotik configuration settings.
-        $config = MikrotikConfigHelper::getMikrotikConfig();
-
-        if ($config && !in_array("", $config, true)) {
-            $this->isConnected = true; // Update connection status.
-
-            // Use the Mikrotik API service to fetch the current router statistics.
-            $data = $mikrotikApiService->getMikrotikResourceData($config['ip'], $config['username'], $config['password']);
-        } else {
-
-            // Emit an error event
-            $this->emit('error', 'Invalid or incomplete Mikrotik configuration.');
-            return;
-        }
-        // Update the cpuLoad property and emit an event with the updated CPU load.
-        $this->cpuLoad = $data['cpuLoad'] ?? 0;
+        // Load the data from cache
+        $this->cpuLoad = Cache::get('mikrotik.cpuLoad', 0);
+        $this->uptime = Cache::get('mikrotik.uptime', '0d 0:0:0');
+        // Emit events to notify other components of the changes.
         $this->emit('cpuLoadUpdated', $this->cpuLoad);
-
-        // Update the uptime property and emit an event with the updated uptime.
-        $this->uptime = $data['uptime'] ?? '0d 0:0:0';
         $this->emit('uptimeUpdated', $this->uptime);
     }
 }

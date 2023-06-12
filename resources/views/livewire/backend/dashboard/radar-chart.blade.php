@@ -4,7 +4,7 @@
             <h5 class="card-title mb-0">Radar Chart</h5>
         </div>
         <div class="card-body pt-2">
-            <canvas class="chartjs" id="radarChart" data-height="355"></canvas>
+            <canvas class="chartjs" id="radarChart" data-height="350"></canvas>
         </div>
     </div>
 </div>

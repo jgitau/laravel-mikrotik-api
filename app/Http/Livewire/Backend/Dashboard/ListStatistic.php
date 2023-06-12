@@ -3,7 +3,9 @@
 namespace App\Http\Livewire\Backend\Dashboard;
 
 use App\Helpers\MikrotikConfigHelper;
+use App\Jobs\UpdateMikrotikStats;
 use App\Services\MikrotikApi\MikrotikApiService;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class ListStatistic extends Component
@@ -54,38 +56,56 @@ class ListStatistic extends Component
     }
 
     /**
+     * This function loads CPU data and uptime from cache and emits events to notify other components
+     * of the changes.
+     */
+    public function loadCpuDataAndUptime()
+    {
+        // Dispatch the UpdateMikrotikStats job to update the data in cache.
+        dispatch(new UpdateMikrotikStats());
+
+        // Load the data from cache
+        $this->cpuLoad = Cache::get('mikrotik.cpuLoad', 0);
+        $this->uptime = Cache::get('mikrotik.uptime', '0d 0:0:0');
+        // Emit events to notify other components of the changes.
+        $this->emit('cpuLoadUpdated', $this->cpuLoad);
+        $this->emit('uptimeUpdated', $this->uptime);
+    }
+
+    // TODO:
+    /**
      * The loadCpuDataAndUptime method updates the cpuLoad and uptime properties
      * and emits events to notify other components of these changes.
      * @param MikrotikApiService $mikrotikApiService The service used for communicating with a Mikrotik router.
      */
-    public function loadCpuDataAndUptime(MikrotikApiService $mikrotikApiService)
-    {
+    // public function loadCpuDataAndUptime(MikrotikApiService $mikrotikApiService)
+    // {
 
-        // If the config is invalid or incomplete, set default values for data.
-        $data = [
-            'cpuLoad' => 0,
-            'uptime' => '0d 0:0:0'
-        ];
-        // Retrieve the Mikrotik configuration settings.
-        $config = MikrotikConfigHelper::getMikrotikConfig();
+    //     // If the config is invalid or incomplete, set default values for data.
+    //     $data = [
+    //         'cpuLoad' => 0,
+    //         'uptime' => '0d 0:0:0'
+    //     ];
+    //     // Retrieve the Mikrotik configuration settings.
+    //     $config = MikrotikConfigHelper::getMikrotikConfig();
 
-        if ($config && !in_array("", $config, true)) {
-            $this->isConnected = true; // Update connection status.
+    //     if ($config && !in_array("", $config, true)) {
+    //         $this->isConnected = true; // Update connection status.
 
-            // Use the Mikrotik API service to fetch the current router statistics.
-            $data = $mikrotikApiService->getMikrotikResourceData($config['ip'], $config['username'], $config['password']);
-        } else {
+    //         // Use the Mikrotik API service to fetch the current router statistics.
+    //         $data = $mikrotikApiService->getMikrotikResourceData($config['ip'], $config['username'], $config['password']);
+    //     } else {
 
-            // Emit an error event
-            $this->emit('error', 'Invalid or incomplete Mikrotik configuration.');
-            return;
-        }
-        // Update the cpuLoad property and emit an event with the updated CPU load.
-        $this->cpuLoad = $data['cpuLoad'] ?? 0;
-        $this->emit('cpuLoadUpdated', $this->cpuLoad);
+    //         // Emit an error event
+    //         $this->emit('error', 'Invalid or incomplete Mikrotik configuration.');
+    //         return;
+    //     }
+    //     // Update the cpuLoad property and emit an event with the updated CPU load.
+    //     $this->cpuLoad = $data['cpuLoad'] ?? 0;
+    //     $this->emit('cpuLoadUpdated', $this->cpuLoad);
 
-        // Update the uptime property and emit an event with the updated uptime.
-        $this->uptime = $data['uptime'] ?? '0d 0:0:0';
-        $this->emit('uptimeUpdated', $this->uptime);
-    }
+    //     // Update the uptime property and emit an event with the updated uptime.
+    //     $this->uptime = $data['uptime'] ?? '0d 0:0:0';
+    //     $this->emit('uptimeUpdated', $this->uptime);
+    // }
 }

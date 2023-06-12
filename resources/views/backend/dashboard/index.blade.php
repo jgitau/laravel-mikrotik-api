@@ -21,7 +21,7 @@ $configData = Helper::appClasses();
 {{-- START CHART --}}
 <div class="row">
     <!-- Line Charts -->
-    @livewire('backend.dashboard.line-chart')
+    {{-- @livewire('backend.dashboard.line-chart') --}}
     <!-- /Line Charts -->
 
     <!-- Polar Area Chart -->
@@ -29,7 +29,7 @@ $configData = Helper::appClasses();
     <!-- /Polar Area Chart -->
 
     <!-- Radar Chart -->
-    @livewire('backend.dashboard.radar-chart')
+    {{-- @livewire('backend.dashboard.radar-chart') --}}
     <!-- /Radar Chart -->
 
 </div>
@@ -38,7 +38,5 @@ $configData = Helper::appClasses();
 @push('scripts')
 <!-- Apex Chart -->
 <script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
-<!-- Chart JS -->
-<script src="{{ asset('assets/js/charts-chartjs.js') }}"></script>
 @endpush
 @endsection

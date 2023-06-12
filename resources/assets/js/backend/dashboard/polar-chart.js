@@ -14,7 +14,7 @@ document.addEventListener('livewire:load', function () {
         colors: ['rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(255, 99, 132, 1)'],
         legend: {
             show: true,
-            position: 'bottom',
+            position: 'top',
             markers: { offsetX: -3 },
             itemMargin: {
             vertical: 3,
@@ -60,7 +60,7 @@ document.addEventListener('livewire:load', function () {
                 },
                 legend: {
                 show: true,
-                position: 'bottom'
+                position: 'top'
                 }
             }
             },
@@ -89,7 +89,7 @@ document.addEventListener('livewire:load', function () {
                 }
                 },
                 legend: {
-                position: 'right',
+                position: 'top',
                 labels: {
                     colors: ['rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(255, 99, 132, 1)'],
                     useSeriesColors: false

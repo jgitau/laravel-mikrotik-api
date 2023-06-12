@@ -124,7 +124,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     //         }
 
     //         // Fetch active hotspot data
-    //         $activeHotspot = $this->model->comm("/ip/hotspot/active/print");
+    //         $activeHotspot = $this->model->comm("/ip/hotspot/active/prnt");
 
     //         // Return the active hotspot data
     //         return count($activeHotspot);
@@ -132,7 +132,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     //         // If any error occurs, log the error message and return null
     //         Log::error('Failed to get Mikrotik active hotspot: ' . $e->getMessage());
     //         return null;
-    //     }
+    //     }i
     // }
 
     /**
@@ -298,7 +298,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     {
         try {
             // Establish a connection and retrieve active users data
-            $userActive = $this->connectAndRetrieveData($ip, $username, $password, 'ip/hotspot/ip-binding/print', ['count-only' => 'true']);
+            $userActive = $this->connectAndRetrieveData($ip, $username, $password, 'ip/hotspot/active/print', ['count-only' => 'true']);
 
             // Check if the system resource data is valid
             if ($userActive === null) {

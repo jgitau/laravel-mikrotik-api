@@ -3,27 +3,35 @@
 namespace App\Http\Livewire\Backend\Dashboard;
 
 use App\Helpers\MikrotikConfigHelper;
+use App\Jobs\FetchMikrotikDataJob;
 use App\Services\MikrotikApi\MikrotikApiService;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class PolarChart extends Component
 {
 
-    // Set public properties for chart data
+    /**
+     * The data to be displayed in the chart.
+     */
     public $chartData;
 
     /**
-     * Mounts a MIKROTIK service and retrieves data from Mikrotik API for chart population.
-     * @param MikrotikApiService $mikrotikApiService A service for NAS data retrieval.
+     * Component mount lifecycle hook.
+     * Fetches and prepares data for the chart.
      */
-    public function mount(MikrotikApiService $mikrotikApiService)
+    public function mount()
     {
-        // Retrieve the Mikrotik configuration settings from the helper.
-        $this->chartData = $this->prepareChartData($mikrotikApiService);
+        // Prepare data for the chart
+        $this->chartData = $this->prepareChartData();
+
+        // Load the prepared data
+        $this->loadData();
     }
 
     /**
-     * This function returns a view for a polar chart in a backend dashboard.
+     * Render the Polar Chart view.
+     * @return \Illuminate\View\View The Polar Chart view.
      */
     public function render()
     {
@@ -31,23 +39,43 @@ class PolarChart extends Component
     }
 
     /**
-     * Retrieves Mikrotik configuration, validates it, and gets active user data from Mikrotik
-     * or default data if configuration is invalid.
-     * @param MikrotikApiService $mikrotikApiService MIKROTIK service for data retrieval.
-     * @return array Returns array with user data or default values.
+     * Load data from session or set default data if session is empty.
      */
-    private function prepareChartData(MikrotikApiService $mikrotikApiService)
+    public function loadData()
     {
-        // Retrieve the Mikrotik configuration settings from the helper.
+        // Attempt to fetch data from session
+        $data = session('mikrotik_data');
+
+        // If data exists, save it to chartData. Otherwise, set default data.
+        $this->chartData = $data ?? $this->setDefaultChartData();
+    }
+
+    /**
+     * Set default chart data.
+     * @return array The default chart data.
+     */
+    private function setDefaultChartData()
+    {
+        return ['userActive' => 0, 'ipBindingBypassed' => 0, 'ipBindingBlocked' => 0];
+    }
+
+    /**
+     * Prepare chart data.
+     * Retrieves Mikrotik configuration, dispatches a job to fetch active user data,
+     * and returns default data if the configuration is invalid.
+     * @return array The prepared chart data.
+     */
+    private function prepareChartData()
+    {
+        // Retrieve the Mikrotik configuration settings
         $config = MikrotikConfigHelper::getMikrotikConfig();
 
-        // Check if the configuration exists and no values are empty.
+        // If configuration exists and is complete, dispatch a job to fetch data
         if ($config && !in_array("", $config, true)) {
-            // If the config is valid, retrieve the Mikrotik user active data.
-            return $mikrotikApiService->getMikrotikUserActive($config['ip'], $config['username'], $config['password']);
-        } else {
-            // If the config is invalid or incomplete, set default values for chart data.
-            return ['userActive' => 0, 'ipBindingBypassed' => 0, 'ipBindingBlocked' => 0];
+            FetchMikrotikDataJob::dispatch($config['ip'], $config['username'], $config['password']);
         }
+
+        // Return default chart data (as the fetched data is saved to cache, not directly returned)
+        return $this->setDefaultChartData();
     }
 }

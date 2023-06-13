@@ -2,31 +2,25 @@
 
 namespace App\Jobs;
 
+use App\Helpers\MikrotikConfigHelper;
 use App\Services\MikrotikApi\MikrotikApiService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 
 class FetchMikrotikDataJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $ip;
-    protected $username;
-    protected $password;
-
     /**
      * Create a new job instance.
      * @return void
      */
-    public function __construct($ip, $username, $password)
+    public function __construct()
     {
-        $this->ip = $ip;
-        $this->username = $username;
-        $this->password = $password;
     }
 
     /**
@@ -35,9 +29,23 @@ class FetchMikrotikDataJob implements ShouldQueue
      */
     public function handle(MikrotikApiService $mikrotikApiService)
     {
-        $result = $mikrotikApiService->getMikrotikUserActive($this->ip, $this->username, $this->password);
+        // Retrieve the Mikrotik configuration settings.
+        $config = MikrotikConfigHelper::getMikrotikConfig();
 
-        // Save data to session
-        session(['mikrotik_data' => $result]);
+        // Check if the configuration exists and no values are empty.
+        if ($config && !in_array("", $config, true)) {
+
+            // Try to retrieve Mikrotik resource data using Mikrotik API service. On exception, set data to null.
+            try {
+                // Retrieve data from Mikrotik router using Mikrotik API Curl service.
+                $data = $mikrotikApiService->getMikrotikUserActive($config['ip'], $config['username'], $config['password']);
+            } catch (\Exception $e) {
+                $data = 0;
+            }
+            // Store data in cache for a single retrieval
+            Cache::put('userActive', $data['userActive'], 10); // Keep the data for 10 minutes
+            Cache::put('ipBindingBypassed', $data['ipBindingBypassed'], 10); // Keep the data for 10 minutes
+            Cache::put('ipBindingBlocked', $data['ipBindingBlocked'], 10); // Keep the data for 10 minutes
+        }
     }
 }

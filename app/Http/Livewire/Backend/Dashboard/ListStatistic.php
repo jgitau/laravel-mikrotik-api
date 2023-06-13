@@ -2,9 +2,7 @@
 
 namespace App\Http\Livewire\Backend\Dashboard;
 
-use App\Helpers\MikrotikConfigHelper;
 use App\Jobs\UpdateMikrotikStats;
-use App\Services\MikrotikApi\MikrotikApiService;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
@@ -19,9 +17,13 @@ class ListStatistic extends Component
      */
     public function mount()
     {
-        // Attempt to fetch data from session
-        $this->freeMemoryPercentage = session('mikrotik.freeMemory');
-        $this->activeHotspots = session('mikrotik.activeHotspots');
+        // Dispatch the UpdateMikrotikStats job to update the data in cache.
+        dispatch(new UpdateMikrotikStats());
+        // Attempt to fetch data from cache
+        $this->freeMemoryPercentage = Cache::get('mikrotik.freeMemory', 0);
+        $this->activeHotspots = Cache::get('mikrotik.activeHotspots', 0);
+        $this->cpuLoad = Cache::get('mikrotik.cpuLoad', 0);
+        $this->uptime = Cache::get('mikrotik.uptime', '0d 0:0:0');
     }
 
     /**
@@ -41,7 +43,6 @@ class ListStatistic extends Component
     {
         // Dispatch the UpdateMikrotikStats job to update the data in cache.
         dispatch(new UpdateMikrotikStats());
-
         // Load the data from cache
         $this->cpuLoad = Cache::get('mikrotik.cpuLoad', 0);
         $this->uptime = Cache::get('mikrotik.uptime', '0d 0:0:0');

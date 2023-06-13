@@ -2,19 +2,19 @@
 
 namespace App\Http\Livewire\Backend\Dashboard;
 
-use App\Helpers\MikrotikConfigHelper;
 use App\Jobs\FetchMikrotikDataJob;
-use App\Services\MikrotikApi\MikrotikApiService;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class PolarChart extends Component
 {
-
     /**
      * The data to be displayed in the chart.
      */
-    public $chartData;
+    public $chartData = ['userActive' => 0, 'ipBindingBypassed' => 0, 'ipBindingBlocked' => 0];
+
+    // Associative array for mapping event listeners to their handling methods.
+    protected $listeners = ['getLoadData' => 'loadData'];
 
     /**
      * Component mount lifecycle hook.
@@ -22,12 +22,15 @@ class PolarChart extends Component
      */
     public function mount()
     {
-        // Prepare data for the chart
-        $this->chartData = $this->prepareChartData();
-
-        // Load the prepared data
-        $this->loadData();
+        // $this->loadData();
     }
+
+    public function updatedChartData()
+    {
+        $this->emit('chartDataUpdated', $this->chartData);
+        error_log('chartDataUpdated event emitted');
+    }
+
 
     /**
      * Render the Polar Chart view.
@@ -39,15 +42,20 @@ class PolarChart extends Component
     }
 
     /**
-     * Load data from session or set default data if session is empty.
+     * Load data from cache or set default data if session is empty.
      */
     public function loadData()
     {
-        // Attempt to fetch data from session
-        $data = session('mikrotik_data');
-
+        // FIXME: BUG CHART CANNOT UPDATE
+        // Attempt to fetch data from session in Jobs\UpdateMikrotikStats.php
+        dispatch(new FetchMikrotikDataJob());
+        // Attempt to fetch data from cache
+        $data['userActive'] = intval(Cache::get('userActive', 0));
+        $data['ipBindingBypassed'] = intval(Cache::get('ipBindingBypassed', 0));
+        $data['ipBindingBlocked'] = intval(Cache::get('ipBindingBlocked', 0));
         // If data exists, save it to chartData. Otherwise, set default data.
-        $this->chartData = $data ?? $this->setDefaultChartData();
+        $this->chartData = $data;
+        $this->dispatchBrowserEvent('chartDataUpdated', $this->chartData);
     }
 
     /**
@@ -57,25 +65,5 @@ class PolarChart extends Component
     private function setDefaultChartData()
     {
         return ['userActive' => 0, 'ipBindingBypassed' => 0, 'ipBindingBlocked' => 0];
-    }
-
-    /**
-     * Prepare chart data.
-     * Retrieves Mikrotik configuration, dispatches a job to fetch active user data,
-     * and returns default data if the configuration is invalid.
-     * @return array The prepared chart data.
-     */
-    private function prepareChartData()
-    {
-        // Retrieve the Mikrotik configuration settings
-        $config = MikrotikConfigHelper::getMikrotikConfig();
-
-        // If configuration exists and is complete, dispatch a job to fetch data
-        if ($config && !in_array("", $config, true)) {
-            FetchMikrotikDataJob::dispatch($config['ip'], $config['username'], $config['password']);
-        }
-
-        // Return default chart data (as the fetched data is saved to cache, not directly returned)
-        return $this->setDefaultChartData();
     }
 }

@@ -7,12 +7,17 @@
             @if ($chartData)
             <div id="userActiveChart" data-chart='@json($chartData)'></div>
             @endif
-            {{-- <div id="userActiveChart"></div> --}}
         </div>
-
     </div>
 </div>
 
 @push('scripts')
+<script>
+    // When load page finished
+    Livewire.onLoad(() => {
+        // Get data from api
+        Livewire.emit('getLoadData');
+    });
+</script>
 <script src="{{ asset('assets/js/backend/dashboard/polar-chart.js') }}"></script>
 @endpush

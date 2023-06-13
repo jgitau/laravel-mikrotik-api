@@ -22,18 +22,17 @@ class UsersData extends Component
     ];
 
     /**
-     * This is a PHP function that returns an array of validation rules for columns and displays.
-     * @return an array that contains validation rules for columns and displays. The validation rules
-     * for columns include required, numeric, min, and max, while the validation rules for displays
-     * include required, string, and regex. The function merges the two arrays of validation rules and
-     * returns the resulting array.
+     * Defines validation rules for input data.
+     * @return array The merged validation rules for columns and displays
      */
     protected function rules()
     {
+        // Define the rules for column values
         $columnRules = 'required|numeric|min:0|max:1';
+        // Define the rules for display values
         $displayRules = 'required|string|regex:/^[a-zA-Z0-9\s\-_]+$/';
 
-        // Columns
+        // Apply column rules to relevant attributes
         $columns = [
             'id_column' => $columnRules,
             'name_column' => $columnRules,
@@ -50,7 +49,7 @@ class UsersData extends Component
             'login_with_column' => $columnRules,
         ];
 
-        // Displays
+        // Apply display rules to relevant attributes
         $displays = [
             'display_id' => $displayRules,
             'display_name' => $displayRules,
@@ -66,7 +65,7 @@ class UsersData extends Component
             'display_birthday' => $displayRules,
             'display_login_with' => $displayRules,
         ];
-
+        // Merge column and display rules into a single array and return
         return array_merge(
             $columns,
             $displays
@@ -74,13 +73,12 @@ class UsersData extends Component
     }
 
     /**
-     * The function returns an array of default error messages for various validation rules in PHP.
-     *
-     * @return an array of default error messages for various validation rules such as 'required',
-     * 'numeric', 'min', 'max', 'regex', and 'string'.
+     * Specifies default error messages for validation rules.
+     * @return array The default error messages for various validation rules
      */
     protected function messages()
     {
+        // Define the default error messages for various validation rules
         $dafaultMessages = [
             'required' => 'The :attribute field is required.',
             'numeric' => 'The :attribute field must be a number.',
@@ -94,18 +92,18 @@ class UsersData extends Component
     }
 
     /**
-     * Retrieves the UserData parameters using the UserDataService and stores them
-     * in the corresponding Livewire properties. Renders the edit-router view.
-     *
+     * Retrieves the UserData parameters using the UserDataService and resets the form.
      * @param  UserDataService $userDataService
-     * @return \Illuminate\View\View
      */
     public function mount(UserDataService $userDataService)
     {
         $this->resetForm($userDataService);
     }
 
-
+    /**
+     * Validates the updated property.
+     * @param  string $property The property that was updated
+     */
     public function updated($property)
     {
         // Every time a property changes
@@ -114,7 +112,8 @@ class UsersData extends Component
     }
 
     /**
-     * Render View
+     * Renders the form for editing user data.
+     * @return \Illuminate\View\View The form view
      */
     public function render()
     {
@@ -123,12 +122,8 @@ class UsersData extends Component
 
 
     /**
-     * This function updates user data settings and emits an event with the status of the update.
-     *
-     * @param UserDataService userDataService userDataService is an instance of the UserDataService
-     * class, which is a service class responsible for handling the logic related to user data
-     * settings, such as updating the settings in the database. It is injected into the updateUserData
-     * method as a dependency, allowing the method to call its methods and use its functionality.
+     * Updates user data settings.
+     * @param UserDataService $userDataService
      */
     public function updateUserData(UserDataService $userDataService)
     {
@@ -192,9 +187,7 @@ class UsersData extends Component
     }
 
     /**
-     * closeModal
-     *
-     * @return void
+     * Emits a closeModal event.
      */
     public function closeModal()
     {
@@ -222,13 +215,12 @@ class UsersData extends Component
 
 
     /**
-     * setLivewireVariables
-     *
-     * @param  mixed $userDataParameters
-     * @return void
+     * Sets Livewire variables based on user data parameters.
+     * @param  array $userDataParameters
      */
     private function setLivewireVariables($userDataParameters)
     {
+        // Set each property if it exists in the Livewire component
         foreach ($userDataParameters as $userData) {
             if (property_exists($this, $userData->setting)) {
                 $this->{$userData->setting} = $userData->value;

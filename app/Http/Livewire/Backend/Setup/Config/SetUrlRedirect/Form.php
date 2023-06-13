@@ -33,8 +33,6 @@ class Form extends Component
 
     /**
      * Mount the component.
-     *
-     * This function retrieves the current URL redirect setting using ConfigService and assigns it to a public variable.
      * @param ConfigService $configService The service to handle configuration related actions.
      */
     public function mount(ConfigService $configService)
@@ -43,84 +41,82 @@ class Form extends Component
     }
 
     /**
-     * updated
-     *
-     * @param  mixed $property
+     * This function is automatically called by Livewire whenever a property is updated.
+     * @param  string $property The name of the property that was updated.
      * @return void
      */
     public function updated($property)
     {
-        // Every time a property changes
-        // (only `text` for now), validate it
+        // The validation rules are defined in the 'rules' method of the component.
         $this->validateOnly($property);
     }
 
-
     /**
-     * Render the livewire component
+     * @return \Illuminate\View\View The view to be rendered.
      */
     public function render()
     {
+        // Return the view that corresponds to this component.
         return view('livewire.backend.setup.config.set-url-redirect.form');
     }
 
     /**
-     * Handle URL Redirect Update.
-     *
-     * This function either updates the URL redirect or deletes it based on the user input.
-     * @param ConfigService $configService The service to handle configuration related actions.
+     * Update or delete the URL redirect based on user input.
+     * @param ConfigService $configService The service that handles configuration-related actions.
+     * @return void
      */
     public function updateUrlRedirect(ConfigService $configService)
     {
-        // Validate user input according to the defined validation rules.
+        // The validation rules are defined in the 'rules' method of the component.
         $this->validate();
 
-        // Create an array containing the updated URL redirect.
+        // Prepare the settings data for the service.
         $settings = ['url_redirect' => $this->url];
 
-        // If URL is not empty, then it needs to be updated.
+        // If the URL is not empty, it means the user wants to update the URL redirect.
         if (!empty($this->url)) {
-            // Check if the entered URL actually exists.
+            // Check if the URL actually exists.
             if ($this->isUrlExist($this->url)) {
-                // If it exists, update the URL redirect in the database.
+                // If the URL exists, update it using the service.
                 $configService->updateUrlRedirect($settings);
 
-                // Emit a success event to be caught by the front-end for user notification.
+                // Dispatch an event to notify the user of success.
                 $this->dispatchSuccessEvent('URL Saved!');
 
-                // Emit event to refresh the page after successful URL update.
+                // Emit an event to notify other components that the URL was updated.
                 $this->emit('urlUpdated', true);
             } else {
-                // If URL does not exist, emit an error event to notify the user.
+                // If the URL does not exist, notify the user of the error.
                 $this->dispatchErrorEvent('URL not found. Please check again.');
             }
         } else {
-            // If URL is empty, it means the URL redirect needs to be deleted.
+            // If the URL is empty, it means the user wants to delete the URL redirect.
             $configService->updateUrlRedirect($settings);
 
-            // Emit a success event to be caught by the front-end for user notification.
+            // Dispatch an event to notify the user of success.
             $this->dispatchSuccessEvent('URL Deleted!');
         }
     }
 
     /**
      * Check if a URL exists.
-     *
      * This function uses PHP's native functions to check if the domain of the URL exists.
-     * @param string $url The URL to be checked.
+     * @param string $url The URL to check.
      * @return bool Returns true if the URL exists, false otherwise.
      */
     public function isUrlExist($url)
     {
         try {
-            // Parse the URL to get the host name.
+            // Use PHP's built-in function to parse the URL and extract the host.
             $urlHost = parse_url($url, PHP_URL_HOST);
-            // Check if the host name resolves to any DNS records.
+
+            // Use PHP's built-in function to check if the host has any DNS records.
             return checkdnsrr($urlHost, 'ANY');
         } catch (\Throwable $th) {
-            // If any errors occur during the check, return false.
+            // If any error occurs during the process, catch it and return false.
             return false;
         }
     }
+
 
 }

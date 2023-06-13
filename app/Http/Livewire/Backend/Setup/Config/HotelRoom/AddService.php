@@ -11,9 +11,6 @@ use Livewire\Component;
 
 class AddService extends Component
 {
-    // Use Livewire Message Event
-    use LivewireMessageEvents;
-
     // Properties Public Variables
     public $idService, $cronType;
 
@@ -22,7 +19,10 @@ class AddService extends Component
         'serviceCreated' => '$refresh',
     ];
 
-    // Validation Rules
+    /**
+     * Get the validation rules.
+     * @return array
+     */
     protected function rules()
     {
         return [
@@ -38,9 +38,8 @@ class AddService extends Component
     ];
 
     /**
-     * updated
-     *
-     * @param  mixed $property
+     * Handle property updates.
+     * @param string $property
      * @return void
      */
     public function updated($property)
@@ -51,17 +50,22 @@ class AddService extends Component
     }
 
     /**
-     * @return The `render()` function is returning a view called `add-service` with an array of
-     * `` passed to it. The `` array is obtained by selecting the `service_name`,
-     * `cron_type`, and `cron` columns from the `services` table where `cron_type` is not null, `cron`
-     * is not an empty string, and `cron` is not equal to
+     * Render the component.
+     * @param ServiceMegalosService $serviceMegalosService
+     * @return \Illuminate\View\View
      */
     public function render(ServiceMegalosService $serviceMegalosService)
     {
+        // Get services from the database
         $services = $serviceMegalosService->getServices();
         return view('livewire.backend.setup.config.hotel-room.add-service', ['services' => $services]);
     }
 
+    /**
+     * Store a new service.
+     * @param ServiceMegalosService $serviceMegalosService
+     * @return void
+     */
     public function storeService(ServiceMegalosService $serviceMegalosService)
     {
         // Validate the form fields
@@ -82,20 +86,23 @@ class AddService extends Component
             // Update / Store New Service to Database
             $serviceMegalosService->storeHotelRoomService($services);
 
-            // Show Message Success
+            // Show Success Message
             $this->dispatchSuccessEvent('Service was created successfully.');
+
             // Reset the form fields
             $this->resetFields();
+
             // Emit the 'serviceCreated' event with a true status
             $this->emit('serviceCreated', true);
         } catch (\Throwable $th) {
-            // Show Message Error
+            // Show Error Message
             $this->dispatchErrorEvent('An error occurred while creating service: ' . $th->getMessage());
         }
     }
 
     /**
-     * This function resets the values of two variables to empty strings.
+     * Reset the form fields.
+     * @return void
      */
     public function resetFields()
     {

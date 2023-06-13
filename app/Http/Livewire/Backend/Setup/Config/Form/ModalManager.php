@@ -6,15 +6,18 @@ use Livewire\Component;
 
 class ModalManager extends Component
 {
+    // Livewire listeners for modal events
     protected $listeners = [
         'showModal' => 'showModal',
         'closeModal' => 'closeModal',
     ];
 
+    // Declare Public Variables
     public $livewireComponentName = '';
 
     /**
-     * render
+     * Renders the modal-manager view.
+     * @return \Illuminate\View\View
      */
     public function render()
     {
@@ -22,8 +25,7 @@ class ModalManager extends Component
     }
 
     /**
-     * showModal
-     *
+     * Shows the modal window with the specified Livewire component.
      * @param  mixed $livewireComponentName
      * @return void
      */
@@ -35,8 +37,7 @@ class ModalManager extends Component
     }
 
     /**
-     * closeModal
-     *
+     * Closes the modal window.
      * @return void
      */
     public function closeModal()
@@ -45,4 +46,5 @@ class ModalManager extends Component
 
         $this->dispatchBrowserEvent('hide-modal');
     }
+
 }

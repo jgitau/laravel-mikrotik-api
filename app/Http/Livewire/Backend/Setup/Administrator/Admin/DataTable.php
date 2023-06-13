@@ -10,18 +10,21 @@ use Illuminate\Http\Request;
 class DataTable extends Component
 {
     use LivewireMessageEvents;
-    // Properties public $admin_uid;
+
+    // Admin unique identifier
     public $admin_uid;
 
-    // Listeners
+    // Event listeners
     protected $listeners = [
-        'adminCreated' => 'handleAdminCreated',
-        'adminUpdated' => 'handleAdminUpdated',
+        'adminCreated' => 'refreshDataTable',
+        'adminUpdated' => 'refreshDataTable',
         'confirmAdmin' => 'deleteAdmin',
     ];
 
     /**
-     * render
+     * Render the component.
+     *
+     * @return \Illuminate\View\View
      */
     public function render()
     {
@@ -29,8 +32,10 @@ class DataTable extends Component
     }
 
     /**
-     * getDataTable
-     * @param  mixed $adminService
+     * Get data for the DataTable.
+     *
+     * @param AdminService $adminService Admin service instance
+     * @return mixed
      */
     public function getDataTable(AdminService $adminService)
     {
@@ -38,49 +43,33 @@ class DataTable extends Component
     }
 
     /**
-     * handleAdminCreated
-     * Called when the 'refreshCreateDataTable' event is received
-     * Dispatches the 'refreshDatatable' browser event to reload the DataTable
-     * @return void
+     * Refresh the DataTable when an admin is created or updated.
      */
-    public function handleAdminCreated()
+    public function refreshDataTable()
     {
         $this->dispatchBrowserEvent('refreshDatatable');
     }
 
     /**
-     * handleAdminUpdated
-     * Called when the 'refreshEditDataTable' event is received
-     * Dispatches the 'refreshDatatable' browser event to reload the DataTable
-     * @return void
+     * Delete an admin.
+     *
+     * @param AdminService $adminService Admin service instance
+     * @param string $admin_uid Admin unique identifier
      */
-    public function handleAdminUpdated()
-    {
-        $this->dispatchBrowserEvent('refreshDatatable');
-    }
-
-    /**
-     * This PHP function deletes an admin using an AdminService and dispatches success or error events
-     * accordingly.
-     * @param AdminService adminService It is an instance of the AdminService class, which is
-     * responsible for handling the business logic related to the administration functionality of the
-     * application.
-     * @param admin_uid The unique identifier of the admin that needs to be deleted.
-     */
-    public function deleteAdmin(AdminService $adminService ,$admin_uid)
+    public function deleteAdmin(AdminService $adminService, $admin_uid)
     {
         try {
-            // Delete Admin by uid
+            // Attempt to delete the admin
             $adminService->deleteAdmin($admin_uid);
-            // Show Message Success
-            $this->dispatchSuccessEvent('Admin successfully deleted.');
-            // Dispatchs the 'adminDeleted' event with a true status
-            $this->dispatchBrowserEvent('refreshDatatable');
-        } catch (\Throwable $th) {
-            // Show Message Error
-            $this->dispatchErrorEvent('An error occurred while deleting admin: ' . $th->getMessage());
 
+            // Notify the frontend of success
+            $this->dispatchSuccessEvent('Admin successfully deleted.');
+
+            // Refresh the data table
+            $this->refreshDataTable();
+        } catch (\Throwable $th) {
+            // Notify the frontend of the error
+            $this->dispatchErrorEvent('An error occurred while deleting admin: ' . $th->getMessage());
         }
     }
-
 }

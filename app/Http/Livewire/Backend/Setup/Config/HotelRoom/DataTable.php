@@ -19,22 +19,26 @@ class DataTable extends Component
     ];
 
     /**
-     * getDataTable
-     * @param  mixed $hotelRoomService
+     * Get the data for the data table.
+     * @param HotelRoomService $hotelRoomService
+     * @return mixed
      */
     public function getDataTable(HotelRoomService $hotelRoomService)
     {
         return $hotelRoomService->getDatatables();
     }
 
+    /**
+     * Render the component.
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.backend.setup.config.hotel-room.data-table');
     }
 
-
     /**
-     * handleServiceCreated
+     * Handle the 'serviceCreated' event.
      * @return void
      */
     public function handleServiceCreated()
@@ -42,17 +46,25 @@ class DataTable extends Component
         $this->dispatchBrowserEvent('refreshDatatable');
     }
 
+    /**
+     * Delete a service.
+     * @param ServiceMegalosService $serviceMegalosService
+     * @param int $id
+     * @return void
+     */
     public function deleteService(ServiceMegalosService $serviceMegalosService, $id)
     {
         try {
             // Delete Service by Id
             $serviceMegalosService->deleteService($id);
-            // Show Message Success
+
+            // Show Success Message
             $this->dispatchSuccessEvent('Service successfully deleted.');
-            // Dispatchs the 'serviceDeleted' event with a true status
+
+            // Dispatch the 'refreshDatatable' event to refresh the datatable
             $this->dispatchBrowserEvent('refreshDatatable');
         } catch (\Throwable $th) {
-            // Show Message Error
+            // Show Error Message
             $this->dispatchErrorEvent('An error occurred while deleting service: ' . $th->getMessage());
         }
     }

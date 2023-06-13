@@ -2,28 +2,27 @@
 
 namespace App\Http\Livewire\Backend\Dashboard;
 
-use App\Services\MikrotikApi\MikrotikApiService;
 use App\Helpers\MikrotikConfigHelper;
+use App\Jobs\UpdateMikrotikTraffic;
+use App\Services\MikrotikApi\MikrotikApiService;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class LineChart extends Component
 {
     // Arrays for storing upload and download traffic data.
-    public $uploadTraffic = [];
-    public $downloadTraffic = [];
+    public $uploadTraffic = 0;
+    public $downloadTraffic = 0;
 
     // Associative array for mapping event listeners to their handling methods.
-    protected $listeners = ['loadTrafficData' => 'loadTrafficData'];
-
+    protected $listeners = ['getLoadTrafficData' => 'loadTrafficData'];
     /**
-     * This method is called when the component is created.
-     * @param MikrotikApiService $mikrotikApiService A service for MIKROTIK data retrieval.
+     * This function loads traffic data using a Mikrotik API service when the application boots up.
      */
-    public function mount(MikrotikApiService $mikrotikApiService)
-    {
-        // Load traffic data using the provided service.
-        $this->loadTrafficData($mikrotikApiService);
-    }
+    // public function booted()
+    // {
+    //     $this->loadTrafficData();
+    // }
 
     /**
      * Render the associated view for this component.
@@ -37,36 +36,16 @@ class LineChart extends Component
 
     /**
      * Load traffic data using the provided MikrotikApiService instance.
-     * @param MikrotikApiService $mikrotikApiService An instance of MikrotikApiService for MIKROTIK data retrieval.
      */
-    public function loadTrafficData(MikrotikApiService $mikrotikApiService)
+    public function loadTrafficData()
     {
-        // Retrieve MikroTik configuration.
-        $config = MikrotikConfigHelper::getMikrotikConfig();
+        // Dispatch the UpdateMikrotikStats job to update the data in cache.
+        dispatch(new UpdateMikrotikTraffic());
+        // Load the data from cache
+        $this->uploadTraffic = Cache::get('mikrotik.uploadTraffic', 0);
+        $this->downloadTraffic = Cache::get('mikrotik.downloadTraffic', 0);
+        // Emit an event to update the traffic data.
+        $this->emit('updateTrafficData', $this->uploadTraffic, $this->downloadTraffic);
 
-        // Check if the configuration is valid.
-        if ($config && !in_array("", $config, true)) {
-            // Retrieve traffic data using the MikroTik API service.
-            $trafficData = $mikrotikApiService->getTrafficData($config['ip'], $config['username'], $config['password'], env('MIKROTIK_INTERFACE'));
-            // dd($trafficData);
-            // If traffic data was successfully retrieved, update the component's properties and emit events.
-            if ($trafficData) {
-                $this->uploadTraffic = $trafficData['uploadTraffic'];
-                $this->downloadTraffic = $trafficData['downloadTraffic'];
-
-                // Emit an event to update the traffic data.
-                $this->emit('updateTrafficData', $this->uploadTraffic, $this->downloadTraffic);
-
-                // Emit events for updated upload and download traffic.
-                $this->emit('uploadTrafficUpdated', $this->uploadTraffic);
-                $this->emit('downloadTrafficUpdated', $this->downloadTraffic);
-            } else {
-                // If traffic data retrieval failed, emit an error event.
-                $this->emit('error', 'Failed to fetch traffic data.');
-            }
-        } else {
-            // If the configuration is invalid or incomplete, emit an error event.
-            $this->emit('error', 'Invalid or incomplete Mikrotik configuration.');
-        }
     }
 }

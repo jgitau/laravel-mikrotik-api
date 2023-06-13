@@ -3,11 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     Backend\DashboardController,
-    Backend\ClientController,
     Backend\ServiceController,
     Backend\Report\UserController,
     Home\LoginController
 };
+use App\Http\Controllers\Backend\Client\ListClientController;
 
 // Home / Login Page route
 Route::get('/', [LoginController::class, 'index'])->name('index');
@@ -19,7 +19,7 @@ Route::middleware(['check.session.cookie'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('backend.dashboard');
 
     // Route for clients list page
-    Route::get('clients/list-clients', [ClientController::class, 'index'])->name('backend.clients.list-clients');
+    Route::get('clients/list-clients', [ListClientController::class, 'index'])->name('backend.clients.list-clients');
 
     // Route for services list page
     Route::get('services/list-services', [ServiceController::class, 'index'])->name('backend.services.list-services');

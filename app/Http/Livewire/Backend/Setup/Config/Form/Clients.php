@@ -34,31 +34,33 @@ class Clients extends Component
     ];
 
     /**
-     * Retrieves the CLIENT parameters using the ClientService and stores them
-     * in the corresponding Livewire properties. Renders the edit-router view.
-     *
-     * @param  ClientService $clientService
-     * @return \Illuminate\View\View
+     * Mount the component.
+     * @param ClientService $clientService
+     * @return void
      */
     public function mount(ClientService $clientService)
     {
         $this->resetForm($clientService);
     }
 
+    /**
+     * Render the component.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.backend.setup.config.form.clients');
     }
 
     /**
-     * updateClient
-     *
+     * Update the client settings.
+     * @param ClientService $clientService
      * @return void
      */
     public function updateClient(ClientService $clientService)
     {
-
-        // Validate the form
+        // Validate the form fields
         $this->validate();
 
         // Declare the public variable names
@@ -71,17 +73,21 @@ class Clients extends Component
             // Update the client settings
             $clientService->updateClientSettings($settings);
 
-            // Show Message Success
+            // Show success message
             $this->dispatchSuccessEvent('Client settings updated successfully.');
+
             // Close the modal
             $this->closeModal();
+
             // Reset the form fields
             $this->resetFields();
+
             // Emit the 'clientUpdated' event with a true status
             $this->emitUp('clientUpdated', true);
         } catch (\Throwable $th) {
-            // Show Message Error
+            // Show error message
             $this->dispatchErrorEvent('An error occurred while updating client settings: ' . $th->getMessage());
+
             // Close the modal
             $this->closeModal();
         }
@@ -91,12 +97,12 @@ class Clients extends Component
     }
 
     /**
-     * closeModal
-     *
+     * Close the modal.
      * @return void
      */
     public function closeModal()
     {
+        // Dispatch the 'closeModal' browser event
         $this->dispatchBrowserEvent('closeModal');
     }
 
@@ -125,8 +131,7 @@ class Clients extends Component
     }
 
     /**
-     * resetFields
-     *
+     * Reset the form fields.
      * @return void
      */
     public function resetFields()
@@ -134,6 +139,5 @@ class Clients extends Component
         $this->clientsVouchersPrinter = null;
         $this->createVouchersType = null;
     }
-
 
 }

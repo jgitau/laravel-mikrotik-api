@@ -42,7 +42,6 @@ class SocialPlugins extends Component
 
     }
 
-
     // Validation messages
     protected function messages()
     {
@@ -53,25 +52,12 @@ class SocialPlugins extends Component
             'max' => 'The :attribute field may not be greater than :max.',
         ];
 
-        // $customMessages = [
-        //     'fb_app_id.required'                    => 'The Facebook App ID field is required.',
-        //     'fb_app_secret.required'                => 'The Facebook App Secret field is required.',
-        //     'tw_api_key.required'                   => 'The Twitter API Key field is required.',
-        //     'tw_api_secret.required'                => 'The Twitter API Secret field is required.',
-        //     'google_api_client_id.required'         => 'The Google API Client ID field is required.',
-        //     'login_with_linkedin_on.required'       => 'The Login with LinkedIn field is required.',
-        //     'google_api_client_secret.required'     => 'The Google API Client Secret field is required.',
-        //     'linkedin_api_client_id.required'       => 'The LinkedIn API Client ID field is required.',
-        //     'linkedin_api_client_secret.required'   => 'The LinkedIn API Client Secret field is required.',
-        // ];
-
         return $defaultMessages;
     }
 
     /**
      * Retrieves the SOCIALPLUGIN parameters using the SocialPluginService and stores them
      * in the corresponding Livewire properties. Renders the edit-router view.
-     *
      * @param  SocialPluginService $socialPluginService
      * @return \Illuminate\View\View
      */
@@ -81,8 +67,7 @@ class SocialPlugins extends Component
     }
 
     /**
-     * updated
-     *
+     * This function validates a specific property every time it changes.
      * @param  mixed $property
      * @return void
      */
@@ -94,8 +79,9 @@ class SocialPlugins extends Component
     }
 
     /**
-     * Render View
-     **/
+     * Renders the social-plugins view.
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.backend.setup.config.form.social-plugins');
@@ -105,10 +91,8 @@ class SocialPlugins extends Component
     /**
      * This function updates the social plugin settings and emits an event with the status of the
      * update.
-     *
-     * @param SocialPluginService socialPluginService It is an instance of the SocialPluginService
-     * class, which is responsible for handling the business logic related to updating the social
-     * plugin settings.
+     * @param  mixed $socialPluginService
+     * @return void
      */
     public function updateSocialPlugin(SocialPluginService $socialPluginService)
     {

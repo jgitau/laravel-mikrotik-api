@@ -20,24 +20,30 @@ class Ads extends Component
         'resetForm' => 'resetForm',
     ];
 
-    // Validation rules
+    /**
+     * Get the validation rules.
+     * @return array
+     */
     protected function rules()
     {
         $numericRules = 'required|numeric|min:1|max:9999';
         return [
-            'ads_max_width'           => $numericRules,
-            'ads_max_height'          => $numericRules,
-            'ads_max_size'            => $numericRules,
-            'ads_upload_folder'       => 'required',
-            'ads_thumb_width'         => $numericRules,
-            'ads_thumb_height'        => $numericRules,
-            'mobile_ads_max_width'    => $numericRules,
-            'mobile_ads_max_height'   => $numericRules,
-            'mobile_ads_max_size'     => $numericRules,
+            'ads_max_width' => $numericRules,
+            'ads_max_height' => $numericRules,
+            'ads_max_size' => $numericRules,
+            'ads_upload_folder' => 'required',
+            'ads_thumb_width' => $numericRules,
+            'ads_thumb_height' => $numericRules,
+            'mobile_ads_max_width' => $numericRules,
+            'mobile_ads_max_height' => $numericRules,
+            'mobile_ads_max_size' => $numericRules,
         ];
     }
 
-    // Validation messages
+    /**
+     * Get the validation messages.
+     * @return array
+     */
     protected function messages()
     {
         $defaultMessages = [
@@ -55,46 +61,45 @@ class Ads extends Component
     }
 
     /**
-     * Retrieves the ADS parameters using the AdsService and stores them
-     * in the corresponding Livewire properties. Renders the edit-router view.
-     *
-     * @param  AdsService $adsService
-     * @return \Illuminate\View\View
+     * Mount the component.
+     * @param AdsService $adsService
+     * @return void
      */
     public function mount(AdsService $adsService)
     {
+        // Reset the form and retrieve the ADS parameters
         $this->resetForm($adsService);
     }
 
     /**
-     * updated
-     *
-     * @param  mixed $property
+     * Handle property updates.
+     * @param mixed $property
      * @return void
      */
     public function updated($property)
     {
-        // Every time a property changes
-        // (only `text` for now), validate it
+        // Validate the updated property
         $this->validateOnly($property);
     }
 
     /**
-     * render function
+     * Render the component.
+     * @return \Illuminate\View\View
      */
     public function render()
     {
+        // Render the view for the component
         return view('livewire.backend.setup.config.form.ads');
     }
 
     /**
-     * updateAds
-     *
+     * Update the ADS settings.
+     * @param AdsService $adsService
      * @return void
      */
     public function updateAds(AdsService $adsService)
     {
-        // Validate the form
+        // Validate the form fields
         $this->validate();
 
         // Declare the public variable names
@@ -115,55 +120,58 @@ class Ads extends Component
             // Update the ads settings
             $adsService->updateAdsSettings($settings);
 
-            // Show Message Success
+            // Show success message
             $this->dispatchSuccessEvent('Ads settings updated successfully.');
+
             // Close the modal
             $this->closeModal();
+
             // Reset the form fields
             $this->resetFields();
+
             // Emit the 'adsUpdated' event with a true status
             $this->emitUp('adsUpdated', true);
         } catch (\Throwable $th) {
-            // Show Message Error
+            // Show error message
             $this->dispatchErrorEvent('An error occurred while updating ads settings: ' . $th->getMessage());
+
             // Close the modal
             $this->closeModal();
         }
 
-        // Close Modal
+        // Close the modal
         $this->closeModal();
     }
 
     /**
-     * closeModal
-     *
+     * Close the modal.
      * @return void
      */
     public function closeModal()
     {
+        // Emit the 'closeModal' event
         $this->emit('closeModal');
     }
 
     /**
-     * Retrieves the ADS parameters using the AdsService and stores them
-     * in the corresponding Livewire properties. Renders the edit-router view.
-     * @param  mixed $adsService
+     * Reset the form fields and retrieve the ADS parameters.
+     * @param AdsService $adsService
      * @return void
      */
     public function resetForm(AdsService $adsService)
     {
-        // Get the ADS parameters using the AdsService
+        // Retrieve the ADS parameters using the AdsService
         /**
          * @var Ads $ads
          */
         $adsParameters = $adsService->getAdsParameters();
-        // Convert the received data into an associative array and fill it into a Livewire variable
+
+        // Convert the received data into an associative array and fill it into Livewire variables
         $this->setLivewireVariables($adsParameters);
     }
 
     /**
-     * resetFields
-     *
+     * Reset the form fields.
      * @return void
      */
     public function resetFields()
@@ -180,9 +188,8 @@ class Ads extends Component
     }
 
     /**
-     * setLivewireVariables
-     *
-     * @param  mixed $adsParameters
+     * Fill Livewire variables with ADS parameters.
+     * @param mixed $adsParameters
      * @return void
      */
     private function setLivewireVariables($adsParameters)

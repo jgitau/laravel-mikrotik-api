@@ -37,7 +37,6 @@ class HotelRooms extends Component
     /**
      * Retrieves the HOTEL ROOM parameters using the HotelRoomService and stores them
      * in the corresponding Livewire properties. Renders the edit-router view.
-     *
      * @param  HotelRoomService $hotelRoomService
      * @return \Illuminate\View\View
      */
@@ -47,7 +46,8 @@ class HotelRooms extends Component
     }
 
     /**
-     * render
+     * Renders the hotel-rooms view.
+     * @return \Illuminate\View\View
      */
     public function render()
     {
@@ -55,14 +55,14 @@ class HotelRooms extends Component
     }
 
     /**
-     * updateHotelRoom
-     *
+     * Updates the hotel room settings.
+     * @param  HotelRoomService $hotelRoomService
      * @return void
      */
     public function updateHotelRoom(HotelRoomService $hotelRoomService)
     {
         $this->validate();
-
+        // Create the settings array
         $settings = [
             'hms_connect' => $this->hmsConnect,
         ];
@@ -92,15 +92,13 @@ class HotelRooms extends Component
     }
 
     /**
-     * closeModal
-     *
+     * Closes the modal window.
      * @return void
      */
     public function closeModal()
     {
         $this->emit('closeModal');
     }
-
 
     /**
      * Retrieves the HOTEL ROOM parameters using the HotelRoomService and stores them
@@ -116,8 +114,7 @@ class HotelRooms extends Component
     }
 
     /**
-     * resetFields
-     *
+     * Resets the form fields.
      * @return void
      */
     public function resetFields()

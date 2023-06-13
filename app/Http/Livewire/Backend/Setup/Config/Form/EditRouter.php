@@ -52,40 +52,36 @@ class EditRouter extends Component
     ];
 
     /**
-     * Retrieves the NAS parameters using the NasService and stores them
-     * in the corresponding Livewire properties. Renders the edit-router view.
-     *
+     * Handles the component initialization.
      * @param  NasService $nasService
-     * @return \Illuminate\View\View
+     * @return void
      */
     public function mount(NasService $nasService)
     {
         $this->resetForm($nasService);
     }
 
-
     /**
-     * updated
-     *
-     * @param  mixed $property
+     * Handles updates to Livewire properties.
+     * @param  string $property
      * @return void
      */
     public function updated($property)
     {
-        // Every time a property changes
-        // (only `text` for now), validate it
         $this->validateOnly($property);
     }
 
+    /**
+     * Renders the component.
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
-        // Render the edit-router view
         return view('livewire.backend.setup.config.form.edit-router');
     }
 
     /**
-     * closeModal
-     *
+     * Closes the modal window.
      * @return void
      */
     public function closeModal()
@@ -94,19 +90,44 @@ class EditRouter extends Component
     }
 
     /**
-     * updateRouter
-     *
-     * @param  mixed $nasService
+     * Handles the form submission.
+     * @param  NasService $nasService
      * @return void
      */
     public function updateRouter(NasService $nasService)
     {
-        // Validate the input fields to ensure they meet the specified rules
+        // We first validate the form data against the specified rules
         $this->validate();
 
-        // Create an array of data to be updated based on the form inputs
+        // We get the current NAS parameters from the NasService
         $nas = $nasService->getNasParameters();
-        $data = [
+
+        // We prepare the data for the update process
+        $data = $this->prepareData($nas);
+
+        // We process the update, passing in the NasService instance, the current NAS, and the prepared data
+        $this->processUpdate($nasService, $nas, $data);
+    }
+
+    /**
+     * Resets the form.
+     * @param  NasService $nasService
+     * @return void
+     */
+    public function resetForm(NasService $nasService)
+    {
+        $nas = $nasService->getNasParameters();
+        $this->setNasProperties($nas);
+    }
+
+    /**
+     * Prepares the data for the update.
+     * @param  $nas
+     * @return array
+     */
+    protected function prepareData($nas): array
+    {
+        return [
             'id' => $this->nas_id,
             'mikrotikIP' => $this->mikrotik_ip_address,
             'mikrotikAPIPort' => $this->mikrotik_api_port,
@@ -120,68 +141,55 @@ class EditRouter extends Component
             'groupname' => env('MIKROTIK_NAME'),
             'serverDomain' => env('MGL_SPLASH_DOMAIN'),
         ];
+    }
 
+    /**
+     * Processes the form submission.
+     * @param  NasService $nasService
+     * @param  $nas
+     * @param  array $data
+     * @return void
+     */
+    protected function processUpdate(NasService $nasService, $nas, array $data): void
+    {
+        // We wrap the process in a try-catch block to handle any exceptions
         try {
-            // Call the setupProcess method from NasService to configure the Mikrotik router
+            // Call the setupProcess method from NasService, passing in the current NAS and data
             $mikrotikStatus = $nasService->setupProcess($nas, $data);
 
-            // Check if the Mikrotik setup was successful
+            // If the Mikrotik setup process was successful...
             if ($mikrotikStatus['status']) {
-                // Call the editNasProcess method from NasService to update the NAS record and settings
+                // ...we attempt to edit the NAS settings
                 $status = $nasService->editNasProcess($data);
 
-                // If the NAS update is successful, dispatch the success event
+                // If the NAS settings were successfully updated...
                 if ($status) {
-                    $this->dispatchSuccessEvent('Router settings updated successfully.');
-                    // Close the modal
-                    $this->closeModal();
-                    // Reset the form fields
-                    $this->resetFields();
-                    // Emit the 'nasUpdated' event with a true status
-                    $this->emitUp('nasUpdated', true);
+                    // ...we handle the success case
+                    $this->handleSuccess();
                 } else {
-                    // If the NAS update is not successful, dispatch the error event with a message
-                    $this->dispatchErrorEvent('An error occurred while updating router settings.');
-                    // Close the modal
-                    $this->closeModal();
-                    // Reset the form fields
-                    $this->resetFields();
+                    // ...otherwise, we handle the error case
+                    $this->handleError('An error occurred while updating router settings.');
                 }
             } else {
-                // If the Mikrotik setup is not successful, dispatch the error event
-                $this->dispatchErrorEvent('An error occurred during the Mikrotik setup process.');
-                // Close the modal
-                $this->closeModal();
-                // Reset the form fields
-                $this->resetFields();
+                // If the Mikrotik setup process was not successful, we handle the error case
+                $this->handleError('An error occurred during the Mikrotik setup process.');
             }
         } catch (\Throwable $th) {
-            // Show Message Error
-            $this->dispatchErrorEvent('An error occurred while updating router settings: ' . $th->getMessage());
-            // Close the modal
-            $this->closeModal();
-            // Reset the form fields
-            $this->resetFields();
+            // If any exceptions were thrown during the process, we handle the error case
+            $this->handleError('An error occurred while updating router settings: ' . $th->getMessage());
         }
 
-        // Close Modal
+        // Regardless of the outcome, we close the modal after the process
         $this->closeModal();
     }
 
     /**
-     * Retrieves the NAS parameters using the NasService and stores them
-     * in the corresponding Livewire properties. Renders the edit-router view.
-     * @param  mixed $nasService
+     * Sets the NAS properties.
+     * @param  $nas
      * @return void
      */
-    public function resetForm(NasService $nasService)
+    protected function setNasProperties($nas): void
     {
-        /**
-         * Get the NAS parameters using the NasService
-         * @var Nas $nas
-         */
-        $nas = $nasService->getNasParameters();
-        // Assign the NAS properties to the Livewire properties
         $this->nas_id = $nas->id ? $nas->id : 1;
         $this->server_ip_address = $nas->server_ip ? $nas->server_ip : '';
         $this->mikrotik_ip_address = $nas->mikrotik_ip ? $nas->mikrotik_ip : '';
@@ -190,10 +198,32 @@ class EditRouter extends Component
         $this->secret = $nas->secret;
     }
 
+    /**
+     * Handles a successful form submission.
+     * @return void
+     */
+    protected function handleSuccess(): void
+    {
+        $this->dispatchSuccessEvent('Router settings updated successfully.');
+        $this->closeModal();
+        $this->resetFields();
+        $this->emitUp('nasUpdated', true);
+    }
 
     /**
-     * resetFields
-     *
+     * Handles an error during form submission.
+     * @param  string $message
+     * @return void
+     */
+    protected function handleError(string $message): void
+    {
+        $this->dispatchErrorEvent($message);
+        $this->closeModal();
+        $this->resetFields();
+    }
+
+    /**
+     * Clears the form fields.
      * @return void
      */
     public function resetFields()

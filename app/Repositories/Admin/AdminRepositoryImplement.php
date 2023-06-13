@@ -35,7 +35,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
     public function validateAdmin($username, $password)
     {
         // Get Admin!
-        $admin = $this->model->where('username', $username)->first();
+        $admin = $this->model->where('username', strtolower($username))->first();
 
         // Check if admin data is found, password is correct, and admin status is active
         if ($admin && Hash::check($password, $admin->password) && $admin->status == 1) {
@@ -145,9 +145,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
 
     /**
-     * Retrieves records from a database, initializes DataTables, adds columns to DataTable,
-     * and returns DataTables response as a JSON object. The action buttons depend on the user's group permissions.
-     *
+     * Retrieves records from a database, initializes DataTables, adds columns to DataTable.
      * @return DataTables Yajra JSON response.
      */
     public function getDatatables()
@@ -185,14 +183,8 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
     /**
      * This function stores a new admin in the database with the provided information.
-     *
-     * @param request  is a parameter that is passed to the function storeNewAdmin(). It is
-     * likely an associative array that contains the data needed to create a new admin user. The keys
-     * in the array are likely the names of the fields in a form that was submitted, and the values are
-     * the data entered by the
-     *
-     * @return instance of the newly created admin if the creation is successful, and null if there
-     * is an exception thrown during the creation process.
+     * @param  mixed $request
+     * @return void
      */
     public function storeNewAdmin($request)
     {
@@ -200,7 +192,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
             // Create a new admin with the provided information
             $admin = $this->model->create([
                 'group_id'    => $request['groupId'],
-                'username'    => $request['username'],
+                'username'    => strtolower($request['username']),
                 'password'    => Hash::make($request['password']),
                 'status'      => $request['status'],
                 'fullname'    => $request['fullName'],
@@ -217,7 +209,6 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
     /**
      * Updates an admin record in the database.
-     *
      * @param string $admin_uid The unique identifier of the admin.
      * @param Illuminate\Http\Request $request The request containing the updated admin data.
      * @return App\Models\Admin|null The updated admin or null if the admin was not found.
@@ -226,43 +217,47 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
      */
     public function updateAdmin($admin_uid, $request)
     {
+        // Check if admin_uid is empty
         if (empty($admin_uid)) {
+            // Throw an exception if admin_uid is empty
             throw new \InvalidArgumentException("admin_uid is empty");
         }
 
-        $admin = $this->model->where('admin_uid', $admin_uid)
-            ->first();
+        // Retrieve the admin based on the given admin_uid
+        $admin = $this->model->where('admin_uid', $admin_uid)->first();
 
+        // Check if the admin was found
         if (!$admin) {
+            // Throw an exception if admin was not found
             throw new \RuntimeException("Admin with uid {$admin_uid} not found");
         }
 
+        // Prepare the admin data for update
         $adminData = [
-            'username' => $request['username'],
+            'username' => strtolower($request['username']),
             'fullname' => $request['fullname'],
             'email' => $request['email'],
             'group_id' => $request['group_id'],
             'status' => $request['status'],
         ];
 
+        // Check if password is provided in the request
         if (!empty($request->password)) {
+            // If so, hash the password and add it to the admin data
             $adminData['password'] = Hash::make($request->password);
         }
 
+        // Update the admin with the prepared data
         $admin->update($adminData);
 
+        // Return the updated admin
         return $admin;
     }
 
-
     /**
      * This PHP function deletes an admin user by their unique identifier.
-     *
-     * @param admin_uid The admin_uid parameter is the unique identifier of the admin that needs to be
-     * deleted from the database.
-     *
-     * @return If the admin with the given uid is found and deleted successfully, the function returns
-     * `true`. If the admin is not found, the function returns `null`.
+     * @param  mixed $admin_uid
+     * @return void
      */
     public function deleteAdmin($admin_uid)
     {
@@ -282,10 +277,9 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
     /**
     * This PHP function retrieves an admin user by their unique identifier.
-    * @return The function `getAdminByUid` returns the first row of the `model` table where the
-    * `admin_uid` column matches the `` parameter. It returns an object representing the row, or
-    * `null` if no matching row is found.
-    */
+     * @param  mixed $uid
+     * @return void
+     */
     public function getAdminByUid($uid)
     {
         $admin = $this->model->with('group')->where('admin_uid', $uid)->first();

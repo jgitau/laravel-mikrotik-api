@@ -55,7 +55,6 @@ class CreateGroup extends Component
 
     /**
      * Mount the component.
-     *
      * This function retrieves the current URL redirect setting using GroupService and assigns it to a public variable.
      * @param GroupService $groupService The service to handle configuration related actions.
      */
@@ -66,7 +65,7 @@ class CreateGroup extends Component
 
         // Initialize all permissions to 0
         foreach ($this->dataPermissions as $permission) {
-            $this->permission[$permission->id] = '0';
+            $this->permission[$permission->id] = '1';
         }
     }
 
@@ -80,7 +79,6 @@ class CreateGroup extends Component
 
     /**
      * Stores a new group, validates the form, resets fields, and emits 'groupCreated' event.
-     *
      * @param GroupService $groupService - Service for handling group-related logic.
      * @return redirect - On success, redirects to 'list-groups' route with success message.
      */

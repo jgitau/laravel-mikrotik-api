@@ -6,7 +6,7 @@
                 {{-- <small class="text-muted">Updated 1 month ago</small> --}}
             </div>
         </div>
-        <div class="card-body" wire:poll.2000ms="loadCpuDataAndUptime">
+        <div class="card-body" wire:poll.2000ms="loadData">
             <div class="row gy-3">
 
                 <div class="col-md-3 col-6">

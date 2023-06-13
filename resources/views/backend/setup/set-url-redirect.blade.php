@@ -25,7 +25,6 @@ $configData = Helper::appClasses();
             {{-- End Form Set URL Redirect --}}
 
             @push('scripts')
-
             <script>
                 // Listen for 'message' event from the window
                 window.addEventListener('message', event => {

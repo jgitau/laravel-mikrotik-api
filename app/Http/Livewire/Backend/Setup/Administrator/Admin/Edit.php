@@ -23,12 +23,15 @@ class Edit extends Component
         'adminUpdated' => '$refresh',
     ];
 
-    // Validation Rules
+    /**
+     * Validation rules.
+     * @return array
+     */
     protected function getRules()
     {
         $rules = [
             'group_id'      => 'required',
-            'username'      => 'required|min:4|max:60|unique:admins,username,' . $this->admin_uid . ',admin_uid',
+            'username'      => 'required|min:4|max:60|regex:/^\S*$/u|unique:admins,username,' . $this->admin_uid . ',admin_uid',
             'status'        => 'required',
             'fullname'      => 'required|min:4|max:100',
             'email'         => 'required|email|unique:admins,email,' . $this->admin_uid . ',admin_uid',
@@ -40,16 +43,19 @@ class Edit extends Component
         return $rules;
     }
 
-    // Validation Messages
+    /**
+     * Validation messages.
+     * @return array
+     */
     protected function getMessages()
     {
-
         $messages = [
             'group_id.required'         => 'Choose Group cannot be empty!',
             'username.required'         => 'Username cannot be empty!',
             'username.min'              => 'Username must be at least 4 characters!',
             'username.max'              => 'Username cannot be more than 60 characters!',
             'username.unique'           => 'Username already exists!',
+            'username.regex'            => 'Username cannot contain any spaces!',
             'status.required'           => 'Status cannot be empty!',
             'fullname.required'         => 'Full Name cannot be empty!',
             'fullname.min'              => 'Full Name must be at least 4 characters!',
@@ -66,50 +72,45 @@ class Edit extends Component
     }
 
     /**
-     *
-     * mount
-     *
+     * Prepare component state.
      * @return void
      */
     public function mount()
     {
-        // $this->resetFields();
-        $this->groups   = Group::orderBy('created_at', 'ASC')->get();
+        $this->groups = Group::orderBy('created_at', 'ASC')->get();
     }
 
     /**
-     * updated
-     *
-     * @param  mixed $property
+     * Property update handler.
+     * @param  string $property
      * @return void
      */
     public function updated($property)
     {
-        // Every time a property changes
-        // (only `text` for now), validate it
         $this->validateOnly($property);
     }
 
+    /**
+     * Render the component.
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.backend.setup.administrator.admin.edit');
     }
 
     /**
-     * getAdmin
-     *
-     * @param  mixed $admin_uid
+     * Load admin details into the component.
+     * @param  AdminService $adminService
+     * @param  string $admin_uid
      * @return void
      */
     public function showAdmin(AdminService $adminService, $admin_uid)
     {
-        // Get the admin by uid
         $admin = $adminService->getAdminByUid($admin_uid);
 
-        // Show the modal
         $this->dispatchBrowserEvent('show-modal');
 
-        // Set the public variables
         $this->admin_uid = $admin['admin_uid'];
         $this->group_id = $admin['group_id'];
         $this->username = $admin['username'];
@@ -119,10 +120,10 @@ class Edit extends Component
     }
 
     /**
-     * This function updates an admin's information and dispatches success or error events accordingly.
-     * @param AdminService adminService It is an instance of the AdminService class, which is
-     * responsible for handling the business logic related to the administration functionality of the
-     * application. It is used to update the admin data in the database.
+     * Update admin details.
+     *
+     * @param  AdminService $adminService
+     * @return void
      */
     public function updateAdmin(AdminService $adminService)
     {
@@ -131,17 +132,16 @@ class Edit extends Component
         $this->validate($this->getRules(), $this->getMessages());
         // Declare the public variable names
         $variables = ['admin_uid', 'group_id', 'username', 'fullname', 'email', 'status'];
-        // Declare the settings
-        $dataAdmin = [];
 
-        // Fill the dataAdmin array with public variable values
-        foreach ($variables as $variable) {
-            $dataAdmin[$variable] = $this->$variable;
-        }
+        // Collect property values into an associative array
+        $newAdmin = array_reduce($variables, function ($carry, $property) {
+            $carry[$property] = $this->$property;
+            return $carry;
+        }, []);
 
         try {
             // Update the admin dataAdmin
-            $adminService->updateAdmin($this->admin_uid,$dataAdmin);
+            $adminService->updateAdmin($this->admin_uid, $newAdmin);
 
             // Show Message Success
             $this->dispatchSuccessEvent('Admin successfully updated.');
@@ -163,7 +163,7 @@ class Edit extends Component
     }
 
     /**
-     * closeModal
+     * Close the Modal
      *
      * @return void
      */

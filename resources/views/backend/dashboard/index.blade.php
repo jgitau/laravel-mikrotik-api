@@ -25,7 +25,7 @@ $configData = Helper::appClasses();
     <!-- /Line Charts -->
 
     <!-- Polar Area Chart -->
-    {{-- @livewire('backend.dashboard.polar-chart') --}}
+    @livewire('backend.dashboard.polar-chart')
     <!-- /Polar Area Chart -->
 
     <!-- Radar Chart -->

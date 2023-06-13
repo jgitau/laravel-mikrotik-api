@@ -5,14 +5,11 @@ namespace App\Jobs;
 use App\Helpers\MikrotikConfigHelper;
 use App\Services\MikrotikApi\MikrotikApiService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
-use Livewire\Livewire;
-
 class UpdateMikrotikStats implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -55,15 +52,10 @@ class UpdateMikrotikStats implements ShouldQueue
             $activeHotspots = $data['activeHotspot'] ?? 0;
 
             // Store data in cache for multiple data retrievals
-            Cache::put('mikrotik.cpuLoad', $cpuLoad, 60); // Keep the data for 60 minutes
-            Cache::put('mikrotik.uptime', $uptime, 60); // Keep the data for 60 minutes
-
-            // Store data in session for a single retrieval
-            session([
-                'mikrotik.freeMemory' => $freeMemory,
-                'mikrotik.activeHotspots' => $activeHotspots,
-            ]);
-
+            Cache::put('mikrotik.cpuLoad', $cpuLoad, 10); // Keep the data for 10 minutes
+            Cache::put('mikrotik.uptime', $uptime, 10); // Keep the data for 10 minutes
+            Cache::put('mikrotik.freeMemory', $freeMemory, 10); // Keep the data for 10 minutes
+            Cache::put('mikrotik.activeHotspots', $activeHotspots, 10); // Keep the data for 10 minutes
         }
     }
 }

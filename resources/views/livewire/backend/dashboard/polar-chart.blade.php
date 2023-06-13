@@ -5,14 +5,20 @@
         </div>
         <div class="card-body">
             @if ($chartData)
-            <div id="userActiveChart" data-chart='@json($chartData)'></div>
+            <div wire:loading.remove id="userActiveChart" data-chart='@json($chartData)'></div>
+            <div wire:loading>Loading...</div>
             @endif
-            {{-- <div id="userActiveChart"></div> --}}
         </div>
-
     </div>
 </div>
 
 @push('scripts')
+<script>
+    // When load page finished
+    Livewire.onLoad(() => {
+        // Get data from api
+        Livewire.emit('getLoadData');
+    });
+</script>
 <script src="{{ asset('assets/js/backend/dashboard/polar-chart.js') }}"></script>
 @endpush

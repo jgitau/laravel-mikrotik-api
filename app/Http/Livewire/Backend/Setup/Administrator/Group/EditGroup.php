@@ -101,7 +101,6 @@ class EditGroup extends Component
         }
     }
 
-
     /**
      * resetFields
      *

@@ -55,7 +55,6 @@ class CreateGroup extends Component
 
     /**
      * Mount the component.
-     * This function retrieves the current URL redirect setting using GroupService and assigns it to a public variable.
      * @param GroupService $groupService The service to handle configuration related actions.
      */
     public function mount(GroupService $groupService)

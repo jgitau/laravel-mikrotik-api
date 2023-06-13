@@ -129,9 +129,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 });
-// TODO:
 window.addEventListener('chartDataUpdated', e => {
-  if (donutChart && typeof donutChart.updateSeries === 'function') {
-    donutChart.updateSeries([e.detail.userActive, e.detail.ipBindingBypassed, e.detail.ipBindingBlocked]);
+  if (donutChart) {
+    donutChart.updateOptions({
+      labels: ['User Active', 'Bypassed', 'Blocked'],
+      series: [e.detail.userActive, e.detail.ipBindingBypassed, e.detail.ipBindingBlocked],
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              total: {
+                formatter: function (w) {
+                  return e.detail.userActive;
+                }
+              }
+            }
+          }
+        }
+      }
+    });
   }
 });

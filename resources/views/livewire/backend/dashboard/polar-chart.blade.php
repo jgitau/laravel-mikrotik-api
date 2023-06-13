@@ -5,7 +5,8 @@
         </div>
         <div class="card-body">
             @if ($chartData)
-            <div id="userActiveChart" data-chart='@json($chartData)'></div>
+            <div wire:loading.remove id="userActiveChart" data-chart='@json($chartData)'></div>
+            <div wire:loading>Loading...</div>
             @endif
         </div>
     </div>

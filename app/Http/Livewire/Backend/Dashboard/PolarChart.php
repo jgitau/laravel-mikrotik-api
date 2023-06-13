@@ -16,21 +16,10 @@ class PolarChart extends Component
     // Associative array for mapping event listeners to their handling methods.
     protected $listeners = ['getLoadData' => 'loadData'];
 
-    /**
-     * Component mount lifecycle hook.
-     * Fetches and prepares data for the chart.
-     */
-    public function mount()
-    {
-        // $this->loadData();
-    }
-
     public function updatedChartData()
     {
         $this->emit('chartDataUpdated', $this->chartData);
-        error_log('chartDataUpdated event emitted');
     }
-
 
     /**
      * Render the Polar Chart view.
@@ -46,8 +35,7 @@ class PolarChart extends Component
      */
     public function loadData()
     {
-        // FIXME: BUG CHART CANNOT UPDATE
-        // Attempt to fetch data from session in Jobs\UpdateMikrotikStats.php
+        // Attempt to fetch data from session in Jobs\FetchMikrotikDataJob.php
         dispatch(new FetchMikrotikDataJob());
         // Attempt to fetch data from cache
         $data['userActive'] = intval(Cache::get('userActive', 0));
@@ -58,12 +46,4 @@ class PolarChart extends Component
         $this->dispatchBrowserEvent('chartDataUpdated', $this->chartData);
     }
 
-    /**
-     * Set default chart data.
-     * @return array The default chart data.
-     */
-    private function setDefaultChartData()
-    {
-        return ['userActive' => 0, 'ipBindingBypassed' => 0, 'ipBindingBlocked' => 0];
-    }
 }

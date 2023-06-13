@@ -15,7 +15,7 @@
                             <i class="fa-solid fa-server ti-sm"></i>
                         </div>
                         <div class="card-info">
-                            <h5 class="mb-0" wire:ignore id="cpuLoad">{{ $cpuLoad }}</h5>
+                            <h5 class="mb-0" id="cpuLoad">{{ $cpuLoad }}</h5>
                             <small>CPU Load</small>
                         </div>
                     </div>
@@ -27,12 +27,11 @@
                             <i class="fa-solid fa-network-wired ti-sm"></i>
                         </div>
                         <div class="card-info">
-                            <h5 class="mb-0">{{ $activeHotspots }}</h5>
+                            <h5 class="mb-0" id="activeHotspots">{{ $activeHotspots }}</h5>
                             <small>Hotspot Active</small>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-3 col-6">
                     <div class="d-flex align-items-center">
                         <div class="badge rounded-pill bg-label-warning me-3 p-2">
@@ -52,12 +51,11 @@
                             <i class="fa-solid fa-memory ti-sm"></i>
                         </div>
                         <div class="card-info">
-                            <h5 class="mb-0">{{ $freeMemoryPercentage }}</h5>
+                            <h5 class="mb-0" id="freeMemoryPercentage">{{ $freeMemoryPercentage }}</h5>
                             <small>Free Memory</small>
                         </div>
                     </div>
                 </div>
-
 
             </div>
 
@@ -66,20 +64,4 @@
 </div>
 
 @push('scripts')
-<script>
-    let updateInterval;
-    // Listen for the cpuLoadUpdated and uptimeUpdated events
-    window.livewire.on('cpuLoadUpdated', cpuLoad => {
-        document.getElementById('cpuLoad').innerText = cpuLoad;
-    });
-
-    window.livewire.on('uptimeUpdated', uptime => {
-        document.getElementById('uptime').innerText = uptime;
-    });
-
-    // Listen for the error event and stop updates if an error occurs
-    window.livewire.on('error', error => {
-        clearInterval(updateInterval);
-    });
-</script>
 @endpush

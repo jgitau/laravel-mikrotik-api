@@ -2,9 +2,7 @@
 
 namespace App\Http\Livewire\Backend\Dashboard;
 
-use App\Helpers\MikrotikConfigHelper;
 use App\Jobs\UpdateMikrotikTraffic;
-use App\Services\MikrotikApi\MikrotikApiService;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
@@ -16,13 +14,6 @@ class LineChart extends Component
 
     // Associative array for mapping event listeners to their handling methods.
     protected $listeners = ['getLoadTrafficData' => 'loadTrafficData'];
-    /**
-     * This function loads traffic data using a Mikrotik API service when the application boots up.
-     */
-    // public function booted()
-    // {
-    //     $this->loadTrafficData();
-    // }
 
     /**
      * Render the associated view for this component.

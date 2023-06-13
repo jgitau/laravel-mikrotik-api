@@ -3,13 +3,11 @@
         <div class="card-header header-elements">
             <div>
                 <h5 class="card-title mb-0">Traffic Monitor</h5>
-                {{-- <small class="text-muted">Commercial networks and enterprises</small> --}}
             </div>
         </div>
         <div class="card-body" wire:poll.2000ms="loadTrafficData">
             <canvas id="chartTraffic" wire:ignore data-upload='@json($uploadTraffic)'
                 data-download='@json($downloadTraffic)' style="min-height:250px;"></canvas>
-            {{-- <canvas id="chartTraffic"></canvas> --}}
         </div>
     </div>
 </div>
@@ -21,11 +19,4 @@
 <script src="{{ asset('assets/js/backend/dashboard/chartjs-adapter-luxon.js') }}"></script>
 <script src="{{ asset('assets/js/backend/dashboard/chartjs-plugin-streaming.js') }}"></script>
 <script src="{{ asset('assets/js/backend/dashboard/traffic-chart.js') }}"></script>
-<script>
-    // When load page finished
-    document.addEventListener('DOMContentLoaded', (event) => {
-        // Get data from api
-        Livewire.emit('getLoadTrafficData');
-    });
-</script>
 @endpush

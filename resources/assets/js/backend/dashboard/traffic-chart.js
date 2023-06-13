@@ -132,8 +132,5 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // Set an interval to refresh the data every 2 seconds
-  setInterval(() => {
-    // Emit an event to load new traffic data
-    window.livewire.emit('loadTrafficData');
-  }, 2000); // Update every 2 seconds
+
 });

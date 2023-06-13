@@ -2,9 +2,9 @@
 
 namespace App\Http\Livewire\Backend\Dashboard;
 
-use App\Services\MikrotikApi\MikrotikApiService;
 use App\Helpers\MikrotikConfigHelper;
 use App\Jobs\UpdateMikrotikTraffic;
+use App\Services\MikrotikApi\MikrotikApiService;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
@@ -16,15 +16,12 @@ class LineChart extends Component
 
     // Associative array for mapping event listeners to their handling methods.
     protected $listeners = ['getLoadTrafficData' => 'loadTrafficData'];
-
     /**
-     * This method is called when the component is created.
+     * This function loads traffic data using a Mikrotik API service when the application boots up.
      */
-    public function mount()
+    public function booted()
     {
-        // Load traffic data using the provided service.
-        $this->uploadTraffic = 0;
-        $this->downloadTraffic = 0;
+        $this->loadTrafficData();
     }
 
     /**
@@ -42,11 +39,13 @@ class LineChart extends Component
      */
     public function loadTrafficData()
     {
+        // Dispatch the UpdateMikrotikStats job to update the data in cache.
         dispatch(new UpdateMikrotikTraffic());
-        $this->uploadTraffic = intval(Cache::get('mikrotik.uploadTraffic', 0));
-        $this->downloadTraffic = intval(Cache::get('mikrotik.downloadTraffic', 0));
-
+        // Load the data from cache
+        $this->uploadTraffic = Cache::get('mikrotik.uploadTraffic', 0);
+        $this->downloadTraffic = Cache::get('mikrotik.downloadTraffic', 0);
         // Emit an event to update the traffic data.
         $this->emit('updateTrafficData', $this->uploadTraffic, $this->downloadTraffic);
+
     }
 }

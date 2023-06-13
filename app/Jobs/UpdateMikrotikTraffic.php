@@ -52,8 +52,8 @@ class UpdateMikrotikTraffic implements ShouldQueue
             $download = intval($data['downloadTraffic']) ?? 0;
 
             // Store data in cache for multiple data retrievals
-            Cache::put('mikrotik.uploadTraffic', $upload, 10); // Keep the data for 10 minutes
-            Cache::put('mikrotik.downloadTraffic', $download, 10); // Keep the data for 10 minutes
+            Cache::put('mikrotik.uploadTraffic', $upload, 2);
+            Cache::put('mikrotik.downloadTraffic', $download, 2);
         }
     }
 }

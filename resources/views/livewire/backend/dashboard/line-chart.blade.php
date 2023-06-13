@@ -6,7 +6,7 @@
                 {{-- <small class="text-muted">Commercial networks and enterprises</small> --}}
             </div>
         </div>
-        <div class="card-body">
+        <div class="card-body" wire:poll.2000ms="loadTrafficData" >
             <canvas id="chartTraffic" wire:ignore data-upload='@json($uploadTraffic)'
                 data-download='@json($downloadTraffic)' style="min-height:250px;"></canvas>
             {{-- <canvas id="chartTraffic"></canvas> --}}
@@ -15,6 +15,12 @@
 </div>
 
 @push('scripts')
+
+<script src="{{ asset('assets/js/backend/dashboard/chart.js') }}"></script>
+<script src="{{ asset('assets/js/backend/dashboard/luxon.js') }}"></script>
+<script src="{{ asset('assets/js/backend/dashboard/chartjs-adapter-luxon.js') }}"></script>
+<script src="{{ asset('assets/js/backend/dashboard/chartjs-plugin-streaming.js') }}"></script>
+<script src="{{ asset('assets/js/backend/dashboard/traffic-chart.js') }}"></script>
 <script>
     // When load page finished
     document.addEventListener('DOMContentLoaded', (event) => {
@@ -22,9 +28,4 @@
         Livewire.emit('getLoadTrafficData');
     });
 </script>
-<script src="{{ asset('assets/js/backend/dashboard/chart.js') }}"></script>
-<script src="{{ asset('assets/js/backend/dashboard/luxon.js') }}"></script>
-<script src="{{ asset('assets/js/backend/dashboard/chartjs-adapter-luxon.js') }}"></script>
-<script src="{{ asset('assets/js/backend/dashboard/chartjs-plugin-streaming.js') }}"></script>
-<script src="{{ asset('assets/js/backend/dashboard/traffic-chart.js') }}"></script>
 @endpush

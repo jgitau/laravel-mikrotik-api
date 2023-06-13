@@ -11,6 +11,9 @@ function bitToSize(bit) {
   if (i == 0) return bit + ' ' + sizes[i];
   return (bit / Math.pow(1000, i)).toFixed(1) + ' ' + sizes[i];
 }
+// Make uploadTraffic and downloadTraffic global variables
+var uploadTraffic;
+var downloadTraffic;
 
 // Event listener for when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function () {
@@ -18,8 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
   var ctx = document.getElementById('chartTraffic');
 
   // Get the data from the canvas element's data attributes
-  var uploadTraffic = JSON.parse(ctx.getAttribute('data-upload'));
-  var downloadTraffic = JSON.parse(ctx.getAttribute('data-download'));
+  uploadTraffic = JSON.parse(ctx.getAttribute('data-upload'));
+  downloadTraffic = JSON.parse(ctx.getAttribute('data-download'));
 
   // Create a new Chart instance
   var chart = new Chart(ctx, {
@@ -117,7 +120,10 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // Event listener for when new traffic data is received
-  window.livewire.on('updateTrafficData', function (uploadTraffic, downloadTraffic) {
+  window.livewire.on('updateTrafficData', function (newUploadTraffic, newDownloadTraffic) {
+    // Update the global variables with the new data
+    uploadTraffic = newUploadTraffic;
+    downloadTraffic = newDownloadTraffic;
     // Update the datasets with the new data
     chart.data.datasets[0].data.push({
       x: Date.now(),
@@ -130,7 +136,4 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update the chart quietly without triggering the transition animation
     chart.update('quiet');
   });
-
-  // Set an interval to refresh the data every 2 seconds
-
 });

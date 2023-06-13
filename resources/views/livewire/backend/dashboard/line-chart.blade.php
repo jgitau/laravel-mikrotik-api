@@ -6,7 +6,7 @@
                 {{-- <small class="text-muted">Commercial networks and enterprises</small> --}}
             </div>
         </div>
-        <div class="card-body" wire:poll.2000ms="loadTrafficData" >
+        <div class="card-body" wire:poll.2000ms="loadTrafficData">
             <canvas id="chartTraffic" wire:ignore data-upload='@json($uploadTraffic)'
                 data-download='@json($downloadTraffic)' style="min-height:250px;"></canvas>
             {{-- <canvas id="chartTraffic"></canvas> --}}

@@ -19,10 +19,10 @@ class LineChart extends Component
     /**
      * This function loads traffic data using a Mikrotik API service when the application boots up.
      */
-    public function booted()
-    {
-        $this->loadTrafficData();
-    }
+    // public function booted()
+    // {
+    //     $this->loadTrafficData();
+    // }
 
     /**
      * Render the associated view for this component.

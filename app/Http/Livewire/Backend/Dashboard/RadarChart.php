@@ -12,7 +12,7 @@ class RadarChart extends Component
     // public function mount(MikrotikApiService $mikrotikApiService)
     // {
     //     // Retrieve the Mikrotik configuration settings.
-    //     $config = MikrotikConfigHelper::getMikrotikConfig();
+    //     $config = MikrotikConfigHelper::getMwikrotikConfig();
 
     //     // Check if the configuration exists and no values are empty.
     //     if ($config && !in_array("", $config, true)) {

@@ -69,13 +69,13 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     }
 
 
-    /**
-     * Retrieves Mikrotik interface data via RouterOS API.
-     * @param string $ip Mikrotik router IP address.
-     * @param string $username Authentication username.
-     * @param string $password Authentication password.
-     * @return array|null Mikrotik interface data or null on connection failure.
-     */
+    // /**
+    //  * Retrieves Mikrotik interface data via RouterOS API.
+    //  * @param string $ip Mikrotik router IP address.
+    //  * @param string $username Authentication username.
+    //  * @param string $password Authentication password.
+    //  * @return array|null Mikrotik interface data or null on connection failure.
+    //  */
     // public function getMikrotikUserActive($ip, $username, $password)
     // {
     //     try {
@@ -112,13 +112,13 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     //     }
     // }
 
-    /**
-     * Retrieves active hotspot data from a Mikrotik router.
-     * @param string $ip The IP address of the Mikrotik router to connect to.
-     * @param string $username The username used to authenticate with the Mikrotik router.
-     * @param string $password The password credential required to access the Mikrotik router.
-     * @return array|null The active hotspot data from the Mikrotik router, or null on error.
-     */
+    // /**
+    //  * Retrieves active hotspot data from a Mikrotik router.
+    //  * @param string $ip The IP address of the Mikrotik router to connect to.
+    //  * @param string $username The username used to authenticate with the Mikrotik router.
+    //  * @param string $password The password credential required to access the Mikrotik router.
+    //  * @return array|null The active hotspot data from the Mikrotik router, or null on error.
+    //  */
     // public function getMikrotikActiveHotspot($ip, $username, $password)
     // {
     //     try {
@@ -140,13 +140,13 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     //     }i
     // }
 
-    /**
-     * Retrieves Mikrotik resource data via RouterOS API.
-     * @param string $ip Mikrotik router IP address.
-     * @param string $username Authentication username.
-     * @param string $password Authentication password.
-     * @return array|null Mikrotik resource data or null on connection failure.
-     */
+    // /**
+    //  * Retrieves Mikrotik resource data via RouterOS API.
+    //  * @param string $ip Mikrotik router IP address.
+    //  * @param string $username Authentication username.
+    //  * @param string $password Authentication password.
+    //  * @return array|null Mikrotik resource data or null on connection failure.
+    //  */
     // public function getMikrotikResourceData($ip, $username, $password)
     // {
     //     try {
@@ -183,10 +183,10 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     //     }
     // }
 
-    /**
-     * Method to get current upload and download traffic data from a Mikrotik router.
-     * @param string $ip @param string $username @param string $password @param string $interface @return array
-     */
+    // /**
+    //  * Method to get current upload and download traffic data from a Mikrotik router.
+    //  * @param string $ip @param string $username @param string $password @param string $interface @return array
+    //  */
     // public function getTrafficData($ip, $username, $password, $interface = null)
     // {
     //     // Connect to the Mikrotik router
@@ -222,6 +222,42 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     //         'uploadTraffic' => 0,
     //         'downloadTraffic' => 0
     //     ];
+    // }
+
+    /**
+     * Retrieves DHCP Leases data from a Mikrotik router via RouterOS API.
+     *
+     * @param string $ip The IP address of the Mikrotik router to connect to.
+     * @param string $username The username used to authenticate with the Mikrotik router.
+     * @param string $password The password credential required to access the Mikrotik router.
+     * @return array|null The DHCP Leases data from the Mikrotik router, or null on error or connection failure.
+     */
+    // public function getDhcpLeasesData($ip, $username, $password)
+    // {
+    //     try {
+    //         // Connect to the Mikrotik router. If connection fails, log the error and return null.
+    //         if (!$this->model->connect($ip, $username, $password)) {
+    //             Log::error('Failed to connect to Mikrotik router: ' . $ip);
+    //             return null;
+    //         }
+
+    //         // Fetch DHCP Leases data
+    //         $dhcpLeases = $this->model->comm("/ip/dhcp-server/lease/print");
+
+    //         // Process the data: if 'Active Host Name' is null or doesn't exist, set it to 'Unknown'
+    //         foreach ($dhcpLeases as &$lease) {
+    //             if (!isset($lease['active-host-name']) || is_null($lease['active-host-name'])) {
+    //                 $lease['active-host-name'] = 'Unknown';
+    //             }
+    //         }
+
+    //         // Return the processed DHCP Leases data
+    //         return $dhcpLeases;
+    //     } catch (\Exception $e) {
+    //         // If any error occurs, log the error message and return null
+    //         Log::error('Failed to get Mikrotik DHCP Leases data: ' . $e->getMessage());
+    //         return null;
+    //     }
     // }
 
     /**
@@ -369,6 +405,52 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
             'activeHotspot' => $activeHotspot
         ];
     }
+
+    /**
+     * Fetches DHCP Leases data from a Mikrotik device using cURL.
+     * @param string $ip The IP address of the Mikrotik device.
+     * @param string $username The username for the Mikrotik device.
+     * @param string $password The password for the Mikrotik device.
+     * @return array|null Returns an array with keys 'hostname', 'address', 'mac-address', 'status'. If the hostname is null, it is replaced with 'Unknown'.
+     */
+    public function getDhcpLeasesData($ip, $username, $password)
+    {
+        try {
+            // Set the endpoint for DHCP Leases
+            $dhcpLeasesEndpoint = "ip/dhcp-server/lease/print";
+            $dhcpData = [
+                'detail' => '',
+                '.query' => [
+                    'disabled=false'
+                ]
+            ];
+
+            // Retrieve DHCP Leases data from the Mikrotik device
+            $dhcpLeasesData = $this->connectAndRetrieveData($ip, $username, $password, $dhcpLeasesEndpoint, $dhcpData);
+
+            // Check if the DHCP Leases data is valid
+            if ($dhcpLeasesData === null) {
+                // Return null if DHCP Leases data is not valid
+                return null;
+            }
+
+            // Map over each DHCP Lease data item and replace null hostname with 'Unknown'
+            $processedData = array_map(function ($item) {
+                if (!isset($item['host-name']) || $item['host-name'] === null) {
+                    $item['host-name'] = 'Unknown';
+                }
+                return $item;
+            }, $dhcpLeasesData);
+
+            // Return the processed DHCP Leases data
+            return $processedData;
+        } catch (\Exception $e) {
+            // If any error occurs, log the error message and return null
+            Log::error('Failed to get DHCP Leases data: ' . $e->getMessage());
+            return null;
+        }
+    }
+
 
     /**
      * Process system resource data.

@@ -208,12 +208,12 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
 
 
     /**
-     * Updates an admin record in the database.
+     * Method to update an admin record in the database.
      * @param string $admin_uid The unique identifier of the admin.
-     * @param Illuminate\Http\Request $request The request containing the updated admin data.
-     * @return App\Models\Admin|null The updated admin or null if the admin was not found.
-     * @throws InvalidArgumentException if admin_uid is not provided.
-     * @throws RuntimeException if admin was not found.
+     * @param Illuminate\Http\Request $request The request object containing the updated admin data.
+     * @return App\Models\Admin|null Returns the updated admin object, or null if the admin was not found.
+     * @throws InvalidArgumentException If no admin_uid is provided.
+     * @throws RuntimeException If no admin with the given admin_uid is found.
      */
     public function updateAdmin($admin_uid, $request)
     {

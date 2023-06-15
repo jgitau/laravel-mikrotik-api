@@ -1,28 +1,27 @@
 <div>
-    <form wire:submit.prevent="updateVoucher" method="POST" class="invoice-repeater">
-        <div class="d-flex">
-            <div data-repeater-list="invoice" class="flex-grow-1">
-                @foreach($invoice as $index => $item)
-                <div data-repeater-item>
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="flex-grow-1">
-                            <x-input-field id="name{{$index}}" model="invoice.{{$index}}.name" type="text"
-                                placeholder="Input value" />
-                        </div>
-                        <button type="button" class="btn btn-danger ms-2" data-repeater-delete>
-                            <i data-feather="x" class="me-25"></i>
-                            <span><i class="fas fa-trash"></i></span>
-                        </button>
-                    </div>
-                </div>
-                @endforeach
+    <form wire:submit.prevent="updateVoucher" method="POST">
+        @foreach($invoice as $index => $item)
+        <div class="d-flex align-items-center mb-3">
+            <div class="flex-grow-1">
+                <input class="form-control" id="name{{$index}}" type="text" placeholder="Input value"
+                    wire:model="invoice.{{$index}}.name" />
             </div>
+            <button type="button" class="btn btn-danger ms-2" wire:click="removeInvoiceField({{$index}})">
+                <i data-feather="x" class="me-25"></i>
+                <span><i class="fas fa-trash"></i></span>
+            </button>
         </div>
-        <button type="button" class="btn btn-icon btn-primary" data-repeater-create>
+        @endforeach
+
+        <button type="button" class="btn btn-icon btn-primary" wire:click="addInvoiceField">
             <i data-feather="plus"></i>
             <span><i class="fas fa-plus"></i></span>
         </button>
-        <span id="max-item-message" class="ms-2 text-danger"></span>
+        @if (session()->has('error'))
+        <span class="ms-2 text-danger">
+            {{ session('error') }}
+        </span>
+        @endif
         <div class="d-flex justify-content-end mt-2">
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
@@ -31,7 +30,7 @@
 
 @push('scripts')
 <script src="{{ asset('assets/vendor/libs/jquery-repeater/jquery-repeater.js') }}"></script>
-<script>
+{{-- <script>
     // Initialize the repeater functionality
     $('.invoice-repeater, .repeater-default').repeater({
         isFirstItemUndeletable: true,
@@ -69,5 +68,5 @@
     $(document).ready(function() {
         checkMaxItemCount(); // Check the maximum item count on page load
     });
-</script>
+</script> --}}
 @endpush

@@ -14,10 +14,18 @@
 
 @push('scripts')
 <script>
+    // Define the polling interval
+    let pollingInterval;
+
     // When load page finished
     Livewire.onLoad(() => {
         // Get data from api
         Livewire.emit('getLoadData');
+    });
+
+    // Stop polling when the 'stopGetData' event is emitted
+    window.addEventListener('stopGetData', function (e) {
+        clearInterval(pollingInterval);
     });
 </script>
 <script src="{{ asset('assets/js/backend/dashboard/polar-chart.js') }}"></script>

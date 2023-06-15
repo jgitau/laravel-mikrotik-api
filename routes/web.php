@@ -8,6 +8,7 @@ use App\Http\Controllers\{
     Home\LoginController
 };
 use App\Http\Controllers\Backend\Client\ListClientController;
+use App\Http\Livewire\Backend\Dashboard\DataTable as DataTableLeasesData;
 
 // Home / Login Page route
 Route::get('/', [LoginController::class, 'index'])->name('index');
@@ -26,6 +27,14 @@ Route::middleware(['check.session.cookie'])->group(function () {
 
     // Route for online users list page in reports section
     Route::get('reports/list-online-users', [UserController::class, 'index'])->name('backend.reports.list-online-users');
+
+
+    // Grouping routes related to getting datatable for both administrator and configurations
+    Route::prefix('livewire/backend/dashboard')->group(function () {
+        // Grouping routes related to getting datatable for administrator
+        // Route for getting datatable data for admins
+        Route::get('leasesData/getDataTable', [DataTableLeasesData::class, 'getDataTable'])->name('leasesData.getDataTable');
+    });
 });
 
 // Route for logout

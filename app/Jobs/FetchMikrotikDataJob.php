@@ -40,7 +40,12 @@ class FetchMikrotikDataJob implements ShouldQueue
                 // Retrieve data from Mikrotik router using Mikrotik API Curl service.
                 $data = $mikrotikApiService->getMikrotikUserActive($config['ip'], $config['username'], $config['password']);
             } catch (\Exception $e) {
-                $data = 0;
+                $data = [
+                    'userActive' => 0,
+                    'ipBindingBypassed' => 0,
+                    'ipBindingBlocked' => 0,
+
+                ];
             }
             // Store data in cache for a single retrieval
             Cache::put('userActive', $data['userActive'], 10); // Keep the data for 10 minutes

@@ -37,13 +37,20 @@ class PolarChart extends Component
     {
         // Attempt to fetch data from session in Jobs\FetchMikrotikDataJob.php
         dispatch(new FetchMikrotikDataJob());
+
         // Attempt to fetch data from cache
         $data['userActive'] = intval(Cache::get('userActive', 0));
         $data['ipBindingBypassed'] = intval(Cache::get('ipBindingBypassed', 0));
         $data['ipBindingBlocked'] = intval(Cache::get('ipBindingBlocked', 0));
         // If data exists, save it to chartData. Otherwise, set default data.
-        $this->chartData = $data;
-        $this->dispatchBrowserEvent('chartDataUpdated', $this->chartData);
+        if ($data['userActive'] > 0 || $data['ipBindingBypassed'] > 0 || $data['ipBindingBlocked'] > 0) {
+            $this->chartData = $data;
+            $this->dispatchBrowserEvent('chartDataUpdated', $this->chartData);
+        } else {
+            // Send an event to stop polling
+            $this->dispatchBrowserEvent('stopGetData');
+        }
     }
+
 
 }

@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
 
-class UpdateMikrotikTraffic implements ShouldQueue
+class FetchMikrotikLeasesJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -39,24 +39,14 @@ class UpdateMikrotikTraffic implements ShouldQueue
         // Check if the configuration exists and no values are empty.
         if ($config && !in_array("", $config, true)) {
 
-            // Try to retrieve Mikrotik resource data using Mikrotik API service. On exception, set data to null.
+            // Try to retrieve Mikrotik DHCP Leases data using Mikrotik API service.
             try {
-                // Retrieve data traffic from Mikrotik router using Mikrotik API Curl service.
-                $data = $mikrotikApiService->getTrafficData($config['ip'], $config['username'], $config['password'], env('MIKROTIK_INTERFACE'));
+                $dhcpLeasesData = $mikrotikApiService->getDhcpLeasesData($config['ip'], $config['username'], $config['password']);
             } catch (\Exception $e) {
-                $data = [
-                    'uploadTraffic' => 0,
-                    'downloadTraffic' => 0,
-                ];
+                $dhcpLeasesData = null;
             }
-
-            // Assign the retrieved data to respective variables. Use default values if the data is not available.
-            $upload = intval($data['uploadTraffic']) ?? 0;
-            $download = intval($data['downloadTraffic']) ?? 0;
-
-            // Store data in cache for multiple data retrievals
-            Cache::put('mikrotik.uploadTraffic', $upload, 2);
-            Cache::put('mikrotik.downloadTraffic', $download, 2);
+            // Store data in cache for a single retrieval
+            Cache::put('dhcpLeasesData', $dhcpLeasesData, 10); // Keep the data for 10 minutes
         }
     }
 }

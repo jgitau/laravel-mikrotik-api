@@ -23,7 +23,7 @@ class EditGroup extends Component
     // Validation Rules
     protected function getRules()
     {
-        return $rules = [
+        return [
             'groupName' => 'required|min:4|max:60|unique:groups,name,' . $this->groupId . '',
             // Add validation rules for the permission
             'permission.*' => 'in:0,1',
@@ -32,7 +32,7 @@ class EditGroup extends Component
     // Validation Messages
     protected function getMessages()
     {
-        return $messages = [
+        return [
             'groupName.required'    => 'Group Name cannot be empty!',
             'groupName.min'         => 'Group Name must be at least 4 characters!',
             'groupName.max'         => 'Group Name can be a maximum of 60 characters!',
@@ -103,7 +103,6 @@ class EditGroup extends Component
 
     /**
      * resetFields
-     *
      * @return void
      */
     public function resetFields()

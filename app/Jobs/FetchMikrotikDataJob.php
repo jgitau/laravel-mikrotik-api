@@ -47,10 +47,15 @@ class FetchMikrotikDataJob implements ShouldQueue
 
                 ];
             }
+
+            $userActive = $data['userActive'] ?? 0;
+            $ipBindingBypassed = $data['ipBindingBypassed'] ?? 0;
+            $ipBindingBlocked = $data['ipBindingBlocked'] ?? 0;
+
             // Store data in cache for a single retrieval
-            Cache::put('userActive', $data['userActive'], 10); // Keep the data for 10 minutes
-            Cache::put('ipBindingBypassed', $data['ipBindingBypassed'], 10); // Keep the data for 10 minutes
-            Cache::put('ipBindingBlocked', $data['ipBindingBlocked'], 10); // Keep the data for 10 minutes
+            Cache::put('userActive', $userActive, 10); // Keep the data for 10 minutes
+            Cache::put('ipBindingBypassed', $ipBindingBypassed, 10); // Keep the data for 10 minutes
+            Cache::put('ipBindingBlocked', $ipBindingBlocked, 10); // Keep the data for 10 minutes
         }
     }
 }

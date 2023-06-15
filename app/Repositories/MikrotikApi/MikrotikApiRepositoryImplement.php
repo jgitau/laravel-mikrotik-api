@@ -5,6 +5,7 @@ namespace App\Repositories\MikrotikApi;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\RouterOsApi;
 use Illuminate\Support\Facades\Log;
+use Yajra\DataTables\Facades\DataTables;
 
 class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepository
 {
@@ -407,50 +408,65 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     }
 
     /**
-     * Fetches DHCP Leases data from a Mikrotik device using cURL.
-     * @param string $ip The IP address of the Mikrotik device.
-     * @param string $username The username for the Mikrotik device.
-     * @param string $password The password for the Mikrotik device.
-     * @return array|null Returns an array with keys 'hostname', 'address', 'mac-address', 'status'. If the hostname is null, it is replaced with 'Unknown'.
+     * Gets DHCP Leases data from a Mikrotik device
+     * @param string $ip IP address of the Mikrotik device
+     * @param string $username Username for accessing the Mikrotik device
+     * @param string $password Password for accessing the Mikrotik device
+     * @return array|null The processed DHCP Leases data or null in case of any error
+     * @throws \Exception In case of any error during the operation
      */
     public function getDhcpLeasesData($ip, $username, $password)
     {
         try {
-            // Set the endpoint for DHCP Leases
-            $dhcpLeasesEndpoint = "ip/dhcp-server/lease/print";
-            $dhcpData = [
-                'detail' => '',
-                '.query' => [
-                    'disabled=false'
-                ]
-            ];
+            // Fetch the raw DHCP Leases data from the Mikrotik device
+            $dhcpLeasesData = $this->fetchDhcpLeasesData($ip, $username, $password);
 
-            // Retrieve DHCP Leases data from the Mikrotik device
-            $dhcpLeasesData = $this->connectAndRetrieveData($ip, $username, $password, $dhcpLeasesEndpoint, $dhcpData);
-
-            // Check if the DHCP Leases data is valid
+            // If data fetch failed (null returned), return null early to end the function
             if ($dhcpLeasesData === null) {
-                // Return null if DHCP Leases data is not valid
                 return null;
             }
 
-            // Map over each DHCP Lease data item and replace null hostname with 'Unknown'
-            $processedData = array_map(function ($item) {
-                if (!isset($item['host-name']) || $item['host-name'] === null) {
-                    $item['host-name'] = 'Unknown';
-                }
-                return $item;
-            }, $dhcpLeasesData);
-
-            // Return the processed DHCP Leases data
-            return $processedData;
+            // If data fetch was successful, process the raw data into the desired format
+            // and return the processed data
+            return $this->processDhcpLeasesData($dhcpLeasesData);
         } catch (\Exception $e) {
-            // If any error occurs, log the error message and return null
+            // If an error occurs at any point in the try block, log the error message
             Log::error('Failed to get DHCP Leases data: ' . $e->getMessage());
-            return null;
+
+            // Then, rethrow the error to be handled by the calling function or the global error handler
+            throw $e;
         }
     }
 
+    /**
+     * Retrieves DHCP Leases records from a database, initializes DataTables, adds columns to DataTable.
+     * @return DataTables Yajra JSON response or null if there's no data.
+     */
+    public function getDhcpLeasesDatatables($ip, $username, $password)
+    {
+        // Retrieve and process the DHCP Leases data
+        $dhcpLeasesData = $this->getDhcpLeasesData($ip, $username, $password);
+
+        // If there's no data or data fetch failed, return null early to end the function
+        if (empty($dhcpLeasesData)) {
+            return null;
+        }
+
+        // Initialize DataTables and add columns to the table
+        return DataTables::of($dhcpLeasesData)
+            ->addIndexColumn()
+            ->addColumn('ip_address', function ($data) {
+                return $data['address'];
+            })
+            ->addColumn('mac_address', function ($data) {
+                return $data['mac-address'];
+            })
+            ->addColumn('host_name', function ($data) {
+                return $data['host-name'];
+            })
+            ->rawColumns(['ip_address', 'mac_address', 'host_name'])
+            ->make(true);
+    }
 
     /**
      * Process system resource data.
@@ -565,6 +581,71 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
             // Return null on failure
             return null;
         }
+    }
+
+    /**
+     * Fetches DHCP Leases data from a Mikrotik device
+     * @param string $ip IP address of the Mikrotik device
+     * @param string $username Username for accessing the Mikrotik device
+     * @param string $password Password for accessing the Mikrotik device
+     * @return array|null The fetched DHCP Leases data or null in case of any error
+     */
+    private function fetchDhcpLeasesData($ip, $username, $password)
+    {
+        // Set the endpoint for DHCP Leases
+        $dhcpLeasesEndpoint = "ip/dhcp-server/lease/print";
+        $dhcpData = [
+            'detail' => '',
+            '.query' => [
+                'disabled=false'
+            ]
+        ];
+
+        // Retrieve DHCP Leases data from the Mikrotik device
+        return $this->connectAndRetrieveData($ip, $username, $password, $dhcpLeasesEndpoint, $dhcpData);
+    }
+
+    /**
+     * Processes the fetched DHCP Leases data
+     * It maps over each DHCP Lease data item, replaces null hostname with 'Unknown',
+     * checks if disabled = false, and returns only mac-address, address, and host-name
+     * @param array $dhcpLeasesData The fetched DHCP Leases data
+     * @return array The processed DHCP Leases data
+     */
+    private function processDhcpLeasesData($dhcpLeasesData)
+    {
+        // Map over each DHCP Lease data item and process it
+        $processedData = array_map([$this, 'processDhcpLeaseData'], $dhcpLeasesData);
+
+        // Remove null values from the processed data
+        return array_filter($processedData);
+    }
+
+    /**
+     * Processes a single DHCP Lease data item
+     * It replaces null hostname with 'Unknown', checks if disabled = false,
+     * and returns only mac-address, address, and host-name
+     * @param array $item A DHCP Lease data item
+     * @return array|null The processed DHCP Lease data item or null if disabled is not false
+     */
+    private function processDhcpLeaseData($item)
+    {
+        // Replace null hostname with 'Unknown'
+        if (!isset($item['host-name']) || $item['host-name'] === null) {
+            $item['host-name'] = 'Unknown';
+        }
+
+        // Check if disabled = false and return only mac-address, address, and host-name
+        if ($item['disabled'] === 'false') {
+            return [
+                'mac-address' => $item['mac-address'] ?? null,
+                'address' => $item['address'] ?? null,
+                'host-name' => $item['host-name'],
+            ];
+        }
+
+        // Return null if disabled is not false
+        return null;
     }
 
 }

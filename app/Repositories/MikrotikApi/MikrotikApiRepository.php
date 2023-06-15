@@ -54,6 +54,12 @@ interface MikrotikApiRepository extends Repository{
     public function getDhcpLeasesData($ip, $username, $password);
 
     /**
+     * Retrieves DHCP Leases records from a database, initializes DataTables, adds columns to DataTable.
+     * @return DataTables Yajra JSON response or null if there's no data.
+     */
+    public function getDhcpLeasesDatatables($ip, $username, $password);
+
+    /**
      * connect
      * @param  mixed $ip
      * @param  mixed $username

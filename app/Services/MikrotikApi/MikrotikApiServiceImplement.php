@@ -107,6 +107,19 @@ class MikrotikApiServiceImplement extends Service implements MikrotikApiService
     }
 
     /**
+     * Retrieves DHCP Leases records from a database, initializes DataTables, adds columns to DataTable.
+     * @return DataTables Yajra JSON response or null if there's no data.
+     */
+    public function getDhcpLeasesDatatables($ip, $username, $password)
+    {
+        try {
+            return $this->mainRepository->getDhcpLeasesDatatables($ip, $username, $password);
+        } catch (Exception $exception) {
+            throw new Exception("Error getting DHCP leases datatable : " . $exception->getMessage());
+        }
+    }
+
+    /**
      * Try to connect from the specified network interface of a device.
      * @param string $ip IP address of the device.
      * @param string $username Username for authentication.

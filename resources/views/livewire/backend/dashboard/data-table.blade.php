@@ -54,11 +54,11 @@
             });
         }
 
-        // When load page finished
         // Initialize DataTable when the DOM is ready
-        Livewire.onLoad(() => {
+        document.addEventListener('DOMContentLoaded', function () {
             initializeDataTable();
         });
+
         // On 'refreshDatatable' event, reload DataTable or initialize it if it hasn't been initialized
         window.addEventListener('refreshDatatable', event => {
             if (dataTable) {

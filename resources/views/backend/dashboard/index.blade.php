@@ -38,7 +38,7 @@ $configData = Helper::appClasses();
                 @livewire('backend.dashboard.line-chart')
 
                 <!-- Polar Area Chart -->
-                @livewire('backend.dashboard.polar-chart')
+                {{-- @livewire('backend.dashboard.polar-chart') --}}
 
                 <!-- Radar Chart -->
                 {{-- @livewire('backend.dashboard.radar-chart') --}}
@@ -48,7 +48,7 @@ $configData = Helper::appClasses();
             <div class="tab-pane fade" id="tabNetworkOverview" role="tabpanel">
                 {{-- START DATATABLES --}}
                 <!-- Datatables DHCP Leases Data -->
-                @livewire('backend.dashboard.data-table')
+                {{-- @livewire('backend.dashboard.data-table') --}}
                 {{-- END DATATABLES --}}
             </div>
         </div>

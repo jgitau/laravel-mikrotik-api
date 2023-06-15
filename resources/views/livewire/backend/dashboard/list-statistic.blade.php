@@ -6,7 +6,11 @@
                 {{-- <small class="text-muted">Updated 1 month ago</small> --}}
             </div>
         </div>
-        <div class="card-body" wire:poll.2000ms="loadData">
+        @if ($pollingInterval)
+        <div class="card-body" wire:poll.{{ $pollingInterval }}ms="loadData">
+        @else
+        <div class="card-body">
+        @endif
             <div class="row gy-3">
 
                 <div class="col-md-3 col-6">

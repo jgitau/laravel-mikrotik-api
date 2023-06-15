@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Backend\Dashboard;
 
+use App\Helpers\MikrotikConfigHelper;
 use App\Jobs\UpdateMikrotikTraffic;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
@@ -11,6 +12,7 @@ class LineChart extends Component
     // Arrays for storing upload and download traffic data.
     public $uploadTraffic = 0;
     public $downloadTraffic = 0;
+    public $pollingInterval = 2000; // The polling interval in 2 seconds.
 
     // Associative array for mapping event listeners to their handling methods.
     protected $listeners = ['getLoadTrafficData' => 'loadTrafficData'];
@@ -30,6 +32,14 @@ class LineChart extends Component
      */
     public function loadTrafficData()
     {
+        $config = MikrotikConfigHelper::getMikrotikConfig();
+
+        // Jika konfigurasi kosong, hentikan polling dan return
+        if (empty($config['ip']) || empty($config['username']) || empty($config['password'])) {
+            $this->pollingInterval = null; // set polling interval to null and stop polling
+            return;
+        }
+
         // Dispatch the UpdateMikrotikStats job to update the data in cache.
         dispatch(new UpdateMikrotikTraffic());
         // Load the data from cache

@@ -2,6 +2,7 @@ const { EnvironmentPlugin } = require('webpack');
 const mix = require('laravel-mix');
 const glob = require('glob');
 const path = require('path');
+const cssnano = require('cssnano');
 
 /*
  |--------------------------------------------------------------------------
@@ -130,6 +131,7 @@ mixAssetsDir('js/**/*.js', (src, dest) => mix.scripts(src, dest));
 mixAssetsDir('css/**/*.css', (src, dest) => mix.copy(src, dest));
 // laravel working crud app related js
 mix.js('resources/js/laravel-user-management.js', 'public/js/');
+mix.postCss('resources/assets/css/backend/voucher.css', 'public/assets/css/backend/', [cssnano({ preset: 'default' })]);
 
 mix.copy('node_modules/@fortawesome/fontawesome-free/webfonts/*', 'public/assets/vendor/fonts/fontawesome');
 mix.copy('node_modules/katex/dist/fonts/*', 'public/assets/vendor/libs/quill/fonts');

@@ -12,7 +12,7 @@ $configData = Helper::appClasses();
 <div class="row">
 
     {{-- TODO: 2 COLUMN : 1 = Form, 2 = View Voucher --}}
-    <div class="col-8">
+    <div class="col-xl-8 col-md-7 col-sm-12 mb-3">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between">
@@ -33,13 +33,15 @@ $configData = Helper::appClasses();
     </div>
 
     {{-- View Voucher --}}
-    <div class="col-4">
+    <div class="col-xl-4 col-md-5 col-sm-12">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <h4 class="card-title">View Vouchers</h4>
                 </div>
             </div>
+
+            {{-- TODO: View Voucher --}}
             {{-- Start View Vouchers --}}
             <div class="card-body">
                 @livewire('backend.setup.config.voucher-print-setup.view')

@@ -344,7 +344,7 @@ class PageSeeder extends Seeder
                 'id' => 47,
                 'page' => 'list_ads',
                 'title' => 'Ads - List',
-                'url' => 'ads/pg/list_ads',
+                'url' => 'setup/ads/list-ads',
                 'module_id' => 14,
                 'allowed_groups' => '1,2',
                 'show_menu' => 1,

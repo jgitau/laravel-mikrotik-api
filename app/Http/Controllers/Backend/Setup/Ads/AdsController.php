@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Backend\Setup;
+namespace App\Http\Controllers\Backend\Setup\Ads;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class SetUrlRedirectController extends Controller
+class AdsController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -14,7 +14,7 @@ class SetUrlRedirectController extends Controller
     public function __construct()
     {
         // Apply the 'checkPermissions' middleware to this controller with 'vouchers_print_setup' as the required permission
-        $this->middleware('checkPermissions:set_url_redirect');
+        $this->middleware('checkPermissions:list_ads,add_ad,edit_ad,delete_ad');
     }
 
     /**
@@ -28,8 +28,7 @@ class SetUrlRedirectController extends Controller
     {
         // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
         $permissions = $request->attributes->get('permissions');
-
         // Get the permissions array and return the view.
-        return view('backend.setup.set-url-redirect', compact('permissions'));
+        return view('backend.setup.ads.list-ads', compact('permissions'));
     }
 }

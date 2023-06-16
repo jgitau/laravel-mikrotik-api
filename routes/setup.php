@@ -6,7 +6,8 @@ use App\Http\Controllers\{
     Backend\Setup\Administrator\GroupController,
     Backend\Setup\Config\ConfigController,
     Backend\Setup\SetUrlRedirectController,
-    Backend\Setup\VoucherPrintSetupController
+    Backend\Setup\VoucherPrintSetupController,
+    Backend\Setup\Ads\AdsController as SetupAdsController
 };
 // Import Livewire Controllers
 use App\Http\Livewire\Backend\Setup\Administrator\{
@@ -46,6 +47,12 @@ Route::middleware(['check.session.cookie'])->group(function () {
             Route::get('list-configs', [ConfigController::class, 'index'])->name('list-config');
             // Route for hotel rooms configuration page
             Route::get('list-configs/hotel_rooms', [ConfigController::class, 'hotel_rooms'])->name('hotel_rooms');
+        });
+
+        // Grouping routes related to ads setup
+        Route::prefix('ads')->name('ads.')->group(function () {
+            // Route for ads list page
+            Route::get('list-ads', [SetupAdsController::class, 'index'])->name('list-ads');
         });
     });
 

@@ -17,6 +17,7 @@ class LogoForm extends Component
     // Public property for storing the logo
     public $logo;
 
+    // Public listener properties for listening to events from other components
     public $listeners = [
         'logoUpdated' => '$refresh',
         'confirmLogo' => 'clearLogo',
@@ -46,7 +47,6 @@ class LogoForm extends Component
     /**
      * Validate and upload the new logo to the server, delete the old logo,
      * update the logo setting in the database, and reset the logo form field.
-     *
      * @param SettingService $settingService
      * @return void
      * @throws \Exception if the logo size is not correct
@@ -127,7 +127,6 @@ class LogoForm extends Component
 
     /**
      * Save the logo to the server and return the file path.
-     *
      * @return string
      * @throws \Exception
      */
@@ -172,7 +171,6 @@ class LogoForm extends Component
 
     /**
      * Delete the existing logo from the server.
-     *
      * @param SettingService $settingService
      */
     private function deleteExistingLogo($settingService)

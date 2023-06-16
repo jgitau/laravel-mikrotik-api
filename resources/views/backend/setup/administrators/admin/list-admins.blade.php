@@ -27,11 +27,13 @@ $configData = Helper::appClasses();
         </div>
     </div>
 
+    @if($isAllowedToListAdmins)
     {{-- Start List DataTable --}}
     <div class="card-body">
         @livewire('backend.setup.administrator.admin.data-table')
     </div>
     {{-- End List DataTable --}}
+    @endif
 
     @push('scripts')
     <script>

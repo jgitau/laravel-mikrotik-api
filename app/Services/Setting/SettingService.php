@@ -22,4 +22,11 @@ interface SettingService extends BaseService{
      * @return int The number of affected rows.
      */
     public function updateSetting($settingName, $moduleId, $value);
+
+    /**
+     * Get th allowede permissions array for all actions.
+     * @return array
+     * @param  mixed $actions
+     */
+    public function getAllowedPermissions($actions);
 }

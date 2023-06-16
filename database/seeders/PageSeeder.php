@@ -357,7 +357,7 @@ class PageSeeder extends Seeder
                 'url' => 'ads/pg/add_ad',
                 'module_id' => 14,
                 'allowed_groups' => '1,2',
-                'show_menu' => 1,
+                'show_menu' => 0,
                 'show_to' => NULL
             ],
 

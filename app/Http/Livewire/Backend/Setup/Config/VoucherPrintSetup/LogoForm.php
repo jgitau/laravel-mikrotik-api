@@ -55,7 +55,12 @@ class LogoForm extends Component
 
         try {
             // Check if the image is the right size
-            $this->checkImageSize();
+            $imageSize = $this->checkImageSize();
+            // If the image is not the right size, throw an exception and show an error message
+            if ($imageSize['width'] > 80 || $imageSize['height'] > 40) {
+                $this->dispatchErrorEvent('Logo must be 80x40 pixels.');
+                return;
+            }
 
             // Save the file to the server
             $filePath = $this->saveLogoToServer();
@@ -115,12 +120,9 @@ class LogoForm extends Component
     protected function checkImageSize()
     {
         $image = Image::make($this->logo->getRealPath());
-        $width = $image->width();
-        $height = $image->height();
-        // Check if the image is the right size
-        if ($width > 80 || $height > 40) {
-            throw new \Exception('Logo must be 80x40 pixels.');
-        }
+        $data['width'] = $image->width();
+        $data['height'] = $image->height();
+        return $data;
     }
 
     /**

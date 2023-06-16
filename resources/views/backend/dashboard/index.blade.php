@@ -4,7 +4,7 @@ $configData = Helper::appClasses();
 
 @extends('layouts/layoutMaster')
 
-@section('title', 'Dashboard | MEGALOS')
+@section('title', 'Dashboard')
 
 @section('content')
 @push('styles')

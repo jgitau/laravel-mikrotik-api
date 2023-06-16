@@ -28,51 +28,11 @@
         @endif
         <div class="d-flex justify-content-end mt-2">
             <x-button type="submit" color="primary">
-                Save
+                Save Changes
             </x-button>
         </div>
     </form>
 </div>
 
 @push('scripts')
-<script src="{{ asset('assets/vendor/libs/jquery-repeater/jquery-repeater.js') }}"></script>
-{{-- <script>
-    // Initialize the repeater functionality
-    $('.invoice-repeater, .repeater-default').repeater({
-        isFirstItemUndeletable: true,
-        show: function () {
-            $(this).slideDown(); // Show the repeated item
-            checkMaxItemCount(); // Check the maximum item count
-        },
-        hide: function (deleteElement) {
-            if (confirm('Are you sure you want to delete this element?')) {
-                var self = this;
-                $(this).slideUp(function() {
-                    $(self).remove(); // Remove the deleted item
-                    checkMaxItemCount(); // Check the maximum item count
-                });
-            }
-        }
-    });
-
-    function checkMaxItemCount() {
-        var maxItemCount = 5;
-        var repeaterItems = $('.invoice-repeater [data-repeater-item]');
-        var createButton = $('.invoice-repeater [data-repeater-create]');
-        var maxItemMessage = $('#max-item-message');
-        console.log(repeaterItems.length);
-
-        if (repeaterItems.length >= maxItemCount) {
-            createButton.prop('disabled', true); // Disable the create button
-            maxItemMessage.text('Maximal 5 forms reached'); // Display the maximum forms reached message
-        } else {
-            createButton.prop('disabled', false); // Enable the create button
-            maxItemMessage.text(''); // Clear the maximum forms reached message
-        }
-    }
-
-    $(document).ready(function() {
-        checkMaxItemCount(); // Check the maximum item count on page load
-    });
-</script> --}}
 @endpush

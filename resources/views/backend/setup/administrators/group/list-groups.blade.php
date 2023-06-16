@@ -10,7 +10,7 @@ $configData = Helper::appClasses();
 
 @section('content')
 {{-- Is Allowed User To List Groups --}}
-@if($isAllowedToListGroup)
+@if($permissions['isAllowedToListGroups'])
 <h4 class="fw-bold py-3 mb-1"><span class="text-primary fw-light">Groups </span>/ List</h4>
 <div class="row">
     <!-- DataTable with Buttons -->
@@ -20,16 +20,14 @@ $configData = Helper::appClasses();
             <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <h4 class="card-title">Table Groups</h4>
-                    @if ($isAllowedToAddGroup)
-                    <a href="{{route('backend.setup.admin.add-new-group') }}"
+                    @if ($permissions['isAllowedToAddNewGroup'])
+                    <a href="{{ route('backend.setup.admin.add-new-group') }}"
                         class="btn btn-sm btn-facebook text-white">
                         <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Group
                     </a>
                     @endif
                 </div>
             </div>
-
-
 
             {{-- Start List DataTable --}}
             <div class="card-body">

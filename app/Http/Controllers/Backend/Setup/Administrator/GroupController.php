@@ -5,25 +5,35 @@ namespace App\Http\Controllers\Backend\Setup\Administrator;
 use App\Helpers\AccessControlHelper;
 use App\Http\Controllers\Controller;
 use App\Services\Group\GroupService;
+use App\Services\Setting\SettingService;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
 {
+
+    public $settingService;
+    /**
+     * Create a new controller instance.
+     * @return void
+     */
+    public function __construct(SettingService $settingService)
+    {
+        $this->settingService = $settingService;
+    }
+
     /**
      * index
      */
     public function index()
     {
-        // Check if the user is allowed to add a new group
-        $isAllowedToAddGroup = AccessControlHelper::isAllowedToPerformAction('add_new_group');
-
-        // Check if the user is allowed to list groups
-        $isAllowedToListGroup = AccessControlHelper::isAllowedToPerformAction('list_groups');
-
-        return view('backend.setup.administrators.group.list-groups', [
-            'isAllowedToAddGroup' => $isAllowedToAddGroup,
-            'isAllowedToListGroup' => $isAllowedToListGroup
+        // Check if the user is allowed to get permissions
+        $permissions = $this->settingService->getAllowedPermissions([
+            'list_groups',
+            'add_new_group',
+            'edit_group'
         ]);
+
+        return view('backend.setup.administrators.group.list-groups', compact('permissions'));
     }
 
     /**

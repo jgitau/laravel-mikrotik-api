@@ -25,6 +25,7 @@ class AdminController extends Controller
      */
     public function index()
     {
+        // Check if the user is allowed to get permissions
         $permissions = $this->settingService->getAllowedPermissions([
             'list_admins',
             'add_new_admin',

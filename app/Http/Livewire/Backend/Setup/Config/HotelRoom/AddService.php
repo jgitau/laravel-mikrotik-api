@@ -11,6 +11,7 @@ use Livewire\Component;
 
 class AddService extends Component
 {
+    use LivewireMessageEvents;
     // Properties Public Variables
     public $idService, $cronType;
 

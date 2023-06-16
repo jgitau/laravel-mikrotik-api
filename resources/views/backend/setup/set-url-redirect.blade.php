@@ -7,7 +7,7 @@ $configData = Helper::appClasses();
 @section('title', 'Set URL Redirect')
 
 @section('content')
-<h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light"></span>Set URL Redirect</h4>
+<h4 class="fw-bold py-3 mb-1"><span class="text-primary fw-light"></span>Set URL Redirect</h4>
 
 <div class="row">
     <div class="col-8">

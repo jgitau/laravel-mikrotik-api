@@ -11,7 +11,7 @@ $configData = Helper::appClasses();
 @section('content')
 {{-- Is Allowed User To Edit Group --}}
 @if($isAllowedToEditGroup)
-<h4 class="fw-bold py-3 mb-4"><span class="text-primary fw-light">Groups </span>/ Edit Group</h4>
+<h4 class="fw-bold py-3 mb-1"><span class="text-primary fw-light">Groups </span>/ Edit Group</h4>
 
 <div class="row">
     <!-- DataTable with Buttons -->

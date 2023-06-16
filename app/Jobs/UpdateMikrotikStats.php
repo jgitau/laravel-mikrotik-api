@@ -50,6 +50,7 @@ class UpdateMikrotikStats implements ShouldQueue
             $uptime = $data['uptime'] ?? '0d 0:0:0';
             $freeMemory = $data['freeMemoryPercentage'] ?? '0%';
             $activeHotspots = $data['activeHotspot'] ?? 0;
+            // If data is null or all values are 0, set a flag in cache to stop polling
 
             // Store data in cache for multiple data retrievals
             Cache::put('mikrotik.cpuLoad', $cpuLoad, 10); // Keep the data for 10 minutes

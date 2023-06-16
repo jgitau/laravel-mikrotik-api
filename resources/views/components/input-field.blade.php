@@ -6,8 +6,6 @@
 @endif
 
 <input {{ $attributes->merge(['class' => 'form-control ' . ($errors->has($model) ? 'is-invalid' : ''), 'id' => $id,
-'type' => $type, 'placeholder' => $placeholder]) }}
-wire:model="{{ $model ? $model : '' }}"
-/>
+'type' => $type, 'placeholder' => $placeholder]) }} @if($model) wire:model="{{ $model }}" @endif />
 
 @error($model) <small class="error text-danger">{{ $message }}</small> @enderror

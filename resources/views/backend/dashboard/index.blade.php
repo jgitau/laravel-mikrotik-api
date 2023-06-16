@@ -4,7 +4,7 @@ $configData = Helper::appClasses();
 
 @extends('layouts/layoutMaster')
 
-@section('title', 'Network Monitoring and Overview')
+@section('title', 'Dashboard | MEGALOS')
 
 @section('content')
 @push('styles')
@@ -40,6 +40,7 @@ $configData = Helper::appClasses();
                 <!-- Polar Area Chart -->
                 @livewire('backend.dashboard.polar-chart')
 
+                {{-- TODO: --}}
                 <!-- Radar Chart -->
                 {{-- @livewire('backend.dashboard.radar-chart') --}}
                 {{-- END CHART --}}

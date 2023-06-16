@@ -145,7 +145,7 @@ class PageSeeder extends Seeder
                 'url' => '#',
                 'module_id' => 10,
                 'allowed_groups' => '1',
-                'show_menu' => 1,
+                'show_menu' => 0,
                 'show_to' => NULL
             ],
             [

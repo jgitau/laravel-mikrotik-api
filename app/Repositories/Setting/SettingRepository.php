@@ -22,4 +22,11 @@ interface SettingRepository extends Repository{
      * @return int The number of affected rows.
      */
     public function updateSetting($settingName, $moduleId, $value);
+
+    /**
+     * Get the allowed permissions array for all actions.
+     * @return array
+     * @param  mixed $actions
+     */
+    public function getAllowedPermissions($actions);
 }

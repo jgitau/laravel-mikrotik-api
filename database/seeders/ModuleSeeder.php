@@ -168,7 +168,7 @@ class ModuleSeeder extends Seeder
                 'show_to' => 9,
                 'url' => 'ads',
                 'extensible' => 0,
-                'active' => 0,
+                'active' => 1,
                 'icon_class' => NULL,
                 'root' => 0
             ],

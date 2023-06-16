@@ -10,7 +10,7 @@ $configData = Helper::appClasses();
 
 @section('content')
 {{-- Is Allowed User To List Config --}}
-@if($isAllowedToListConfig)
+@if($permissions['isAllowedToListConfig'])
 <h4 class="fw-bold py-3 mb-1"><span class="text-primary fw-light">Configs </span>/ List</h4>
 
 <!-- DataTable with Buttons -->

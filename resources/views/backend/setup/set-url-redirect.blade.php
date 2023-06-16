@@ -7,6 +7,7 @@ $configData = Helper::appClasses();
 @section('title', 'Set URL Redirect')
 
 @section('content')
+@if($permissions['isAllowedToSetUrlRedirect'])
 <h4 class="fw-bold py-3 mb-1"><span class="text-primary fw-light"></span>Set URL Redirect</h4>
 
 <div class="row">
@@ -56,4 +57,5 @@ $configData = Helper::appClasses();
         </div>
     </div>
 </div>
+@endif
 @endsection

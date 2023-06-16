@@ -50,4 +50,18 @@ class SettingServiceImplement extends Service implements SettingService
             throw new Exception("Error updated setting : " . $exception->getMessage());
         }
     }
+
+    /**
+     * Get the allowed permissions array for all actions.
+     * @return array
+     * @param  mixed $actions
+     */
+    public function getAllowedPermissions($actions)
+    {
+        try {
+            return $this->mainRepository->getAllowedPermissions($actions);
+        } catch (Exception $exception) {
+            throw new Exception("Error getting data permissions : " . $exception->getMessage());
+        }
+    }
 }

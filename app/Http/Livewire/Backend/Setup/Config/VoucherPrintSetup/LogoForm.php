@@ -17,6 +17,7 @@ class LogoForm extends Component
     // Public property for storing the logo
     public $logo;
 
+    // Public listener properties for listening to events from other components
     public $listeners = [
         'logoUpdated' => '$refresh',
         'confirmLogo' => 'clearLogo',
@@ -44,38 +45,37 @@ class LogoForm extends Component
     }
 
     /**
-     * Upload the logo to the server and update the setting in the database.
+     * Validate and upload the new logo to the server, delete the old logo,
+     * update the logo setting in the database, and reset the logo form field.
      * @param SettingService $settingService
      * @return void
+     * @throws \Exception if the logo size is not correct
      */
     public function uploadLogo(SettingService $settingService)
     {
-        // Validate the input
+        // Validate the logo upload form input
         $this->validate();
 
-        try {
-            // Check if the image is the right size
-            $imageSize = $this->checkImageSize();
-            // If the image is not the right size, throw an exception and show an error message
-            if ($imageSize['width'] > 80 || $imageSize['height'] > 40) {
-                $this->dispatchErrorEvent('Logo must be 80x40 pixels.');
-                return;
-            }
+        // Check the size of the logo and throw an exception if it's not correct
+        $imageSize = $this->checkImageSize();
+        // If the logo size is not 80x40 pixels, dispatch an error event and throw an exception
+        if ($imageSize['width'] > 80 || $imageSize['height'] > 40) {
+            $this->dispatchErrorEvent('Logo must be 80x40 pixels.');
+            return;
+        }
 
-            // Save the file to the server
+        try {
+            // Delete the existing logo from the server
+            $this->deleteExistingLogo($settingService);
+
+            // Save the new logo to the server and get its file path
             $filePath = $this->saveLogoToServer();
 
-            // Update the setting in the database
-            $this->updateSetting($settingService, $filePath);
+            // Update the logo setting in the database with the new file path
+            $settingService->updateSetting('voucher_logo_filename', 3, $filePath);
 
-            // Show Success Message
-            $this->dispatchSuccessEvent('Logo uploaded successfully.');
-
-            // Reset the form fields
-            $this->logo = null;
-
-            // Emit the 'logoUploaded' event with a true status
-            $this->emit('logoUpdated', true);
+            // Reset the logo form field and notify the user about the successful upload
+            $this->resetLogoAndNotifyUser();
         } catch (\Throwable $th) {
             // Handle any errors that occur during the upload process
             $this->handleUploadError($th);
@@ -100,7 +100,7 @@ class LogoForm extends Component
             }
 
             // Update the setting in the database to null
-            $this->updateSetting($settingService, null);
+            $settingService->updateSetting('voucher_logo_filename', 3, null);
 
             // Show Success Message
             $this->dispatchSuccessEvent('Logo removed successfully.');
@@ -127,7 +127,6 @@ class LogoForm extends Component
 
     /**
      * Save the logo to the server and return the file path.
-     *
      * @return string
      * @throws \Exception
      */
@@ -159,17 +158,6 @@ class LogoForm extends Component
     }
 
     /**
-     * Update the 'voucher_logo_filename' setting in the database.
-     * @param SettingService $settingService
-     * @param string $filePath
-     * @return void
-     */
-    protected function updateSetting(SettingService $settingService, $filePath)
-    {
-        $settingService->updateSetting('voucher_logo_filename', 3, $filePath);
-    }
-
-    /**
      * Handle any errors that occur during the upload process.
      * @param \Throwable $th
      * @return void
@@ -179,5 +167,35 @@ class LogoForm extends Component
         $this->logo = null;
         // Show Error Message
         $this->dispatchErrorEvent('An error occurred while uploading logo : ' . $th->getMessage());
+    }
+
+    /**
+     * Delete the existing logo from the server.
+     * @param SettingService $settingService
+     */
+    private function deleteExistingLogo($settingService)
+    {
+        // Get the file path of the existing logo from the settings
+        $currentLogoPath = $settingService->getSetting('voucher_logo_filename', 3);
+
+        // If the logo file exists on the server, delete it
+        if (Storage::disk('server')->exists($currentLogoPath)) {
+            Storage::disk('server')->delete($currentLogoPath);
+        }
+    }
+
+    /**
+     * Reset the logo form field and notify the user about the successful upload.
+     */
+    private function resetLogoAndNotifyUser()
+    {
+        // Reset the logo form field
+        $this->logo = null;
+
+        // Dispatch a success event to notify the user about the successful upload
+        $this->dispatchSuccessEvent('Logo uploaded successfully.');
+
+        // Emit the 'logoUpdated' event with a true status
+        $this->emit('logoUpdated', true);
     }
 }

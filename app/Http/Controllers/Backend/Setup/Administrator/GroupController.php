@@ -2,58 +2,71 @@
 
 namespace App\Http\Controllers\Backend\Setup\Administrator;
 
-use App\Helpers\AccessControlHelper;
 use App\Http\Controllers\Controller;
 use App\Services\Group\GroupService;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
 {
+
     /**
-     * index
+     * Create a new controller instance.
+     * Middleware 'checkPermissions' is applied here to ensure only authorized users can access certain methods.
+     * @return void
      */
-    public function index()
+    public function __construct()
     {
-        // Check if the user is allowed to add a new group
-        $isAllowedToAddGroup = AccessControlHelper::isAllowedToPerformAction('add_new_group');
-
-        // Check if the user is allowed to list groups
-        $isAllowedToListGroup = AccessControlHelper::isAllowedToPerformAction('list_groups');
-
-        return view('backend.setup.administrators.group.list-groups', [
-            'isAllowedToAddGroup' => $isAllowedToAddGroup,
-            'isAllowedToListGroup' => $isAllowedToListGroup
-        ]);
+        $this->middleware('checkPermissions:list_groups,add_new_group,edit_group')->only('index');
+        $this->middleware('checkPermissions:add_new_group')->only('create');
+        $this->middleware('checkPermissions:edit_group')->only('edit');
     }
 
     /**
-     * create
+     * Display the list of groups.
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     * This method retrieves permissions from the request's attributes,
+     * set by 'checkPermissions' middleware, and returns a view with these permissions.
      */
-    public function create()
+    public function index(Request $request)
     {
-        // Check if the user is allowed to add a new group
-        $isAllowedToAddGroup = AccessControlHelper::isAllowedToPerformAction('add_new_group');
-
-        return view('backend.setup.administrators.group.add-new-group', [
-            'isAllowedToAddGroup' => $isAllowedToAddGroup,
-        ]);
+        // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
+        $permissions = $request->attributes->get('permissions');
+        // Return the view with the permissions.
+        return view('backend.setup.administrators.group.list-groups', compact('permissions'));
     }
 
     /**
-     * The "edit" function in PHP takes a parameter "id".
-     * @param id
+     * Show the form for creating a new group.
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     * This method retrieves permissions from the request's attributes,
+     * set by 'checkPermissions' middleware, and returns a view with these permissions.
      */
-    public function edit(GroupService $groupService, $id)
+    public function create(Request $request)
     {
-        // Check if the user is allowed to edit a group
-        $isAllowedToEditGroup = AccessControlHelper::isAllowedToPerformAction('edit_group');
+        // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
+        $permissions = $request->attributes->get('permissions');
+        // Return the view with the permissions.
+        return view('backend.setup.administrators.group.add-new-group', compact('permissions'));
+    }
 
+    /**
+     * Show the form for editing a group.
+     * @param  \App\Services\Group\GroupService  $groupService
+     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     * This method retrieves permissions from the request's attributes,
+     * set by 'checkPermissions' middleware, and returns a view with these permissions.
+     */
+    public function edit(GroupService $groupService, $id, Request $request)
+    {
+        // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
+        $permissions = $request->attributes->get('permissions');
         // Get the group and its associated pages by ID
         $dataGroup = $groupService->getGroupAndPagesById($id);
-
-        return view('backend.setup.administrators.group.edit-group', [
-            'dataGroup' => $dataGroup,
-            'isAllowedToEditGroup' => $isAllowedToEditGroup
-        ]);
+        // Return the view with the permissions and dataGroup.
+        return view('backend.setup.administrators.group.edit-group', compact('permissions', 'dataGroup'));
     }
 }

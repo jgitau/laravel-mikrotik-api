@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Setting;
 
+use App\Helpers\AccessControlHelper;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Setting;
 
@@ -13,10 +14,12 @@ class SettingRepositoryImplement extends Eloquent implements SettingRepository{
     * @property Model|mixed $model;
     */
     protected $model;
+    protected $accessControlHelper;
 
-    public function __construct(Setting $model)
+    public function __construct(Setting $model, AccessControlHelper $accessControlHelper)
     {
         $this->model = $model;
+        $this->accessControlHelper = $accessControlHelper;
     }
 
     /**
@@ -43,5 +46,40 @@ class SettingRepositoryImplement extends Eloquent implements SettingRepository{
     {
         // Updates the setting value in the database and returns the number of affected rows.
         return $this->model->where('module_id', $moduleId)->where('setting', $settingName)->update(['value' => $value]);
+    }
+
+    /**
+     * Get the allowed permissions array for all actions.
+     * @return array
+     */
+    public function getAllowedPermissions($actions)
+    {
+        // Prepare an empty array to hold the permissions for each action.
+        $permissions = [];
+
+        // Iterate over each action.
+        foreach ($actions as $action) {
+            // Add the permission for the action to the permissions array.
+            $permissions[$this->getPermissionKey($action)] = $this->accessControlHelper->isAllowedToPerformAction($action);
+        }
+
+        return $permissions;
+    }
+
+    /**
+     * Get the permission key for an action.
+     * @param string $action
+     * @return string
+     */
+    private function getPermissionKey($action)
+    {
+        // Split the action string by underscore.
+        $splitAction = explode("_", $action);
+
+        // Convert each word in the split action to capitalize the first letter.
+        $studlyCaseAction = array_map('ucfirst', $splitAction);
+
+        // Join the words back together without underscores and prepend 'isAllowedTo'.
+        return 'isAllowedTo' . implode('', $studlyCaseAction);
     }
 }

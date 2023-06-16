@@ -7,6 +7,7 @@ $configData = Helper::appClasses();
 @section('title', 'Vouchers Print Setup')
 
 @section('content')
+@if($permissions['isAllowedToVouchersPrintSetup'])
 <h4 class="fw-bold py-3 mb-1"><span class="text-primary fw-light"></span>Vouchers Print Setup</h4>
 
 <div class="row">
@@ -105,4 +106,5 @@ $configData = Helper::appClasses();
     });
 </script>
 @endpush
+@endif
 @endsection

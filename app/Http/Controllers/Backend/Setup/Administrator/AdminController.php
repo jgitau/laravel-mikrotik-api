@@ -14,6 +14,7 @@ class AdminController extends Controller
      */
     public function __construct()
     {
+        // Apply the 'checkPermissions' middleware to this controller with 'vouchers_print_setup' as the required permission
         $this->middleware('checkPermissions:list_admins,add_new_admin,edit_admin,delete_admin')->only('index');
     }
 

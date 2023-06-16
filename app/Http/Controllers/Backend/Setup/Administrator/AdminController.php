@@ -2,37 +2,33 @@
 
 namespace App\Http\Controllers\Backend\Setup\Administrator;
 
-use App\Helpers\AccessControlHelper;
 use App\Http\Controllers\Controller;
-use App\Services\Setting\SettingService;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-
-    public $settingService;
     /**
      * Create a new controller instance.
+     * Middleware 'checkPermissions' is applied here to ensure only authorized users can access certain methods.
      * @return void
      */
-    public function __construct(SettingService $settingService)
+    public function __construct()
     {
-        $this->settingService = $settingService;
+        $this->middleware('checkPermissions:list_admins,add_new_admin,edit_admin,delete_admin')->only('index');
     }
 
     /**
      * Display the list of admins.
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
+     * This method retrieves permissions from the request's attributes,
+     * set by 'checkPermissions' middleware, and returns a view with these permissions.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Check if the user is allowed to get permissions
-        $permissions = $this->settingService->getAllowedPermissions([
-            'list_admins',
-            'add_new_admin',
-            'edit_admin',
-            'delete_admin'
-        ]);
-        // Get the permissions array and return the view.
+        // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
+        $permissions = $request->attributes->get('permissions');
+        // Return the view with the permissions.
         return view('backend.setup.administrators.admin.list-admins', compact('permissions'));
     }
 }

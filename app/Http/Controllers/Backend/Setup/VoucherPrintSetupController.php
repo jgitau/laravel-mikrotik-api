@@ -3,25 +3,32 @@
 namespace App\Http\Controllers\Backend\Setup;
 
 use App\Http\Controllers\Controller;
-use App\Services\Setting\SettingService;
 use Illuminate\Http\Request;
 
 class VoucherPrintSetupController extends Controller
 {
-    public $settingService;
     /**
      * Create a new controller instance.
      * @return void
      */
-    public function __construct(SettingService $settingService)
+    public function __construct()
     {
-        $this->settingService = $settingService;
+        // Apply the 'checkPermissions' middleware to this controller with 'vouchers_print_setup' as the required permission
+        $this->middleware('checkPermissions:vouchers_print_setup');
     }
 
-    public function index()
+    /**
+     * Handle the incoming request.
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     * This method retrieves permissions from the request's attributes,
+     * set by 'checkPermissions' middleware, and returns a view with these permissions.
+     */
+    public function index(Request $request)
     {
-        // Check if the user is allowed to get permissions
-        $permissions = $this->settingService->getAllowedPermissions(['vouchers_print_setup']);
+        // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
+        $permissions = $request->attributes->get('permissions');
+        // Get the permissions array and return the view.
         return view('backend.setup.voucher-print-setup',compact('permissions'));
     }
 }

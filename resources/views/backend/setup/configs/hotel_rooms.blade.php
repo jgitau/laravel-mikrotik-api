@@ -10,7 +10,7 @@ $configData = Helper::appClasses();
 
 @section('content')
 {{-- Is Allowed User To Config Hotel Rooms --}}
-@if($isAllowedToConfigHotelRooms)
+@if($permissions['isAllowedToConfigHotelRooms'])
 <h4 class="fw-bold py-3 mb-1"><span class="text-primary fw-light">Configs </span>/ Hotel Rooms</h4>
 
 <!-- DataTable with Buttons -->

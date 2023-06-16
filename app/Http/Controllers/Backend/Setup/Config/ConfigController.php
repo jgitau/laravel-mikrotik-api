@@ -2,32 +2,50 @@
 
 namespace App\Http\Controllers\Backend\Setup\Config;
 
-use App\Helpers\AccessControlHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class ConfigController extends Controller
 {
     /**
-     * The function returns a view for the index page of a backend setup configuration.
-     *
-     * @return View called "backend.setup.configs.index" is being returned.
+     * Create a new controller instance.
+     * Middleware 'checkPermissions' is applied here to ensure only authorized users can access certain methods.
+     * @return void
      */
-    public function index()
+    public function __construct()
     {
-        // Check if the user is allowed to list configurations
-        $isAllowedToListConfig = AccessControlHelper::isAllowedToPerformAction('list_config');
-        return view('backend.setup.configs.index', [
-            'isAllowedToListConfig' => $isAllowedToListConfig
-        ]);
+        // Apply the 'checkPermissions' middleware to this controller with 'vouchers_print_setup' as the required permission
+        $this->middleware('checkPermissions:list_config')->only('index');
+        $this->middleware('checkPermissions:config_hotel_rooms')->only('hotel_rooms');
     }
 
-    public function hotel_rooms()
+    /**
+     * Handle the incoming request.
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     * This method retrieves permissions from the request's attributes,
+     * set by 'checkPermissions' middleware, and returns a view with these permissions.
+     */
+    public function index(Request $request)
     {
-        // Check if the user is allowed to list configurations Hotel Rooms
-        $isAllowedToConfigHotelRooms = AccessControlHelper::isAllowedToPerformAction('config_hotel_rooms');
-        return view('backend.setup.configs.hotel_rooms', [
-            'isAllowedToConfigHotelRooms' => $isAllowedToConfigHotelRooms
-        ]);
+        // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
+        $permissions = $request->attributes->get('permissions');
+        // Get the permissions array and return the view.
+        return view('backend.setup.configs.index', compact('permissions'));
+    }
+
+    /**
+     * Handle the incoming request.
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     * This method retrieves permissions from the request's attributes,
+     * set by 'checkPermissions' middleware, and returns a view with these permissions.
+     */
+    public function hotel_rooms(Request $request)
+    {
+        // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
+        $permissions = $request->attributes->get('permissions');
+        // Get the permissions array and return the view.
+        return view('backend.setup.configs.hotel_rooms', compact('permissions'));
     }
 }

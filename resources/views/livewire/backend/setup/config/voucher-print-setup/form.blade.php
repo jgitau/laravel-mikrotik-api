@@ -1,5 +1,5 @@
 <div>
-    <form wire:submit.prevent="updateVoucher" method="POST">
+    <form wire:submit.prevent="updateVoucher" method="POST" enctype="multipart/form-data">
         @foreach($invoice as $index => $item)
         <div class="d-flex align-items-center mb-3">
             <div class="flex-grow-1">

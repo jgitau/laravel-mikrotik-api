@@ -23,12 +23,12 @@
         function confirmClearLogo() {
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You will not be able to restore this data!",
+                    text: "You will not be able to restore this logo!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#7367f0',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonText: 'Yes, clear it!'
                 }).then((result) => {
                 if (result.isConfirmed) {
                     // Emit an event to show the modal with the given Livewire component uid for DELETE!

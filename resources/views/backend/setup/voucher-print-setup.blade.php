@@ -12,7 +12,6 @@ $configData = Helper::appClasses();
 <div class="row">
 
     {{-- START HOTEL LOGO ALERT --}}
-    {{-- TODO: --}}
     <div class="col-lg-12 ">
         @livewire('backend.setup.config.voucher-print-setup.hotel-logo-alert')
     </div>
@@ -44,7 +43,6 @@ $configData = Helper::appClasses();
                 </div>
             </div>
 
-            {{-- TODO: Logo Form --}}
             {{-- Start Logo Form --}}
             <div class="card-body">
                 @livewire('backend.setup.config.voucher-print-setup.logo-form')
@@ -64,7 +62,6 @@ $configData = Helper::appClasses();
                 </div>
             </div>
 
-            {{-- TODO: View Voucher --}}
             {{-- Start View Vouchers --}}
             <div class="card-body">
                 @livewire('backend.setup.config.voucher-print-setup.view')

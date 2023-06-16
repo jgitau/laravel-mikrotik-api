@@ -10,7 +10,7 @@ $configData = Helper::appClasses();
 
 @section('content')
 {{-- Is Allowed User To List Admins --}}
-@if($isAllowedToListAdmins)
+@if($permissions['isAllowedToListAdmins'])
 <h4 class="fw-bold py-3 mb-1"><span class="text-primary fw-light">Administrators </span>/ List</h4>
 <!-- DataTable with Buttons -->
 <div class="card">
@@ -18,7 +18,7 @@ $configData = Helper::appClasses();
         <div class="d-flex justify-content-between">
             <h4 class="card-title">Table Admins</h4>
 
-            @if ($isAllowedToAddAdmin)
+            @if ($permissions['isAllowedToAddNewAdmin'])
             <x-button type="button" color="facebook" data-bs-toggle="modal" data-bs-target="#createNewAdmin">
                 <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add new Admin
             </x-button>
@@ -27,7 +27,7 @@ $configData = Helper::appClasses();
         </div>
     </div>
 
-    @if($isAllowedToListAdmins)
+    @if($permissions['isAllowedToListAdmins'])
     {{-- Start List DataTable --}}
     <div class="card-body">
         @livewire('backend.setup.administrator.admin.data-table')
@@ -50,6 +50,15 @@ $configData = Helper::appClasses();
 </div>
 @endif
 
+@if($permissions['isAllowedToEditAdmin'])
+{{-- START FORM CREATE ADMIN --}}
 @livewire('backend.setup.administrator.admin.create')
+{{-- END FORM CREATE ADMIN --}}
+@endif
+@if($permissions['isAllowedToDeleteAdmin'])
+{{-- START FORM EDIT ADMIN --}}
 @livewire('backend.setup.administrator.admin.edit')
+{{-- EDITa FORM EDIT ADMIN --}}
+@endif
+
 @endsection

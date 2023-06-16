@@ -5,33 +5,33 @@
                 @if($logo)
                 <img src="{{ asset($logo) }} " alt="Logo">
                 @endif
-                <h3><span class="text-dark">Wi-Fi</span> Internet</h3>
+                <h3 style="color: rgb(50, 50, 50);"><span>Wi-Fi</span> Internet</h3>
             </div>
             @if($vouchers_type == 'with_password')
             <div>
-                <p class="special"><span>Username</span> {{ $username }}</p>
+                <p class="special" style="color: rgb(50, 50, 50);"><span>Username</span> {{ $username }}</p>
             </div>
             <div>
-                <p class="special"><span>Password</span> {{ $password }}</p>
+                <p class="special" style="color: rgb(50, 50, 50);"><span>Password</span> {{ $password }}</p>
             </div>
             @else
             <div>
-                <p class="special"><span>Access Code</span> {{ $access_code }}</p>
+                <p class="special" style="color: rgb(50, 50, 50);"><span>Access Code</span> {{ $access_code }}</p>
             </div>
             @endif
             <div>
-                <p><span>Valid until</span> {{ $valid_until }}</p>
+                <p style="color: rgb(50, 50, 50);"><span>Valid until</span> {{ $valid_until }}</p>
             </div>
             <div>
-                <p><span>Time limit</span> {{ $time_limit }}</p>
+                <p style="color: rgb(50, 50, 50);"><span>Time limit</span> {{ $time_limit }}</p>
             </div>
 
-            <ul>How to Use:
+            <ul style="color: rgb(50, 50, 50);">How to Use:
                 @foreach($invoice as $index => $item)
-                <li>{{ $item['name'] }}</li>
+                <li style="color: rgb(50, 50, 50);">{{ $item['name'] }}</li>
                 @endforeach
             </ul>
-            <p class="p1">S/N: {{ $serial_number }}</p>
+            <p class="p1" style="color: rgb(50, 50, 50);">S/N: {{ $serial_number }}</p>
         </div>
     </div>
 </div>

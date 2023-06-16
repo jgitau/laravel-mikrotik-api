@@ -11,13 +11,13 @@ class View extends Component
     public $invoice = [], $logo = null;
 
     // Other properties
-    public $vouchers_type; // Update this as needed
-    public $username = 'username'; // Update this as needed
-    public $password = 'password'; // Update this as needed
-    public $access_code = 'access_code'; // Update this as needed
-    public $valid_until; // Update this as needed
-    public $time_limit = '2 Hours'; // Update this as needed
-    public $serial_number = 'MGL00000001'; // Update this as needed
+    public $vouchers_type;
+    public $username = 'username';
+    public $password = 'password';
+    public $access_code = 'access_code';
+    public $valid_until;
+    public $time_limit = '2 Hours';
+    public $serial_number = 'MGL00000001';
 
     // Event listener
     protected $listeners = [
@@ -66,6 +66,7 @@ class View extends Component
      */
     protected function setupInvoice(SettingService $settingService)
     {
+        // Retrieve the setting 'how_to_use_voucher'
         $howToUse = $settingService->getSetting('how_to_use_voucher', 3);
 
         // Explode the string into an array based on comma

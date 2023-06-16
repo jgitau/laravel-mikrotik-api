@@ -11,7 +11,7 @@ $configData = Helper::appClasses();
 <h4 class="fw-bold py-3 mb-1"><span class="text-primary fw-light"></span>Set URL Redirect</h4>
 
 <div class="row">
-    <div class="col-8">
+    <div class="col-xl-8 col-12">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between">

@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Services\Setting\SettingService;
 use Closure;
-use Illuminate\Http\Request;
 
 class CheckPermissions
 {
@@ -28,15 +27,19 @@ class CheckPermissions
      */
     public function handle($request, Closure $next, ...$permissions)
     {
+        // Get the permissions for the specified actions from the Setting Service
         $permissions = $this->settingService->getAllowedPermissions($permissions);
 
+        // Check if all permissions are false
         if (!array_filter($permissions)) {
-            // If all permissions are false, redirect to the permission denied page
+            // If yes, redirect to the permission denied page
             return response()->view('errors.permission-denied', [], 403);
         }
 
+        // If not, add the permissions to the request's attributes for later use
         $request->attributes->set('permissions', $permissions);
 
+        // Continue processing the request
         return $next($request);
     }
 }

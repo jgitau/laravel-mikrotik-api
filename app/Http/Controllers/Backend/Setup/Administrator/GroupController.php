@@ -16,6 +16,7 @@ class GroupController extends Controller
      */
     public function __construct()
     {
+        // Apply the 'checkPermissions' middleware to this controller with 'vouchers_print_setup' as the required permission
         $this->middleware('checkPermissions:list_groups,add_new_group,edit_group')->only('index');
         $this->middleware('checkPermissions:add_new_group')->only('create');
         $this->middleware('checkPermissions:edit_group')->only('edit');

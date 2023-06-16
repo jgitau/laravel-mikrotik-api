@@ -3,27 +3,31 @@
         @foreach($invoice as $index => $item)
         <div class="d-flex align-items-center mb-3">
             <div class="flex-grow-1">
-                <input class="form-control" id="name{{$index}}" type="text" placeholder="Input value"
-                    wire:model="invoice.{{$index}}.name" />
+                <x-input-field type="text" id="name{{$index}}" model="invoice.{{$index}}.name" placeholder="Input value"
+                    required />
             </div>
-            <button type="button" class="btn btn-danger ms-2" wire:click="removeInvoiceField({{$index}})">
+
+            <x-button type="submit" color="danger" wire:click="removeInvoiceField({{$index}})" class="ms-2">
                 <i data-feather="x" class="me-25"></i>
                 <span><i class="fas fa-trash"></i></span>
-            </button>
+            </x-button>
         </div>
         @endforeach
 
-        <button type="button" class="btn btn-icon btn-primary" wire:click="addInvoiceField">
+        <x-button type="submit" color="primary" wire:click="addInvoiceField">
             <i data-feather="plus"></i>
             <span><i class="fas fa-plus"></i></span>
-        </button>
+        </x-button>
+
         @if (session()->has('error'))
         <span class="ms-2 text-danger">
             {{ session('error') }}
         </span>
         @endif
         <div class="d-flex justify-content-end mt-2">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <x-button type="submit" color="primary">
+                Save
+            </x-button>
         </div>
     </form>
 </div>

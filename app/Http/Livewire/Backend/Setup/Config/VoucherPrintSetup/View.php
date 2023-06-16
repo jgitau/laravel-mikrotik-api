@@ -37,7 +37,7 @@ class View extends Component
 
     /**
      * Render the view for the component.
-     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
+     * @return \Illuminate\View\View
      */
     public function render()
     {

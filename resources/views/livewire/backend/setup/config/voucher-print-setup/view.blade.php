@@ -2,8 +2,9 @@
     <div class="main-container">
         <div class="ctn_cell ">
             <div class="text-center mb-3">
-                {{-- TODO: --}}
-                {{-- <img src="{{ asset('path/to/logo.png') }}" alt="Logo"> --}}
+                @if($logo)
+                <img src="{{ asset($logo) }} " alt="Logo">
+                @endif
                 <h3><span class="text-dark">Wi-Fi</span> Internet</h3>
             </div>
             @if($vouchers_type == 'with_password')

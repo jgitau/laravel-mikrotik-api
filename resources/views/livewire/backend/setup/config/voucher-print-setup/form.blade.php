@@ -7,12 +7,12 @@
             </div>
 
             @if($index != 0)
-            <!-- Add this line -->
             <x-button type="button" color="danger" wire:click="removeInvoiceField({{$index}})" class="ms-2">
                 <i data-feather="x" class="me-25"></i>
                 <span><i class="fas fa-trash"></i></span>
             </x-button>
             @endif
+
         </div>
         @endforeach
 

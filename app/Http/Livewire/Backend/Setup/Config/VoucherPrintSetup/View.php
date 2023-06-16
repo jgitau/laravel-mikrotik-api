@@ -8,37 +8,36 @@ use Livewire\Component;
 class View extends Component
 {
     // Public property for storing invoice instructions
-    public $invoice = [];
+    public $invoice = [], $logo = null;
 
     // Other properties
-    public $vouchers_type = 'with_password'; // Update this as needed
+    public $vouchers_type; // Update this as needed
     public $username = 'username'; // Update this as needed
     public $password = 'password'; // Update this as needed
     public $access_code = 'access_code'; // Update this as needed
-    public $valid_until = '10 Feb 2027'; // Update this as needed
+    public $valid_until; // Update this as needed
     public $time_limit = '2 Hours'; // Update this as needed
     public $serial_number = 'MGL00000001'; // Update this as needed
 
     // Event listener
-    protected $listeners = ['voucherUpdated' => 'onVoucherUpdated'];
+    protected $listeners = [
+        'voucherUpdated' => 'onVoucherUpdated',
+        'logoUpdated' => 'onLogoUpdated',
+    ];
 
     /**
      * Initializes the component.
-     * Retrieves the setting 'how_to_use_voucher' using SettingService and sets up the 'invoice' property.
+     * Retrieves the setting 'how_to_use_voucher', 'voucher_logo_filename' and 'create_vouchers_type' using SettingService
+     * and sets up the 'invoice', 'logo' and 'voucher_type properties.
      * @param SettingService $settingService The service used for retrieving application settings.
      * @return void
      */
     public function mount(SettingService $settingService)
     {
-        $howToUse = $settingService->getSetting('how_to_use_voucher', 3);
-
-        // Explode the string into an array based on comma
-        $howToUseArray = explode(',', $howToUse);
-
-        // Map the array into the desired format for invoice
-        $this->invoice = array_map(function ($item) {
-            return ['name' => $item];
-        }, $howToUseArray);
+        $this->valid_until = date('d F Y', strtotime('+5 years'));
+        $this->setupInvoice($settingService);
+        $this->setupLogo($settingService);
+        $this->setupType($settingService);
     }
 
     /**
@@ -58,5 +57,53 @@ class View extends Component
     public function render()
     {
         return view('livewire.backend.setup.config.voucher-print-setup.view');
+    }
+
+    /**
+     * Retrieves the setting 'how_to_use_voucher' using SettingService and sets up the 'invoice' property.
+     * @param SettingService $settingService The service used for retrieving application settings.
+     * @return void
+     */
+    protected function setupInvoice(SettingService $settingService)
+    {
+        $howToUse = $settingService->getSetting('how_to_use_voucher', 3);
+
+        // Explode the string into an array based on comma
+        $howToUseArray = explode(',', $howToUse);
+
+        // Map the array into the desired format for invoice
+        $this->invoice = array_map(function ($item) {
+            return ['name' => $item];
+        }, $howToUseArray);
+    }
+
+    /**
+     * Retrieves the setting 'voucher_logo_filename' using SettingService and sets up the 'logo' property.
+     * @param SettingService $settingService The service used for retrieving application settings.
+     * @return void
+     */
+    protected function setupLogo(SettingService $settingService)
+    {
+        $this->logo = $settingService->getSetting('voucher_logo_filename', 3);
+    }
+
+    /**
+     * Retrieves the setting 'create_vouchers_type' using SettingService and sets up the 'logo' property.
+     * @param SettingService $settingService The service used for retrieving application settings.
+     * @return void
+     */
+    protected function setupType(SettingService $settingService)
+    {
+        $this->vouchers_type = $settingService->getSetting('create_vouchers_type', 3);
+    }
+
+    /**
+     * Updates the 'logo' property when the 'logoUpdated' event is emitted
+     * @param SettingService $settingService The service used for retrieving application settings.
+     * @return void
+     */
+    public function onLogoUpdated(SettingService $settingService)
+    {
+        $this->setupLogo($settingService);
     }
 }

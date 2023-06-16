@@ -7,7 +7,7 @@
 
         <div class="mt-3 d-flex justify-content-between">
             <x-button type="submit" color="primary">
-                Save
+                Save Changes
             </x-button>
             <x-button type="button" color="danger" onclick="confirmClearLogo()">
                 Clear Logo

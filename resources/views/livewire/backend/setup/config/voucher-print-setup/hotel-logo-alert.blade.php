@@ -1,9 +1,8 @@
-<div class="alert alert-primary alert-dismissible" role="alert">
+<div class="alert alert-primary" role="alert">
     <h5 class="alert-heading mb-2">You can upload your hotel logo</h5>
     <p class="mb-0">
-        Sugar plum apple pie sesame snaps croissant marshmallow apple pie liquorice. Cheesecake bear
-        claw tiramisu shortbread cupcake. Sugar plum candy canes jujubes liquorice tiramisu gummi
-        bears muffin dragée gingerbread.
+        Allowed logo size: max width = 80px and max height = 40px. Supported image format: jpg, png, gif with max size 400 KB
+        For how to use you can specify up to 4 steps with max 30 characters each step
     </p>
     {{-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> --}}
 </div>

@@ -3,18 +3,20 @@
         @foreach($invoice as $index => $item)
         <div class="d-flex align-items-center mb-3">
             <div class="flex-grow-1">
-                <x-input-field type="text" id="name{{$index}}" model="invoice.{{$index}}.name" placeholder="Input value"
-                    required />
+                <x-input-field type="text" id="name{{$index}}" model="invoice.{{$index}}.name" placeholder="Input value"/>
             </div>
 
-            <x-button type="submit" color="danger" wire:click="removeInvoiceField({{$index}})" class="ms-2">
+            @if($index != 0)
+            <!-- Add this line -->
+            <x-button type="button" color="danger" wire:click="removeInvoiceField({{$index}})" class="ms-2">
                 <i data-feather="x" class="me-25"></i>
                 <span><i class="fas fa-trash"></i></span>
             </x-button>
+            @endif
         </div>
         @endforeach
 
-        <x-button type="submit" color="primary" wire:click="addInvoiceField">
+        <x-button type="button" color="primary" wire:click="addInvoiceField">
             <i data-feather="plus"></i>
             <span><i class="fas fa-plus"></i></span>
         </x-button>

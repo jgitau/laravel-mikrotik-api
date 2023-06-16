@@ -78,7 +78,7 @@ class SettingSeeder extends Seeder
             ['id' => 65, 'module_id' => 14, 'setting' => 'mobile_ads_max_width', 'value' => '160', 'flag_module' => 'ads'],
             ['id' => 66, 'module_id' => 14, 'setting' => 'mobile_ads_max_height', 'value' => '390', 'flag_module' => 'ads'],
             ['id' => 67, 'module_id' => 14, 'setting' => 'mobile_ads_max_size', 'value' => '400', 'flag_module' => 'ads'],
-            ['id' => 71, 'module_id' => 3, 'setting' => 'how_to_use_voucher', 'value' => 'Turn on wifi,Open internet browser,Input username ...', 'flag_module' => NULL],
+            ['id' => 71, 'module_id' => 3, 'setting' => 'how_to_use_voucher', 'value' => 'Turn on wifi,Open internet browser,Input username password', 'flag_module' => NULL],
             ['id' => 72, 'module_id' => 3, 'setting' => 'voucher_logo_filename', 'value' => NULL, 'flag_module' => NULL],
             ['id' => 73, 'module_id' => 0, 'setting' => 'mikrotik_ip', 'value' => NULL, 'flag_module' => NULL],
             ['id' => 74, 'module_id' => 0, 'setting' => 'mikrotik_api_port', 'value' => '8728', 'flag_module' => NULL],

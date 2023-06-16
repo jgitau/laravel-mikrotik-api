@@ -2,16 +2,13 @@
 
 namespace App\Http\Livewire\Backend\Setup\Config\VoucherPrintSetup;
 
+use App\Services\Setting\SettingService;
 use Livewire\Component;
 
 class View extends Component
 {
     // Public property for storing invoice instructions
-    public $invoice = [
-        ['name' => 'Turn on Wifi'],
-        ['name' => 'Open internet browser'],
-        ['name' => 'Input username password'],
-    ];
+    public $invoice = [];
 
     // Other properties
     public $vouchers_type = 'with_password'; // Update this as needed
@@ -24,6 +21,25 @@ class View extends Component
 
     // Event listener
     protected $listeners = ['voucherUpdated' => 'onVoucherUpdated'];
+
+    /**
+     * Initializes the component.
+     * Retrieves the setting 'how_to_use_voucher' using SettingService and sets up the 'invoice' property.
+     * @param SettingService $settingService The service used for retrieving application settings.
+     * @return void
+     */
+    public function mount(SettingService $settingService)
+    {
+        $howToUse = $settingService->getSetting('how_to_use_voucher', 3);
+
+        // Explode the string into an array based on comma
+        $howToUseArray = explode(',', $howToUse);
+
+        // Map the array into the desired format for invoice
+        $this->invoice = array_map(function ($item) {
+            return ['name' => $item];
+        }, $howToUseArray);
+    }
 
     /**
      * Update the invoice data when the 'voucherUpdated' event is emitted

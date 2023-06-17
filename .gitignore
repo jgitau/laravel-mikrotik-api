@@ -1,6 +1,8 @@
 /node_modules
 /public/hot
 /public/storage
+/public/mix-manifest.json
+/public/js/laravel-user-management.js
 /storage/*.key
 /vendor
 .env

@@ -20,7 +20,7 @@ $configData = Helper::appClasses();
 
             @if ($permissions['isAllowedToAddNewAdmin'])
             <x-button type="button" color="facebook" data-bs-toggle="modal" data-bs-target="#createNewAdmin">
-                <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add new Admin
+                <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Admin
             </x-button>
             {{-- /Create Button for Add New Admin --}}
             @endif

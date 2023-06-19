@@ -135,7 +135,7 @@ class Edit extends Component
             $this->emit('adUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
-            $this->dispatchErrorEvent('An error occurred while updating ad: ' . $th->getMessage());
+            $this->dispatchErrorEvent($th->getMessage());
             // Close the modal
             $this->closeModal();
         }

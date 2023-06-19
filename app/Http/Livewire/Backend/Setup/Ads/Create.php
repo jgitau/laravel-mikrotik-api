@@ -112,8 +112,6 @@ class Create extends Component
         }, []);
 
         try {
-            // Validate the image banner file
-            $this->validateImage($newAd['imageBanner']);
             // Attempt to create the new ad
             $ad = $adsService->storeNewAd($newAd);
 
@@ -188,39 +186,5 @@ class Create extends Component
         return 'You can upload as many images as you want with the following limitations : <br>' .
             '1. Desktop Max Image Width : ' . $this->adsMaxWidth . 'px, Max Image Height : ' . $this->adsMaxHeight . "px, Max Image Size : " . $this->adsMaxSize . 'kb, per file <br>' .
             '2. Mobile Max Image Width : ' . $this->mobileAdsMaxWidth . 'px, Max Image Height : ' . $this->mobileAdsMaxHeight . "px, Max Image Size: " . $this->mobileAdsMaxSize . 'kb, per file ';
-    }
-
-    /**
-     * Validate the image based on the device type.
-     * @param Illuminate\Http\UploadedFile $image The uploaded image file
-     * @throws Exception If the image dimensions or size exceed the maximum allowed for the selected device type
-     * @return void
-     */
-    private function validateImage($image)
-    {
-        // Get the original dimensions of the image
-        list($width, $height) = getimagesize($image->getRealPath());
-        $data['width'] = $width;
-        $data['height'] = $height;
-
-        // Get the size of the image file in kilobytes
-        $data['size'] = round(filesize($image->getRealPath()) / 1024); // convert from bytes to kilobytes and round off
-
-        // Check if the selected device type is Desktop
-        if ($this->deviceType === 'Desktop') {
-            // Compare the width, height, and size of the image with the maximum limits for Desktop
-            if ($data['width'] > $this->adsMaxWidth || $data['height'] > $this->adsMaxHeight || $data['size'] > $this->adsMaxSize) {
-                // Throw an exception if the image dimensions or size exceed the maximum allowed for Desktop
-                throw new \Exception("Desktop image exceeds max width: {$this->adsMaxWidth}px, height: {$this->adsMaxHeight}px or size: {$this->adsMaxSize}KB");
-            }
-        }
-        // Check if the selected device type is Mobile
-        elseif ($this->deviceType === 'Mobile') {
-            // Compare the width, height, and size of the image with the maximum limits for Mobile
-            if ($data['width'] > $this->mobileAdsMaxWidth || $data['height'] > $this->mobileAdsMaxHeight || $data['size'] > $this->mobileAdsMaxSize) {
-                // Throw an exception if the image dimensions or size exceed the maximum allowed for Mobile
-                throw new \Exception("Mobile image exceeds max width: {$this->mobileAdsMaxWidth}px, height: {$this->mobileAdsMaxHeight}px or size: {$this->mobileAdsMaxSize}KB");
-            }
-        }
     }
 }

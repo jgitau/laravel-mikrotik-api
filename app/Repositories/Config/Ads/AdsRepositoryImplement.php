@@ -227,7 +227,14 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     private function storeBannerImage($file, $fileName)
     {
-        $storagePath = $this->adsUploadFolder() . "/" . 'images/' . $fileName;
+        // Get the root directory for the ads. If it's not set in the environment variables, use the default upload folder
+        $root = env('MEGALOS_ADS_ROOT_FOLDER');
+        if (empty($root)) {
+            $root = $this->adsUploadFolder();
+        }
+        // Construct the full path to the image
+        $storagePath = $root . "/" . 'images/' . $fileName;
+         // Check if the image exists in the storage
         if (!Storage::disk('server')->put($storagePath, file_get_contents($file->getRealPath()))) {
             throw new \Exception('Failed to save logo.');
         }
@@ -263,8 +270,18 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     private function deleteBannerImage($fileName)
     {
-        $storagePath = $this->adsUploadFolder() . "/" . 'images/' . $fileName;
+        // Get the root directory for the ads. If it's not set in the environment variables, use the default upload folder
+        $root = env('MEGALOS_ADS_ROOT_FOLDER');
+        if (empty($root)) {
+            $root = $this->adsUploadFolder();
+        }
+
+        // Construct the full path to the image
+        $storagePath = $root . "/" . 'images/' . $fileName;
+
+        // Check if the image exists in the storage
         if (Storage::disk('server')->exists($storagePath)) {
+            // Attempt to delete the image. If the deletion fails, throw an exception.
             if (!Storage::disk('server')->delete($storagePath)) {
                 throw new \Exception('Failed to delete image.');
             }

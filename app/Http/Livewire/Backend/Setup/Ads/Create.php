@@ -112,7 +112,7 @@ class Create extends Component
         }, []);
 
         try {
-
+            // Validate the image banner file
             $this->validateImage($newAd['imageBanner']);
             // Attempt to create the new ad
             $ad = $adsService->storeNewAd($newAd);

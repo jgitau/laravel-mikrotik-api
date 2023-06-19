@@ -14,11 +14,10 @@ class Create extends Component
     use WithFileUploads;
     // LivewireMessageEvents for showing messages
     use LivewireMessageEvents;
-    // Properties Public Variables
+    // Properties for inserting a new ad
     public $type, $deviceType, $imageBanner, $title, $urlForImage = "http://", $position, $timeToShow, $timeToHide, $shortDescription;
     // Ads Type
     public $adsType;
-
     // FOR ALERT MESSAGE
     public $adsMaxWidth, $adsMaxHeight, $adsMaxSize, $mobileAdsMaxWidth, $mobileAdsMaxHeight, $mobileAdsMaxSize, $alert;
 
@@ -82,7 +81,6 @@ class Create extends Component
             ];
         }
     }
-
 
     /**
      * Render the component `create`.

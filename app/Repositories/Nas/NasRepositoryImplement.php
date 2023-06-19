@@ -74,6 +74,18 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
                 return $result;
             }
 
+            // Add Walled Garden IP.
+            $walledGardenIpResult = $this->addWalledGardenIp($radiusServer);
+            if (!$walledGardenIpResult['status']) {
+                $result['message'] = $walledGardenIpResult['message'];
+                return $result;
+            }
+
+            // Add Walled Garden protocol and port.
+            $wgProtoPortResult = $this->addWalledGardenProtocolAndPort();
+            // If there's an error in adding the Walled Garden protocol and port, throw an exception.
+            if (!$wgProtoPortResult['status']) throw new \Exception($wgProtoPortResult['message']);
+
             // If all operations are successful, update the result status.
             $result['status'] = true;
             return $result;
@@ -83,8 +95,100 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
     }
 
     /**
+     * Adds an IP address to the Walled Garden IP List.
+     * @param string $ipAddress The IP address to be added.
+     * @return array Contains status and optional error message.
+     */
+    protected function addWalledGardenIp($ipAddress)
+    {
+        // Check if the IP address already exists in the Walled Garden IP List
+        $existingIp = $this->getWalledGardenIpByAddress($ipAddress);
+        if (!is_null($existingIp)) {
+            return ['status' => true, 'message' => 'IP address already exists in the Walled Garden IP List.'];
+        }
+        // Initialize result array with default values.
+        $result = ['status' => false, 'message' => ''];
+
+        // Prepare the IP address data.
+        $ipData = ["action" => "accept", "dst-address" => $ipAddress, "comment" => "Managed by AZMI. DO NOT EDIT!!!"];
+        // Send a command to the RouterOS API to add the IP address to the Walled Garden IP List.
+        $resultData = $this->routerOsApi->comm("/ip/hotspot/walled-garden/ip/add", $ipData);
+
+        // If there's an error ('!trap') in the result data, set an error message.
+        if (isset($resultData['!trap'])) {
+            $result['message'] = "Error in adding Walled Garden IP: " . $resultData['!trap'][0]['message'];
+        } else {
+            // If no error was found, set the status to true.
+            $result['status'] = true;
+        }
+
+        // Return the result of the operation.
+        return $result;
+    }
+
+    /**
+     * Adds a rule to the Walled Garden IP List with specific protocol and port.
+     * @return array Contains status and optional error message.
+     */
+    protected function addWalledGardenProtocolAndPort()
+    {
+        // Check if the rule already exists in the Walled Garden IP List
+        $existingRule = $this->getWalledGardenIpByProtocolAndPort("tcp", "5223");
+        if (!is_null($existingRule)) {
+            return ['status' => true, 'message' => 'Walled Garden rule already exists with the specified protocol and port.'];
+        }
+        // dd($existingRule);
+        // Initialize result array with default values.
+        $result = ['status' => false, 'message' => ''];
+
+        // Prepare the protocol and port data.
+        $ipData = [
+            "action" => "accept",
+            "protocol" => "6", // 6 refers to TCP
+            "dst-port" => "5223", // The destination port
+            "comment" => "Managed by AZMI. DO NOT EDIT!!!"
+        ];
+
+        // Send a command to the RouterOS API to add the rule to the Walled Garden IP List.
+        $resultData = $this->routerOsApi->comm("/ip/hotspot/walled-garden/ip/add", $ipData);
+
+        // If there's an error ('!trap') in the result data, set an error message.
+        if (isset($resultData['!trap'])) {
+            $result['message'] = "Error in adding Walled Garden rule: " . $resultData['!trap'][0]['message'];
+        } else {
+            // If no error was found, set the status to true.
+            $result['status'] = true;
+        }
+
+        // Return the result of the operation.
+        return $result;
+    }
+
+    /**
+     * Get an existing Walled Garden IP by IP address.
+     * @param string $ipAddress The IP address to search for.
+     * @return array|null The existing Walled Garden IP data if found, or null if not found.
+     */
+    protected function getWalledGardenIpByAddress($ipAddress)
+    {
+        $walledGardenIps = $this->routerOsApi->comm("/ip/hotspot/walled-garden/ip/print", ["?dst-address" => $ipAddress]);
+        return isset($walledGardenIps[0]) ? $walledGardenIps[0] : null;
+    }
+
+    /**
+     * Get an existing Walled Garden IP by protocol and port.
+     * @param string $protocol The protocol to search for.
+     * @param string $port The port to search for.
+     * @return array|null The existing Walled Garden IP data if found, or null if not found.
+     */
+    protected function getWalledGardenIpByProtocolAndPort($protocol, $port)
+    {
+        $walledGardenIps = $this->routerOsApi->comm("/ip/hotspot/walled-garden/ip/print", ["?protocol" => $protocol, "?dst-port" => $port]);
+        return isset($walledGardenIps[0]) ? $walledGardenIps[0] : null;
+    }
+
+    /**
      * Adds or updates a RADIUS configuration in RouterOS.
-     *
      * @param string $radiusServer RADIUS server IP or hostname.
      * @param string $radiusSecret Secret key for RADIUS authentication.
      * @return array Contains status and optional error message.
@@ -129,7 +233,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
     /**
      * Get Config ID of matching server address.
-     *
      * @param string $radiusServer
      * @return string|null
      */
@@ -152,7 +255,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
     /**
      * Prepares the configuration data for RADIUS.
-     *
      * @param string $radiusServer
      * @param string $radiusSecret
      * @return array The prepared configuration data.
@@ -174,7 +276,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
     /**
      * Get error message if operation fails.
-     *
      * @param string $operation
      * @param array $resultData
      * @return string The error message, or an empty string if no error occurred.
@@ -193,7 +294,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
     /**
      * Creates a new user group with specific policies.
-     *
      * @return array 'status' indicating success or failure, 'message' for error info.
      */
     protected function createUserGroup()
@@ -231,7 +331,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
     /**
      * Creates a new user with specified username, password, and group, or updates an existing one.
-     *
      * @param string $password
      * @param string $username
      * @return array 'status' indicating success or failure, 'message' for error info.

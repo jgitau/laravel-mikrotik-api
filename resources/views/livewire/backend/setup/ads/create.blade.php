@@ -10,7 +10,6 @@
                 <form wire:submit.prevent="storeNewAd" method="POST">
                     <div class="modal-body">
 
-                        {{-- TODO: --}}
                         {{-- FORM SELECT TYPE AND DEVICE TYPE --}}
                         <div class="row">
                             <div class="col">
@@ -26,7 +25,8 @@
                         {{-- FORM INPUT FILE AND TITLE --}}
                         <div class="row mt-3">
                             <div class="col">
-                                <x-input-field type="file" id="imageBanner" label="Image Banner" model="imageBanner" required />
+                                <x-input-field type="file" id="imageBanner" label="Image Banner" model="imageBanner"
+                                    required />
                             </div>
                             <div class="col">
                                 <x-input-field type="text" id="title" label="Title" model="title"
@@ -37,8 +37,8 @@
                         {{-- FORM INPUT URL FOR IMAGE AND POSITION --}}
                         <div class="row mt-3">
                             <div class="col">
-                                {{-- TODO: HTTP --}}
-                                <x-input-field type="text" id="urlForImage" label="URL For Image" placeholder="Enter a URL For Image.." model="urlForImage" />
+                                <x-input-field type="text" id="urlForImage" label="URL For Image"
+                                    placeholder="Enter a URL For Image.." model="urlForImage" />
                             </div>
                             <div class="col">
                                 <x-input-field type="text" id="position" label="Position" model="position"
@@ -49,7 +49,8 @@
                         {{-- FORM INPUT URL FOR IMAGE AND POSITION --}}
                         <div class="row mt-3">
                             <div class="col">
-                                <x-input-field type="date" id="timeToShow" label="From" placeholder="Enter a From.." model="timeToShow" />
+                                <x-input-field type="date" id="timeToShow" label="From" placeholder="Enter a From.."
+                                    model="timeToShow" />
                             </div>
                             <div class="col">
                                 <x-input-field type="date" id="timeToHide" label="To" model="timeToHide"
@@ -60,8 +61,8 @@
                         {{-- FORM INPUT URL FOR IMAGE AND POSITION --}}
                         <div class="row mt-3">
                             <div class="col">
-                                <x-textarea type="text" id="shortDescription" label="Short Description" model="shortDescription"
-                                    placeholder="Enter a Short Description.." />
+                                <x-textarea type="text" id="shortDescription" label="Short Description"
+                                    model="shortDescription" placeholder="Enter a Short Description.." />
                             </div>
                         </div>
 

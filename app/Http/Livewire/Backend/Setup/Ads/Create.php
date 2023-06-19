@@ -81,15 +81,15 @@ class Create extends Component
     }
 
     /**
-     * Store a new admin.
-     * @param AdsService $adsService Admin service instance
+     * Store a new ad.
+     * @param AdsService $adsService Ad service instance
      */
     public function storeNewAd(AdsService $adsService)
     {
         // Validate form fields
         $this->validate();
 
-        // List of properties to include in the new admin
+        // List of properties to include in the new ad
         $properties = ['type', 'deviceType', 'imageBanner', 'title', 'urlForImage', 'position', 'timeToShow', 'timeToHide', 'shortDescription'];
 
         // Collect property values into an associative array
@@ -99,18 +99,18 @@ class Create extends Component
         }, []);
 
         try {
-            // Attempt to create the new admin
+            // Attempt to create the new ad
             $ad = $adsService->storeNewAd($newAd);
 
             // Check if the ad was created successfully
             if ($ad === null) {
-                throw new \Exception('Failed to create the admin');
+                throw new \Exception('Failed to create the ad');
             }
 
             // Notify the frontend of success
             $this->dispatchSuccessEvent('Ad was created successfully.');
 
-            // Reset the form for the next admin
+            // Reset the form for the next ad
             $this->resetFields();
 
             // Let other components know that an ad was created

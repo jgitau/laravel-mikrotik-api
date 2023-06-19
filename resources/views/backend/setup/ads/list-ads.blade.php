@@ -42,11 +42,11 @@ $configData = Helper::appClasses();
         // Hide Modal
         window.addEventListener('hide-modal', () => {
             $('#createNewAd').modal('hide');
-            // $('#updateAdminModal').modal('hide');
+            $('#updateAdModal').modal('hide');
         });
-        // window.addEventListener('show-modal', () => {
-        //     $('#updateAdminModal').modal('show');
-        // });
+        window.addEventListener('show-modal', () => {
+            $('#updateAdModal').modal('show');
+        });
     </script>
     @endpush
 </div>

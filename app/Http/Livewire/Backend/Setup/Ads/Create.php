@@ -20,7 +20,7 @@ class Create extends Component
     public $adsType;
 
     // FOR ALERT MESSAGE
-    public $adsMaxWidth, $adsMaxHeight, $adsMaxSize, $mobileAdsMaxWidth, $mobileAdsMaxHeight, $mobileAdsMaxSize;
+    public $adsMaxWidth, $adsMaxHeight, $adsMaxSize, $mobileAdsMaxWidth, $mobileAdsMaxHeight, $mobileAdsMaxSize, $alert;
 
     // Listeners
     protected $listeners = [
@@ -75,14 +75,14 @@ class Create extends Component
         // Validate the updated property
         $this->validateOnly($property);
         // If type or deviceType has changed, dispatch an event to show an alert.
-        // 1. Desktop max image width:160px, max image height: 390px
         if ($property === 'type' || $property === 'deviceType') {
-            $this->dispatchBrowserEvent('alert', [
+            $this->alert = [
                 'type' => 'primary',
                 'message' => $this->getMessageAlert(),
-            ]);
+            ];
         }
     }
+
 
     /**
      * Render the component `create`.
@@ -183,8 +183,8 @@ class Create extends Component
      */
     private function getMessageAlert()
     {
-        return 'You can upload as many images as you want with the following limitations : <br>' .
+        return '<p>You can upload as many images as you want with the following limitations : <br>' .
             '1. Desktop Max Image Width : ' . $this->adsMaxWidth . 'px, Max Image Height : ' . $this->adsMaxHeight . "px, Max Image Size : " . $this->adsMaxSize . 'kb, per file <br>' .
-            '2. Mobile Max Image Width : ' . $this->mobileAdsMaxWidth . 'px, Max Image Height : ' . $this->mobileAdsMaxHeight . "px, Max Image Size: " . $this->mobileAdsMaxSize . 'kb, per file ';
+            '2. Mobile Max Image Width : ' . $this->mobileAdsMaxWidth . 'px, Max Image Height : ' . $this->mobileAdsMaxHeight . "px, Max Image Size: " . $this->mobileAdsMaxSize . 'kb, per file </p>';
     }
 }

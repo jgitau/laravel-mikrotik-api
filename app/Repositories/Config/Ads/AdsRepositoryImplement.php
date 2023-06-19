@@ -2,8 +2,13 @@
 
 namespace App\Repositories\Config\Ads;
 
+use App\Helpers\AccessControlHelper;
+use App\Models\Ad;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class AdsRepositoryImplement extends Eloquent implements AdsRepository
 {
@@ -14,15 +19,16 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      * @property Model|mixed $model;
      */
     protected $model;
+    protected $adModel;
 
-    public function __construct(Setting $model)
+    public function __construct(Setting $model, Ad $adModel)
     {
         $this->model = $model;
+        $this->adModel = $adModel;
     }
 
     /**
      * getAdsParameters
-     *
      * @return void
      */
     public function getAdsParameters()
@@ -46,10 +52,8 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
         return $ads;
     }
 
-
     /**
      * updateAdsSettings
-     *
      * @param  mixed $settings
      * @return void
      */
@@ -61,6 +65,121 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
                 ['value' => $value]
             );
         }
+    }
+
+    /**
+     * Retrieves records from a database, initializes DataTables, adds columns to DataTable.
+     * @return DataTables Yajra JSON response.
+     */
+    public function getDatatables()
+    {
+        // Retrieve records from the database using the AdModel, and sort by the latest records
+        $data = $this->adModel->latest()->get();
+
+        // Initialize DataTables and add columns to the table
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('image', function ($data) {
+                // The image path could vary depending on your implementation, adjust accordingly
+                $url = asset('files/images/' . $data->file_name);
+                return '<img src="' . $url . '" border="0" width="100" class="rounded" align="center" />';
+            })
+            ->addColumn('action', function ($data) {
+                $editButton = '';
+                $deleteButton = '';
+
+                // Check if the current ads is allowed to edit
+                if (AccessControlHelper::isAllowedToPerformAction('edit_ad')) {
+                    // If ads is allowed, show edit button
+                    $editButton = '<button type="button" name="edit" class="edit btn btn-primary btn-sm" onclick="showAdmin(\'' . $data->id . '\')"> <i class="fas fa-edit"></i></button>';
+                }
+
+                // Check if the current ads is allowed to delete
+                if (AccessControlHelper::isAllowedToPerformAction('delete_ad')) {
+                    // If ads is allowed, show delete button
+                    $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteAdmin(\'' . $data->id . '\')"> <i class="fas fa-trash"></i></button>';
+                }
+
+                return $editButton . $deleteButton;
+            })
+            ->rawColumns(['action','image'])
+            ->make(true);
+    }
+
+    /**
+     * Stores a new ad using the provided request data.
+     * @param array $request The data used to create the new ad.
+     * @return Model|mixed The newly created ad.
+     * @throws \Exception if an error occurs while creating the ad.
+     */
+    public function storeNewAd($request)
+    {
+        try {
+            // Generate unique names for the files
+            $newFileName = $this->generateFileName($request['imageBanner']);
+            $thumbFileName = $this->generateFileName($request['imageBanner'], true);
+            // Save the banner image
+            $this->storeBannerImage($request['imageBanner'], $newFileName);
+
+            // Create and return a new ad
+            return $this->createAd($request, $newFileName, $thumbFileName);
+        } catch (\Exception $e) {
+            // If an exception occurred during the create process, log the error message.
+            Log::error("Error in Store New Ad: " . $e->getMessage());
+
+            // Rethrow the exception to be caught in the Livewire component.
+            throw $e;
+        }
+    }
+
+    /**
+     * Generates a unique file name.
+     * @param UploadedFile $file The uploaded file.
+     * @param bool $thumb Whether or not the file is a thumbnail.
+     *
+     * @return string The generated file name.
+     */
+    private function generateFileName($file, $thumb = false)
+    {
+        $suffix = $thumb ? '_thumb' : '';
+        return "ads_" . str()->random(10) . $suffix . '.' . $file->getClientOriginalExtension();
+    }
+
+    /**
+     * Stores the given banner image using the provided file name.
+     * @param UploadedFile $file The file to store.
+     * @param string $fileName The name to give to the stored file.
+     * @throws \Exception if an error occurs while storing the file.
+     */
+    private function storeBannerImage($file, $fileName)
+    {
+        $storagePath = 'files/images/' . $fileName;
+        if (!Storage::disk('server')->put($storagePath, file_get_contents($file->getRealPath()))) {
+            throw new \Exception('Failed to save logo.');
+        }
+    }
+
+    /**
+     * Creates a new ad using the provided data.
+     * @param array $data The data used to create the new ad.
+     * @param string $fileName The name of the ad's banner image file.
+     * @param string $thumbFileName The name of the ad's thumbnail file.
+     * @return AdModel|mixed The newly created ad.
+     */
+    private function createAd($data, $fileName, $thumbFileName)
+    {
+        return $this->adModel->create([
+            'file_name'          => $fileName,
+            'thumb_file_name'    => $thumbFileName,
+            'type'               => $data['type'],
+            'device_type'        => $data['deviceType'],
+            'title'              => $data['title'],
+            'url_for_image'      => $data['urlForImage'],
+            'position'           => $data['position'] ?? " ",
+            'time_to_show'       => strtotime($data['timeToShow']) ?? 0,
+            'time_to_hide'       => strtotime($data['timeToHide']) ?? 0,
+            'short_description'  => $data['shortDescription'],
+        ]);
     }
 
 }

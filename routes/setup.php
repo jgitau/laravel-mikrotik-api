@@ -14,6 +14,8 @@ use App\Http\Livewire\Backend\Setup\Administrator\{
     Admin\DataTable as DataTableAdmin,
     Group\DataTable as DataTableGroup
 };
+// Import DataTable Ads
+use App\Http\Livewire\Backend\Setup\Ads\DataTable as DataTableAds;
 use App\Http\Livewire\Backend\Setup\Config\{
     DataTable as DataTableConfig,
     HotelRoom\DataTable as DataTableHotelRoom
@@ -64,6 +66,8 @@ Route::middleware(['check.session.cookie'])->group(function () {
             Route::get('admin/getDataTable', [DataTableAdmin::class, 'getDataTable'])->name('admin.getDataTable');
             // Route for getting datatable data for groups
             Route::get('group/getDataTable', [DataTableGroup::class, 'getDataTable'])->name('group.getDataTable');
+            // Route for getting datatable data for ads
+            Route::get('ads/getDataTable', [DataTableAds::class, 'getDataTable'])->name('ads.getDataTable');
         });
 
         // Grouping routes related to getting datatable for configurations

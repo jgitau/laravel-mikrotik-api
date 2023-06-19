@@ -105,4 +105,95 @@ class AdsServiceImplement extends Service implements AdsService
             throw new Exception("Error deleted ad : " . $exception->getMessage());
         }
     }
+
+    /**
+     * Get the maximum width for ads from the settings.
+     * @return int|null The maximum width for ads.
+     */
+    public function adsMaxWidth()
+    {
+        try {
+            return $this->mainRepository->adsMaxWidth();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting ads max width : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Get the maximum height for ads from the settings.
+     * @return int|null The maximum height for ads.
+     */
+    public function adsMaxHeight()
+    {
+        try {
+            return $this->mainRepository->adsMaxHeight();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting ads max height : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Get the maximum size for ads from the settings.
+     * @return int|null The maximum size for ads.
+     */
+    public function adsMaxSize()
+    {
+        try {
+            return $this->mainRepository->adsMaxSize();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting ads max size : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Get the maximum mobile width for ads from the settings.
+     * @return int|null The maximum mobile width for ads.
+     */
+    public function mobileAdsMaxWidth()
+    {
+        try {
+            return $this->mainRepository->mobileAdsMaxWidth();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting mobile ads max width : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Get the maximum mobile height for ads from the settings.
+     * @return int|null The maximum mobile height for ads.
+     */
+    public function mobileAdsMaxHeight()
+    {
+        try {
+            return $this->mainRepository->mobileAdsMaxHeight();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting mobile ads max height : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Get the maximum mobil size for ads from the settings.
+     * @return int|null The maximum mobil size for ads.
+     */
+    public function mobileAdsMaxSize()
+    {
+        try {
+            return $this->mainRepository->mobileAdsMaxSize();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting mobile ads max size : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Get the path ads upload folder for ads from the settings.
+     * @return int|null The maximum ads upload folder for ads.
+     */
+    public function adsUploadFolder()
+    {
+        try {
+            return $this->mainRepository->adsUploadFolder();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting path ads upload folder : " . $exception->getMessage());
+        }
+    }
 }

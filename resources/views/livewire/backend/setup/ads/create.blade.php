@@ -9,6 +9,9 @@
                 </div>
                 <form wire:submit.prevent="storeNewAd" method="POST">
                     <div class="modal-body">
+                        <div class="row">
+                            <div id="specific-div"></div>
+                        </div>
 
                         {{-- FORM SELECT TYPE AND DEVICE TYPE --}}
                         <div class="row">
@@ -17,7 +20,7 @@
                                     :options="$adsType->pluck('title', 'name')->toArray()" />
                             </div>
                             <div class="col">
-                                <x-select-field id="deviceType" label="Device Type" model="deviceType"
+                                <x-select-field id="deviceType" label="Device Type" model="deviceType" required
                                     :options="['Desktop' => 'Desktop', 'Mobile' => 'Mobile']" />
                             </div>
                         </div>
@@ -80,4 +83,26 @@
             </div>
         </div>
     </div>
+    @push('scripts')
+    <script>
+        window.addEventListener('alert', event => {
+            // Remove existing alert
+            let oldAlert = document.querySelector('#live-alert');
+            if(oldAlert) {
+                oldAlert.remove();
+            }
+            // Create a new alert
+            let alert = document.createElement('div');
+            alert.setAttribute('id', 'live-alert');
+            alert.className = `alert alert-${event.detail.type} alert-dismissible fade show`;
+            alert.role = 'alert';
+            alert.innerHTML = `${event.detail.message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+
+            // Add the alert to top of the page or specific div
+            let alertDiv = document.querySelector('#specific-div'); // change the selector to where you want to place the alert
+            alertDiv.prepend(alert);
+        });
+    </script>
+    @endpush
 </div>

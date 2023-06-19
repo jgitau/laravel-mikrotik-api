@@ -4,8 +4,10 @@ namespace App\Repositories\Config\Ads;
 
 use App\Helpers\AccessControlHelper;
 use App\Models\Ad;
+use App\Models\Module;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Setting;
+use App\Services\Nas\NasService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
@@ -20,11 +22,17 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     protected $model;
     protected $adModel;
+    protected $moduleModel;
+    protected $nasService;
 
-    public function __construct(Setting $model, Ad $adModel)
+    protected $moduleId;
+
+    public function __construct(Setting $model, Ad $adModel, Module $moduleModel, NasService $nasService)
     {
         $this->model = $model;
         $this->adModel = $adModel;
+        $this->moduleModel = $moduleModel;
+        $this->nasService = $nasService;
     }
 
     /**
@@ -219,7 +227,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     private function storeBannerImage($file, $fileName)
     {
-        $storagePath = 'files/images/' . $fileName;
+        $storagePath = $this->adsUploadFolder() . "/" . 'images/' . $fileName;
         if (!Storage::disk('server')->put($storagePath, file_get_contents($file->getRealPath()))) {
             throw new \Exception('Failed to save logo.');
         }
@@ -255,7 +263,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     private function deleteBannerImage($fileName)
     {
-        $storagePath = 'files/images/' . $fileName;
+        $storagePath = $this->adsUploadFolder() . "/" . 'images/' . $fileName;
         if (Storage::disk('server')->exists($storagePath)) {
             if (!Storage::disk('server')->delete($storagePath)) {
                 throw new \Exception('Failed to delete image.');
@@ -287,5 +295,82 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
         $ad->save();
 
         return $ad;
+    }
+
+    /**
+     * Get the maximum width for ads from the settings.
+     * @return int|null The maximum width for ads.
+     */
+    public function adsMaxWidth()
+    {
+        return $this->nasService->getSetting('ads_max_width', $this->moduleId());
+    }
+
+    /**
+     * Get the maximum height for ads from the settings.
+     * @return int|null The maximum height for ads.
+     */
+    public function adsMaxHeight()
+    {
+        return $this->nasService->getSetting('ads_max_height', $this->moduleId());
+    }
+
+    /**
+     * Get the maximum size for ads from the settings.
+     * @return int|null The maximum size for ads.
+     */
+    public function adsMaxSize()
+    {
+        return $this->nasService->getSetting('ads_max_size', $this->moduleId());
+    }
+
+    /**
+     * Get the maximum mobile width for ads from the settings.
+     * @return int|null The maximum mobile width for ads.
+     */
+    public function mobileAdsMaxWidth()
+    {
+        return $this->nasService->getSetting('mobile_ads_max_width', $this->moduleId());
+    }
+
+    /**
+     * Get the maximum mobile height for ads from the settings.
+     * @return int|null The maximum mobile height for ads.
+     */
+    public function mobileAdsMaxHeight()
+    {
+        return $this->nasService->getSetting('mobile_ads_max_height', $this->moduleId());
+    }
+
+    /**
+     * Get the maximum mobil size for ads from the settings.
+     * @return int|null The maximum mobil size for ads.
+     */
+    public function mobileAdsMaxSize()
+    {
+        return $this->nasService->getSetting('mobile_ads_max_size', $this->moduleId());
+    }
+
+    /**
+     * Get the path ads upload folder for ads from the settings.
+     * @return int|null The maximum ads upload folder for ads.
+     */
+    public function adsUploadFolder()
+    {
+        return $this->nasService->getSetting('ads_upload_folder', $this->moduleId());
+    }
+
+    /**
+     * Get the module ID for the "ads" module.
+     * @return int|null The module ID or null if not found.
+     */
+    private function moduleId()
+    {
+        if (is_null($this->moduleId)) {
+            $module = $this->moduleModel->where('name', 'ads')->first();
+            $this->moduleId = $module ? $module->id : null;
+        }
+
+        return $this->moduleId;
     }
 }

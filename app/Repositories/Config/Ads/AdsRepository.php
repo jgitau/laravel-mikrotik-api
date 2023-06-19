@@ -51,4 +51,46 @@ interface AdsRepository extends Repository{
      * @throws \Exception if an error occurs while deleting the ad.
      */
     public function deleteAd($id);
+
+    /**
+     * Get the maximum width for ads from the settings.
+     * @return int|null The maximum width for ads.
+     */
+    public function adsMaxWidth();
+
+    /**
+     * Get the maximum height for ads from the settings.
+     * @return int|null The maximum height for ads.
+     */
+    public function adsMaxHeight();
+
+    /**
+     * Get the maximum size for ads from the settings.
+     * @return int|null The maximum size for ads.
+     */
+    public function adsMaxSize();
+
+    /**
+     * Get the maximum mobile width for ads from the settings.
+     * @return int|null The maximum mobile width for ads.
+     */
+    public function mobileAdsMaxWidth();
+
+    /**
+     * Get the maximum mobile height for ads from the settings.
+     * @return int|null The maximum mobile height for ads.
+     */
+    public function mobileAdsMaxHeight();
+
+    /**
+     * Get the maximum mobil size for ads from the settings.
+     * @return int|null The maximum mobil size for ads.
+     */
+    public function mobileAdsMaxSize();
+
+    /**
+     * Get the path ads upload folder for ads from the settings.
+     * @return int|null The maximum ads upload folder for ads.
+     */
+    public function adsUploadFolder();
 }

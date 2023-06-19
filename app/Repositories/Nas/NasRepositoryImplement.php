@@ -84,7 +84,10 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
             // Add Walled Garden protocol and port.
             $wgProtoPortResult = $this->addWalledGardenProtocolAndPort();
             // If there's an error in adding the Walled Garden protocol and port, throw an exception.
-            if (!$wgProtoPortResult['status']) throw new \Exception($wgProtoPortResult['message']);
+            if (!$wgProtoPortResult['status']) {
+                $result['message'] = $wgProtoPortResult['message'];
+                return $result;
+            }
 
             // If all operations are successful, update the result status.
             $result['status'] = true;

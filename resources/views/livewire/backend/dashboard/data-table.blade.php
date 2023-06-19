@@ -44,6 +44,7 @@
                 "serverSide": true,
                 "responsive": true,
                 "autoWidth": false,
+                "retrieve": true,
                 ajax: "{{ route('leasesData.getDataTable') }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', width:'10px', orderable: false, searchable: false},

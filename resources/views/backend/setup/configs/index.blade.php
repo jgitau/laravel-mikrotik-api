@@ -33,6 +33,8 @@ $configData = Helper::appClasses();
     @livewire('backend.setup.config.form.modal-manager')
 
     @push('scripts')
+    <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
+    <script src="{{ asset('assets/js/backend/setup/config/config-management.js') }}"></script>
     <script>
         window.addEventListener('closeModal', event =>{
             $('#modalCenter').modal('hide');

@@ -37,6 +37,8 @@ $configData = Helper::appClasses();
     @endif
 
     @push('scripts')
+    <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
+    <script src="{{ asset('assets/js/backend/setup/ads/list-ads-management.js') }}"></script>
     {{-- TODO: --}}
     <script>
         // Hide Modal

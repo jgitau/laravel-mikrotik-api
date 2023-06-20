@@ -43,7 +43,7 @@ class PageSeeder extends Seeder
                 'url' => 'clients/pg/add_new_client',
                 'module_id' => 3,
                 'allowed_groups' => '1,2',
-                'show_menu' => 1,
+                'show_menu' => 0,
                 'show_to' => NULL
             ],
             [

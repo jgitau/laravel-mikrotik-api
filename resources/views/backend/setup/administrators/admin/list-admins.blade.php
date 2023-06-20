@@ -36,6 +36,8 @@ $configData = Helper::appClasses();
     @endif
 
     @push('scripts')
+    <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
+    <script src="{{ asset('assets/js/backend/setup/administrator/admin/admin-management.js') }}"></script>
     <script>
         // Hide Modal
         window.addEventListener('hide-modal', () => {
@@ -58,7 +60,7 @@ $configData = Helper::appClasses();
 @if($permissions['isAllowedToDeleteAdmin'])
 {{-- START FORM EDIT ADMIN --}}
 @livewire('backend.setup.administrator.admin.edit')
-{{-- EDITa FORM EDIT ADMIN --}}
+{{-- END FORM EDIT ADMIN --}}
 @endif
 
 @endsection

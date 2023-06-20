@@ -45,6 +45,7 @@
                 "responsive": true,
                 "autoWidth": false,
                 "retrieve": true,
+                "order": [[ 1, "asc" ]], // order by the second column (IP Address)
                 ajax: "{{ route('leasesData.getDataTable') }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', width:'10px', orderable: false, searchable: false},

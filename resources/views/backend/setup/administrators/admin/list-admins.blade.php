@@ -58,7 +58,7 @@ $configData = Helper::appClasses();
 @if($permissions['isAllowedToDeleteAdmin'])
 {{-- START FORM EDIT ADMIN --}}
 @livewire('backend.setup.administrator.admin.edit')
-{{-- EDITa FORM EDIT ADMIN --}}
+{{-- END FORM EDIT ADMIN --}}
 @endif
 
 @endsection

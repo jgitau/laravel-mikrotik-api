@@ -56,7 +56,10 @@ class Create extends Component
     ];
 
     /**
-     * Initialize component state.
+     * Initializes the component state.
+     * Fetches the ad size from the AdsService and retrieves all ad types ordered by their creation date.
+     * @param AdsService $adsService Service class for handling actions related to Ads.
+     * @return void
      */
     public function mount(AdsService $adsService)
     {

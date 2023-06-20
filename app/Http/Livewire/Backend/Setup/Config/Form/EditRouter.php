@@ -174,12 +174,12 @@ class EditRouter extends Component
             } else {
                 if ($mikrotikStatus['message']) {
                     // If the Mikrotik setup process was not successful, we handle the error case
-                    $this->handleError('An error occurred during the Mikrotik setup process. ' . $mikrotikStatus['message']);
+                    $this->handleError('An error occurred : ' . $mikrotikStatus['message']);
                 }
             }
         } catch (\Throwable $th) {
             // If any exceptions were thrown during the process, we handle the error case
-            $this->handleError('An error occurred while updating router settings: ' . $th->getMessage());
+            $this->handleError('An error occurred while updating router settings : ' . $th->getMessage());
         }
 
         // Regardless of the outcome, we close the modal after the process

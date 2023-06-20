@@ -20,6 +20,9 @@ class Edit extends Component
     // Ads Type
     public $adsType;
 
+    // FOR ALERT MESSAGE
+    public $adsMaxWidth, $adsMaxHeight, $adsMaxSize, $mobileAdsMaxWidth, $mobileAdsMaxHeight, $mobileAdsMaxSize, $alert;
+
     // Listeners
     protected $listeners = [
         'getAd' => 'showAd',
@@ -35,7 +38,7 @@ class Edit extends Component
         $rules = [
             'type'              => 'required',
             'title'             => 'required|max:150',
-            'deviceType'        => 'nullable',
+            'deviceType'        => 'required',
             'urlForImage'       => 'max:150',
             'position'          => 'nullable',
             'timeToShow'        => 'nullable|date',
@@ -59,6 +62,7 @@ class Edit extends Component
         $messages = [
             'type.required'         => 'Type cannot be empty!',
             'title.required'        => 'Title cannot be empty!',
+            'deviceType.required'        => 'Device Type cannot be empty!',
             'title.max'             => 'Title cannot be more than 150 characters!',
             'urlForImage.max'       => 'URL for image cannot be more than 150 characters!',
             'timeToShow.date'       => 'The time to show field must be a valid date.',
@@ -74,10 +78,14 @@ class Edit extends Component
     }
 
     /**
-     * Initialize component state.
+     * Initializes the component state.
+     * Fetches the ad size from the AdsService and retrieves all ad types ordered by their creation date.
+     * @param AdsService $adsService Service class for handling actions related to Ads.
+     * @return void
      */
-    public function mount()
+    public function mount(AdsService $adsService)
     {
+        $this->getSizeAds($adsService);
         // Fetch all groups ordered by creation date
         $this->adsType = AdType::latest()->get();
     }
@@ -90,6 +98,14 @@ class Edit extends Component
     {
         // Validate the updated property
         $this->validateOnly($property);
+        // If type or deviceType has changed, dispatch an event to show an alert.
+        if ($property === 'type' || $property === 'deviceType'
+        ) {
+            $this->alert = [
+                'type' => 'primary',
+                'message' => $this->getMessageAlert(),
+            ];
+        }
     }
 
     /**
@@ -195,5 +211,31 @@ class Edit extends Component
         $this->timeToShow       = null;
         $this->timeToHide       = null;
         $this->shortDescription = null;
+    }
+
+    /**
+     * Set the size properties for ads based on the provided AdsService.
+     * @param AdsService $adsService The AdsService instance to retrieve the size values from.
+     * @return void
+     */
+    private function getSizeAds(AdsService $adsService)
+    {
+        $this->adsMaxWidth = $adsService->adsMaxWidth();
+        $this->adsMaxHeight = $adsService->adsMaxHeight();
+        $this->adsMaxSize = $adsService->adsMaxSize();
+        $this->mobileAdsMaxWidth = $adsService->mobileAdsMaxWidth();
+        $this->mobileAdsMaxHeight = $adsService->mobileAdsMaxHeight();
+        $this->mobileAdsMaxSize = $adsService->mobileAdsMaxSize();
+    }
+
+    /**
+     * Generate the message for the alert.
+     * @return string The message containing the upload limitations for desktop and mobile.
+     */
+    private function getMessageAlert()
+    {
+        return '<p>You can upload as many images as you want with the following limitations : <br>' .
+        '1. Desktop Max Image Width : ' . $this->adsMaxWidth . 'px, Max Image Height : ' . $this->adsMaxHeight . "px, Max Image Size : " . $this->adsMaxSize . 'kb, per file <br>' .
+            '2. Mobile Max Image Width : ' . $this->mobileAdsMaxWidth . 'px, Max Image Height : ' . $this->mobileAdsMaxHeight . "px, Max Image Size: " . $this->mobileAdsMaxSize . 'kb, per file </p>';
     }
 }

@@ -93,7 +93,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
      */
     public function getDatatables()
     {
-        // Retrieve records from the database using the model, including the related 'group' records, and sort by the latest records
+        // Retrieve records from the database using the model, including the related 'admin' records, and sort by the latest records
         $data = $this->model->with('group')->latest()->get();
 
         // Initialize DataTables and add columns to the table
@@ -106,15 +106,15 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
                 $editButton = '';
                 $deleteButton = '';
 
-                // Check if the current group is allowed to edit
+                // Check if the current admin is allowed to edit
                 if (AccessControlHelper::isAllowedToPerformAction('edit_admin')) {
-                    // If group is allowed, show edit button
+                    // If admin is allowed, show edit button
                     $editButton = '<button type="button" name="edit" class="edit btn btn-primary btn-sm" onclick="showAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-edit"></i></button>';
                 }
 
-                // Check if the current group is allowed to delete
+                // Check if the current admin is allowed to delete
                 if (AccessControlHelper::isAllowedToPerformAction('delete_admin')) {
-                    // If group is allowed, show delete button
+                    // If admin is allowed, show delete button
                     $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteAdmin(\'' . $data->admin_uid . '\')"> <i class="fas fa-trash"></i></button>';
                 }
 

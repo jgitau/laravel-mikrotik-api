@@ -10,6 +10,10 @@ use App\Http\Livewire\Backend\Setup\{
     Config\DataTable as DataTableConfig,
     Config\HotelRoom\DataTable as DataTableHotelRoom
 };
+// Import Livewire DataTables Controllers
+use App\Http\Livewire\Backend\Client\{
+    List\DataTable as DataTableClient,
+};
 
 // Grouping routes that require check.session.cookie middleware
 Route::middleware(['check.session.cookie'])->group(function () {
@@ -35,6 +39,11 @@ Route::middleware(['check.session.cookie'])->group(function () {
                 // Route for getting datatable data for hotel rooms configuration
                 Route::get('hotelRoom/getDataTable', [DataTableHotelRoom::class, 'getDataTable'])->name('config.hotelRoom.getDataTable');
             });
+        });
+
+        Route::prefix('client/')->group(function () {
+                // Route for getting datatable data for clients
+                Route::get('getDataTable', [DataTableClient::class, 'getDataTable'])->name('client.getDataTable');
         });
 
     });

@@ -18,12 +18,25 @@ $configData = Helper::appClasses();
         <div class="d-flex justify-content-between">
             <h4 class="card-title">Table Clients</h4>
 
-            @if ($permissions['isAllowedToAddNewClient'])
-            <x-button type="button" color="facebook" data-bs-toggle="modal" data-bs-target="#createNewClient">
-                <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Client
-            </x-button>
-            {{-- /Create Button for Add New Client --}}
-            @endif
+            <div>
+                {{-- /Start Button for Create New Client --}}
+                @if ($permissions['isAllowedToAddNewClient'])
+                <x-button type="button" color="facebook " data-bs-toggle="modal"
+                    data-bs-target="#createNewClient">
+                    <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Client
+                </x-button>
+                @endif
+                {{-- /End Button for Create New Client --}}
+
+                {{-- /Start Button for Batch Delete --}}
+                @if ($permissions['isAllowedToDeleteClient'])
+                <x-button type="button" color="danger" onclick="confirmDeleteBatch()">
+                    <i class="tf-icons fas fa-trash-alt ti-xs me-1"></i>&nbsp; Batch Delete
+                </x-button>
+                @endif
+                {{-- /End Button for Batch Delete --}}
+            </div>
+
         </div>
     </div>
 
@@ -38,18 +51,50 @@ $configData = Helper::appClasses();
     @push('scripts')
     <script>
         // Hide Modal
-        window.addEventListener('hide-modal', () => {
-            $('#createNewClient').modal('hide');
-            $('#updateClientModal').modal('hide');
-        });
-        window.addEventListener('show-modal', () => {
-            $('#updateClientModal').modal('show');
-        });
+            window.addEventListener('hide-modal', () => {
+                $('#createNewClient').modal('hide');
+                $('#updateClientModal').modal('hide');
+            });
+            window.addEventListener('show-modal', () => {
+                $('#updateClientModal').modal('show');
+            });
+
+            // Function to confirm Batch Delete
+            function confirmDeleteBatch() {
+                // Get all checked client_uid
+                let client_uids = Array.from(document.querySelectorAll(".client-checkbox:checked")).map(el => el.value);
+
+                // Check if at least one checkbox is checked
+                if (client_uids.length > 0) {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You will not be able to restore this data!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#7367f0',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Emit an event to delete the checked clients
+                            Livewire.emit('deleteBatch', client_uids);
+                        }
+                    });
+                } else {
+                    // If no checkbox is checked, show an error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'You must select at least one client to delete!',
+                    });
+                }
+            }
     </script>
     @endpush
 </div>
 @endif
 
+{{-- TODO: --}}
 @if($permissions['isAllowedToEditClient'])
 {{-- START FORM CREATE CLIENT --}}
 {{-- @livewire('backend.client.create') --}}

@@ -2,6 +2,9 @@
     <table class="table table-hover table-responsive display" id="myTable">
         <thead>
             <tr>
+                <th>
+                    <input type='checkbox' id='select-all-checkbox'>
+                </th>
                 <th>No</th>
                 <th>Username</th>
                 <th>Service</th>
@@ -13,30 +16,39 @@
     @push('scripts')
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
     {{-- TODO: --}}
-    {{-- <script>
-        // Function to show a modal based on a given uid for UPDATE!
-        function showAdmin(uid) {
-            // Emit an event to show the modal with the given Livewire component uid for UPDATE!
-            Livewire.emit('getAdmin', uid);
-        }
+    <script>
+        // // Function to show a modal based on a given uid for UPDATE!
+        // function showAdmin(uid) {
+        //     // Emit an event to show the modal with the given Livewire component uid for UPDATE!
+        //     Livewire.emit('getAdmin', uid);
+        // }
 
-        // Function to show a modal based on a given uid for DELETE!
-        function confirmDeleteAdmin(uid) {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You will not be able to restore this data!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#7367f0',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    // Emit an event to show the modal with the given Livewire component uid for DELETE!
-                    Livewire.emit('confirmAdmin', uid);
-                }
-            })
-        }
+        // // Function to show a modal based on a given uid for DELETE!
+        // function confirmDeleteAdmin(uid) {
+        //         Swal.fire({
+        //             title: 'Are you sure?',
+        //             text: "You will not be able to restore this data!",
+        //             icon: 'warning',
+        //             showCancelButton: true,
+        //             confirmButtonColor: '#7367f0',
+        //             cancelButtonColor: '#d33',
+        //             confirmButtonText: 'Yes, delete it!'
+        //         }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             // Emit an event to show the modal with the given Livewire component uid for DELETE!
+        //             Livewire.emit('confirmAdmin', uid);
+        //         }
+        //     })
+        // }
+
+        // TODO: DELETE WITH CHECKBOX
+        // Add an event listener to the 'select all' checkbox
+        document.getElementById('select-all-checkbox').addEventListener('click', function(event) {
+        // Get all the checkboxes with the class 'client-checkbox'
+        let checkboxes = document.getElementsByClassName('client-checkbox');
+
+        // Iterate through all the checkboxes and set their checked property to the same as the 'select all' checkbox
+        for (let i = 0; i < checkboxes.length; i++) { checkboxes[i].checked=event.target.checked; } });
 
         let dataTable;
 
@@ -47,14 +59,20 @@
                 "serverSide": true,
                 "responsive": true,
                 "autoWidth": false,
-                ajax: "{{ route('admin.getDataTable') }}",
+                ajax: "{{ route('client.getDataTable') }}",
                 columns: [
+                    {
+                        data: 'client_uid',
+                        render: function(data, type, row) {
+                            return `<input type='checkbox' class='client-checkbox' value='${data}'>`;
+                        },
+                        orderable: false,
+                        searchable: false,
+                        width:'15px'
+                    },
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', width:'10px', orderable: false, searchable: false},
                     {data: 'username', name: 'username'},
-                    {data: 'fullname', name: 'fullname'},
-                    {data: 'group.name', name: 'group.name'},
-                    {data: 'email', name: 'email'},
-                    {data: 'status', name: 'status' },
+                    {data: 'service_name', name: 'service_name'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
             });
@@ -68,6 +86,6 @@
         window.addEventListener('refreshDatatable', event =>{
             dataTable.ajax.reload();
         });
-    </script> --}}
+    </script>
     @endpush
 </div>

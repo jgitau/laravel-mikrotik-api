@@ -57,7 +57,7 @@ FOR TOAST VUEUXY :
             $('#toastBody').text(success);
             $toast.addClass('show showing');
             setTimeout(function() {
-            $toast.removeClass('show showing');
+                $toast.removeClass('show showing');
             }, 3000);
         }
     });

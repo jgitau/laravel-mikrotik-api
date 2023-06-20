@@ -13,19 +13,19 @@
 
                         {{-- FORM INPUT ADMIN UID, CHOOSE GROUP AND USERNAME --}}
                         <div class="row">
-                            <div class="col">
+                            <div class="col-lg-6 col-12">
                                 <x-input-field type="hidden" id="adminUid" model="admin_uid" required />
                                 <x-select-field id="groupIdUpdate" label="Group" model="group_id" required
                                     :options="$groups->pluck('name', 'id')->toArray()" />
                             </div>
-                            <div class="col">
+                            <div class="col-lg-6 col-12">
                                 <x-input-field id="usernameUpdate" label="Username" model="username" placeholder="Enter a Username.." required />
                             </div>
                         </div>
 
                         {{-- FORM INPUT PASSWORD, CONFIRM PASSWORD AND STATUS --}}
                         <div class="row mt-3">
-                            <div class="col">
+                            <div class="col-lg-6 col-12">
                                 <label for="passwordUpdate" class="form-label">Password </label>
                                 <input type="password" id="passwordUpdate"
                                     class="form-control @error('password') is-invalid @enderror"
@@ -36,7 +36,7 @@
                                 <small class="text-danger">Leave it blank if you don't want it to change.</small>
                                 @endif
                             </div>
-                            <div class="col">
+                            <div class="col-lg-6 col-12">
                                 <x-select-field id="statusUpdate" label="Status" model="status" required :options="['1' => 'Active', '0' => 'Not Active']" />
                             </div>
                         </div>
@@ -49,10 +49,10 @@
 
                         {{-- FORM INPUT FULL NAME AND EMAIL ADDRESS --}}
                         <div class="row">
-                            <div class="col">
+                            <div class="col-lg-6 col-12">
                                 <x-input-field id="fullNameUpdate" label="Full Name" model="fullname" placeholder="Enter a Full Name.." required />
                             </div>
-                            <div class="col">
+                            <div class="col-lg-6 col-12">
                                 <x-input-field type="email" id="emailAddressUpdate" label="Email Address" model="email" placeholder="Enter a Email Address.." required />
                             </div>
                         </div>

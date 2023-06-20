@@ -9,15 +9,15 @@
         <div class="modal-body">
             {{-- Form Input Server IP Address, Mikrotik IP Address and API Port --}}
             <div class="row g-2 mb-3">
-                <div class="col-4">
+                <div class="col-lg-4 col-12">
                     <x-input-field id="serverIpAddress" label="Server IP Address" model="server_ip_address"
                         placeholder="Enter a Server IP Address.." required />
                 </div>
-                <div class="col-4">
+                <div class="col-lg-4 col-6">
                     <x-input-field id="mikrotikIpAddress" label="Mikrotik IP Address" model="mikrotik_ip_address"
                         placeholder="Enter a Mikrotik IP Address.." required />
                 </div>
-                <div class="col-4">
+                <div class="col-lg-4 col-6">
                     <x-input-field id="apiPort" label="API Port" model="mikrotik_api_port"
                         placeholder="Enter a API Port.." required />
                 </div>

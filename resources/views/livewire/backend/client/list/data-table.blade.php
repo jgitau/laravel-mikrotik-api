@@ -2,8 +2,8 @@
     <table class="table table-hover table-responsive display" id="myTable">
         <thead>
             <tr>
-                <th>
-                    <input type='checkbox' id='select-all-checkbox'>
+                <th id="th-1">
+                    <input class="form-check-input" style="border: 1px solid #8f8f8f;" type='checkbox' id='select-all-checkbox'>
                 </th>
                 <th>No</th>
                 <th>Username</th>
@@ -43,6 +43,7 @@
 
         // TODO: DELETE WITH CHECKBOX
         // Add an event listener to the 'select all' checkbox
+
         document.getElementById('select-all-checkbox').addEventListener('click', function(event) {
         // Get all the checkboxes with the class 'client-checkbox'
         let checkboxes = document.getElementsByClassName('client-checkbox');
@@ -59,12 +60,13 @@
                 "serverSide": true,
                 "responsive": true,
                 "autoWidth": false,
+                "order": [[ 2, "asc" ]], // order by the second column
                 ajax: "{{ route('client.getDataTable') }}",
                 columns: [
                     {
                         data: 'client_uid',
                         render: function(data, type, row) {
-                            return `<input type='checkbox' class='client-checkbox' value='${data}'>`;
+                            return `<input type='checkbox' style='border: 1px solid #8f8f8f;' class='form-check-input client-checkbox' value='${data}'>`;
                         },
                         orderable: false,
                         searchable: false,

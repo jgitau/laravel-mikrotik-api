@@ -40,6 +40,7 @@
                 "serverSide": true,
                 "responsive": true,
                 "autoWidth": false,
+                "order": [[ 1, "asc" ]],
                 ajax: "{{ route('config.hotelRoom.getDataTable') }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false},

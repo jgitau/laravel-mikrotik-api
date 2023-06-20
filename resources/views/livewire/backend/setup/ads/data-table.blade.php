@@ -47,6 +47,7 @@
                 "serverSide": true,
                 "responsive": true,
                 "autoWidth": false,
+                "order": [[ 2, "asc" ]],
                 ajax: "{{ route('ads.getDataTable') }}", // This route should point to the getDatatables method
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', width:'10px', orderable: false, searchable: false},

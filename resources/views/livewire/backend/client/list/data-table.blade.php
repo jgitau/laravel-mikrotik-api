@@ -17,29 +17,29 @@
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
     {{-- TODO: --}}
     <script>
-        // // Function to show a modal based on a given uid for UPDATE!
-        // function showAdmin(uid) {
-        //     // Emit an event to show the modal with the given Livewire component uid for UPDATE!
-        //     Livewire.emit('getAdmin', uid);
-        // }
+        // Function to show a modal based on a given uid for UPDATE!
+        function showClient(uid) {
+            // Emit an event to show the modal with the given Livewire component uid for UPDATE!
+            Livewire.emit('getClient', uid);
+        }
 
         // // Function to show a modal based on a given uid for DELETE!
-        // function confirmDeleteAdmin(uid) {
-        //         Swal.fire({
-        //             title: 'Are you sure?',
-        //             text: "You will not be able to restore this data!",
-        //             icon: 'warning',
-        //             showCancelButton: true,
-        //             confirmButtonColor: '#7367f0',
-        //             cancelButtonColor: '#d33',
-        //             confirmButtonText: 'Yes, delete it!'
-        //         }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             // Emit an event to show the modal with the given Livewire component uid for DELETE!
-        //             Livewire.emit('confirmAdmin', uid);
-        //         }
-        //     })
-        // }
+        function confirmDeleteClient(uid) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You will not be able to restore this data!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#7367f0',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    // Emit an event to show the modal with the given Livewire component uid for DELETE!
+                    Livewire.emit('confirmClient', uid);
+                }
+            })
+        }
 
         // TODO: DELETE WITH CHECKBOX
         // Add an event listener to the 'select all' checkbox

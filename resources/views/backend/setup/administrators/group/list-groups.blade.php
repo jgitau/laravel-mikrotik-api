@@ -40,6 +40,8 @@ $configData = Helper::appClasses();
     </div>
 </div>
 @push('scripts')
+<script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
+<script src="{{ asset('assets/js/backend/setup/administrator/group/group-management.js') }}"></script>
 @if (session()->has('success'))
 <script>
     Swal.fire({

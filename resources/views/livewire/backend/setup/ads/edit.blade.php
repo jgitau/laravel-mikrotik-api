@@ -10,6 +10,17 @@
                 <form wire:submit.prevent="updateAd" method="POST">
                     <div class="modal-body">
 
+                        {{-- ALERT MESSAGES --}}
+                        <div class="row">
+                            <div class="col">
+                                @if ($alert)
+                                <div class="alert alert-{{ $alert['type'] }}" role="alert">
+                                    {!! $alert['message'] !!}
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+
                         {{-- FORM SELECT TYPE AND DEVICE TYPE --}}
                         <div class="row">
                             <div class="col">
@@ -17,7 +28,7 @@
                                     :options="$adsType->pluck('title', 'name')->toArray()" />
                             </div>
                             <div class="col">
-                                <x-select-field id="deviceTypeUpdate" label="Device Type" model="deviceType"
+                                <x-select-field id="deviceTypeUpdate" label="Device Type" model="deviceType" required
                                     :options="['Desktop' => 'Desktop', 'Mobile' => 'Mobile']" />
                             </div>
                         </div>

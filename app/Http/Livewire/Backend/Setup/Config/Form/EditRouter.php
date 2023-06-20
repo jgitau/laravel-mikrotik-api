@@ -198,7 +198,7 @@ class EditRouter extends Component
         $this->mikrotik_ip_address = $nas->mikrotik_ip ? $nas->mikrotik_ip : '';
         $this->mikrotik_api_port = $nas->mikrotik_api_port ? $nas->mikrotik_api_port : '8728';
         $this->ports = $nas->ports;
-        $this->secret = $nas->secret;
+        $this->secret = strtoupper(str()->random(8));
     }
 
     /**

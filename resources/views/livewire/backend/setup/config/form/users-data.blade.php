@@ -10,72 +10,72 @@
             {{-- Form Input ID Column, Name Column and Email Column --}}
             <div class="row g-2 mb-3">
                 <div class="col mb-0">
-                    <x-input-field id="idColumn" label="Id Column" model="id_column" placeholder="Enter a Id Column.."
-                        required />
+                    <x-select-field id="idColumn" label="Id Column" model="id_column" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
                 <div class="col mb-0">
-                    <x-input-field id="nameColumn" label="Name Column" model="name_column"
-                        placeholder="Enter a Name Column.." required />
+                    <x-select-field id="nameColumn" label="Name Column" model="name_column" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
                 <div class="col mb-0">
-                    <x-input-field id="emailColumn" label="Email Column" model="email_column"
-                        placeholder="Enter a Email Column.." required />
+                    <x-select-field id="emailColumn" label="Email Column" model="email_column" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
             </div>
 
             {{-- Form Input Phone Number Column, Room Number Column and Date Column --}}
             <div class="row g-2 mb-3">
                 <div class="col mb-0">
-                    <x-input-field id="phoneNumberColumn" label="Phone Number Column" model="phone_number_column"
-                        placeholder="Enter a Phone Number Column.." required />
+                    <x-select-field id="phoneNumberColumn" label="Phone Number Column" model="phone_number_column" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
                 <div class="col mb-0">
-                    <x-input-field id="roomNumberColumn" label="Room Number Column" model="room_number_column"
-                        placeholder="Enter a Room Number Column.." required />
+                    <x-select-field id="roomNumberColumn" label="Room Number Column" model="room_number_column" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
                 <div class="col mb-0">
-                    <x-input-field id="dateColumn" label="Date Column" model="date_column"
-                        placeholder="Enter a Date Column.." required />
+                    <x-select-field id="dateColumn" label="Date Column" model="date_column" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
             </div>
 
             {{-- Form Input First Name Column, Last Name Column and Mac Column --}}
             <div class="row g-2 mb-3">
                 <div class="col mb-0">
-                    <x-input-field id="firstNameColumn" label="First Name Column" model="first_name_column"
-                        placeholder="Enter a First Name Column.." required />
+                    <x-select-field id="firstNameColumn" label="First Name Column" model="first_name_column" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
                 <div class="col mb-0">
-                    <x-input-field id="lastNameColumn" label="Last Name Column" model="last_name_column"
-                        placeholder="Enter a Last Name Column.." required />
+                    <x-select-field id="lastNameColumn" label="Last Name Column" model="last_name_column" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
                 <div class="col mb-0">
-                    <x-input-field id="macColumn" label="Mac Column" model="mac_column"
-                        placeholder="Enter a Mac Column.." required />
+                    <x-select-field id="macColumn" label="Mac Column" model="mac_column" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
             </div>
 
             {{-- Form Input Location Column, Gender Column and Birthday Column --}}
             <div class="row g-2 mb-3">
                 <div class="col mb-0">
-                    <x-input-field id="locationColumn" label="Location Column" model="location_column"
-                        placeholder="Enter a Location Column.." required />
+                    <x-select-field id="locationColumn" label="Location Column" model="location_column" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
                 <div class="col mb-0">
-                    <x-input-field id="genderColumn" label="Gender Column" model="gender_column"
-                        placeholder="Enter a Gender Column.." required />
+                    <x-select-field id="genderColumn" label="Gender Column" model="gender_column" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
                 <div class="col mb-0">
-                    <x-input-field id="birthdayColumn" label="Birthday Column" model="birthday_column"
-                        placeholder="Enter a Birthday Column.." required />
+                    <x-select-field id="birthdayColumn" label="Birthday Column" model="birthday_column" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
             </div>
 
             {{-- Form Input Login With Column, Display ID and Display Name --}}
             <div class="row g-2 mb-3">
                 <div class="col mb-0">
-                    <x-input-field id="loginWithColumn" label="Login With Column" model="login_with_column"
-                        placeholder="Enter a Login With Column.." required />
+                    <x-select-field id="loginWithColumn" label="Login With Column" model="login_with_column" required
+                        :options="['1' => 'Active', '0' => 'Non Active']" />
                 </div>
                 <div class="col mb-0">
                     <x-input-field id="displayId" label="Display ID" model="display_id"

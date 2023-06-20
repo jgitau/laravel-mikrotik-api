@@ -29,12 +29,12 @@ FOR TOAST VUEUXY :
 @push('scripts')
 <div id="successToast" class="bs-toast toast toast-ex animate__animated my-2 fade animate__fadeInUp bg-white"
     role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
-    <div class="toast-header">
-        <i class="ti ti-check ti-xs me-2 text-success"></i>
-        <div class="me-auto fw-semibold">Success</div>
+    <div class="toast-header bg-white">
+        <i class="ti ti-check ti-sm me-2 text-success"></i>
+        <div class="me-auto fw-semibold" style="color: #1d1d1d">Success</div>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
-    <div id="toastBody" class="toast-body"></div>
+    <div id="toastBody" class="toast-body" style="color: #1d1d1d"></div>
 </div>
 <script>
     // Listen for 'message' event from the window

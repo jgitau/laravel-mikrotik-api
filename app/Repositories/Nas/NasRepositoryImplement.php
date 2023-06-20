@@ -6,7 +6,6 @@ use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Nas;
 use App\Models\RouterOsApi;
 use App\Models\Setting;
-use Illuminate\Support\Facades\Log;
 
 class NasRepositoryImplement extends Eloquent implements NasRepository
 {
@@ -337,7 +336,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * @param string $username
      * @return array 'status' indicating success or failure, 'message' for error info.
      */
-    protected function createUser(string $password, string $username)
+    protected function createUser($password, $username)
     {
         // Initialize result with default values
         $result = ['status' => false, 'message' => ''];
@@ -522,7 +521,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * Updates NAS table with the provided data.
      * @param array $data The data to update.
      */
-    private function _updateNasTable(array $data)
+    private function _updateNasTable($data)
     {
         // Maps provided data to the database column names.
         $nasData = [

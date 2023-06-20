@@ -34,7 +34,7 @@ class SocialPlugins extends Component
             'login_with_facebook_on'     => $numericRules,
             'login_with_twitter_on'      => $numericRules,
             'login_with_google_on'       => $numericRules,
-            'login_with_linkedin_on'     => 'required',
+            'login_with_linkedin_on'     => $numericRules,
             'google_api_client_secret'   => 'required',
             'linkedin_api_client_id'     => 'required',
             'linkedin_api_client_secret' => 'required',
@@ -117,24 +117,19 @@ class SocialPlugins extends Component
         try {
             // Update the social plugin settings
             $socialPluginService->updateSocialPluginSettings($settings);
-
             // Show Message Success
             $this->dispatchSuccessEvent('Social Plugin settings updated successfully.');
-            // Close the modal
-            $this->closeModal();
-            // Reset the form fields
-            $this->resetFields();
             // Emit the 'socialPluginUpdated' event with a true status
             $this->emitUp('socialPluginUpdated', true);
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while updating ads settings: ' . $th->getMessage());
-            // Close the modal
+        } finally {
+            // Reset the form fields
+            $this->resetFields();
+            // Close Modal
             $this->closeModal();
         }
-
-        // Close Modal
-        $this->closeModal();
     }
 
     /**
@@ -156,7 +151,6 @@ class SocialPlugins extends Component
 
     /**
      * closeModal
-     *
      * @return void
      */
     public function closeModal()
@@ -166,7 +160,6 @@ class SocialPlugins extends Component
 
     /**
      * resetFields
-     *
      * @return void
      */
     public function resetFields()

@@ -42,7 +42,6 @@ interface NasRepository extends Repository{
      */
     public function updateSetting($settingName, $moduleId, $value);
 
-
     /**
      * setupProcess
      * @param  mixed $record

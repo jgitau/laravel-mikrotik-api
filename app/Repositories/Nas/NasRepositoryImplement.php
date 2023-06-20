@@ -27,6 +27,8 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         $this->routerOsApi = $routerOsApi;
     }
 
+    // ***** PUBLIC FUNCTIONS *****
+
     /**
      * Sets up a Mikrotik device process.
      * @param record Current user data.
@@ -37,55 +39,33 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
     {
         // Initialize the result.
         $result = ['status' => false, 'message' => ''];
-        // Get the required data.
-        $username = $data['tempUsername'];
-        $password = $data['tempPassword'];
-        $ipAddress = $data['mikrotikIP'];
-        $radiusServer = $data['serverIP'];
-        $radiusSecret = $data['radiusSecret'];
-        $usernameForAddUser = $data['username'];
-        $passwordForAddUser = $data['password'];
 
         try {
             // Attempt to connect to the Mikrotik device.
-            if (!$this->routerOsApi->connect($ipAddress, $username, $password)) {
-                $result['message'] = "Unable to connect to the Mikrotik device.";
+            $connectResult = $this->connectToDevice($data);
+            if (!$connectResult['status']) {
+                $result['message'] = $connectResult['message'];
                 return $result;
             }
 
-            // Add RADIUS configuration.
-            $radiusResult = $this->addRadiusConfiguration($radiusServer, $radiusSecret);
+            // Setup the Radius Server.
+            $radiusResult = $this->setupRadiusServer($data);
             if (!$radiusResult['status']) {
                 $result['message'] = $radiusResult['message'];
                 return $result;
             }
 
-            // Create user group.
-            $groupResult = $this->createUserGroup();
-            if (!$groupResult['status']) {
-                $result['message'] = $groupResult['message'];
-                return $result;
-            }
-
-            // Create user.
-            $userResult = $this->createUser($passwordForAddUser, $usernameForAddUser);
+            // Setup User and Group.
+            $userResult = $this->setupUserAndGroup($data);
             if (!$userResult['status']) {
                 $result['message'] = $userResult['message'];
                 return $result;
             }
 
-            // Add Walled Garden IP.
-            $walledGardenIpResult = $this->addWalledGardenIp($radiusServer);
-            if (!$walledGardenIpResult['status']) {
-                $result['message'] = $walledGardenIpResult['message'];
-                return $result;
-            }
-
-            // Add Walled Garden protocol and port.
-            $wgProtoPortResult = $this->addWalledGardenProtocolAndPort();
-            // If there's an error in adding the Walled Garden protocol and port, throw an exception.
-            if (!$wgProtoPortResult['status']) {
-                $result['message'] = $wgProtoPortResult['message'];
+            // Setup Walled Garden.
+            $wgResult = $this->setupWalledGarden($data);
+            if (!$wgResult['status']) {
+                $result['message'] = $wgResult['message'];
                 return $result;
             }
 
@@ -98,16 +78,96 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
     }
 
     /**
+     * Get NAS by its shortname
+     * @param string $shortName
+     * @return Nas|null
+     */
+    public function getNasByShortname($shortName)
+    {
+        return $this->model->where('shortname', $shortName)->first();
+    }
+
+    /**
+     * Retrieve NAS parameters for the given shortname
+     * @return Nas|null
+     */
+    public function getNasParameters()
+    {
+        // Get NAS by shortname 'megalos' using a separate function (getNasByShortname)
+        $record = $this->getNasByShortname('megalos');
+
+        // Array of settings we want to retrieve from the database
+        $settings = ['mikrotik_api_username', 'mikrotik_ip', 'mikrotik_api_port', 'server_ip'];
+
+        // For each setting in our array
+        foreach ($settings as $setting) {
+            // Retrieve the setting from the database using a separate function (getSetting)
+            // And set it as a property of our $record object
+            $record->$setting = $this->getSetting($setting, '0');
+        }
+
+        // Return the $record object, now with its properties set according to the retrieved settings
+        return $record;
+    }
+
+    /**
+     * Edits the NAS process which includes updating the NAS table and mikrotik API parameters.=
+     * @return bool|string Returns true on success, error message on exception.
+     */
+    public function editNasProcess($data)
+    {
+        try {
+            // Updates NAS table and Mikrotik API parameters.
+            $this->_updateNasTable($data);
+            $this->_editMikrotikApiParameters($data);
+        } catch (\Exception $e) {
+            // In case of exception, return the exception message.
+            return $e->getMessage();
+        }
+
+        // If no exception, return true indicating successful operation.
+        return true;
+    }
+
+    /**
+     * Retrieves a setting based on the setting name and module ID.
+     * @param string $settingName The setting name.
+     * @param string $moduleId The module id.
+     * @return string Returns the setting value.
+     */
+    public function getSetting($settingName, $moduleId)
+    {
+        // Retrieves the setting value based on setting name and module id.
+        $query = $this->setting->where('module_id', $moduleId)->where('setting', $settingName)->first();
+        return $query->value ?? "";
+    }
+
+    /**
+     * Updates a setting based on the setting name, module ID, and new value.
+     * @param string $settingName The setting name.
+     * @param string $moduleId The module id.
+     * @param string $value The new value.
+     * @return int The number of affected rows.
+     */
+    public function updateSetting($settingName, $moduleId, $value)
+    {
+        // Updates the setting value in the database and returns the number of affected rows.
+        return $this->setting->where('module_id', $moduleId)->where('setting', $settingName)->update(['value' => $value]);
+    }
+
+    // ***** PROTECTED FUNCTIONS *****
+
+    /**
      * Adds an IP address to the Walled Garden IP List.
      * @param string $ipAddress The IP address to be added.
      * @return array Contains status and optional error message.
      */
-    protected function addWalledGardenIp($ipAddress)
+    protected function addWalledGardenIpList($ipAddress)
     {
         // Check if the IP address already exists in the Walled Garden IP List
-        $existingIp = $this->getWalledGardenIpByAddress($ipAddress);
-        if (!is_null($existingIp)) {
-            return ['status' => true, 'message' => 'IP address already exists in the Walled Garden IP List.'];
+        $existingIpList = $this->getWalledGardenIpListByAddress($ipAddress);
+        if (!is_null($existingIpList)) {
+            return ['status' => true, 'message' => ''];
         }
         // Initialize result array with default values.
         $result = ['status' => false, 'message' => ''];
@@ -133,12 +193,12 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * Adds a rule to the Walled Garden IP List with specific protocol and port.
      * @return array Contains status and optional error message.
      */
-    protected function addWalledGardenProtocolAndPort()
+    protected function addWalledGardenListProtocolAndPort()
     {
         // Check if the rule already exists in the Walled Garden IP List
-        $existingRule = $this->getWalledGardenIpByProtocolAndPort("tcp", "5223");
+        $existingRule = $this->getWalledGardenIpListByProtocolAndPort("tcp", "5223");
         if (!is_null($existingRule)) {
-            return ['status' => true, 'message' => 'Walled Garden rule already exists with the specified protocol and port.'];
+            return ['status' => true, 'message' => ''];
         }
         // dd($existingRule);
         // Initialize result array with default values.
@@ -168,23 +228,23 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
     }
 
     /**
-     * Get an existing Walled Garden IP by IP address.
+     * Get an existing Walled Garden IP List by IP address.
      * @param string $ipAddress The IP address to search for.
      * @return array|null The existing Walled Garden IP data if found, or null if not found.
      */
-    protected function getWalledGardenIpByAddress($ipAddress)
+    protected function getWalledGardenIpListByAddress($ipAddress)
     {
         $walledGardenIps = $this->routerOsApi->comm("/ip/hotspot/walled-garden/ip/print", ["?dst-address" => $ipAddress]);
         return isset($walledGardenIps[0]) ? $walledGardenIps[0] : null;
     }
 
     /**
-     * Get an existing Walled Garden IP by protocol and port.
+     * Get an existing Walled Garden IP List by protocol and port.
      * @param string $protocol The protocol to search for.
      * @param string $port The port to search for.
      * @return array|null The existing Walled Garden IP data if found, or null if not found.
      */
-    protected function getWalledGardenIpByProtocolAndPort($protocol, $port)
+    protected function getWalledGardenIpListByProtocolAndPort($protocol, $port)
     {
         $walledGardenIps = $this->routerOsApi->comm("/ip/hotspot/walled-garden/ip/print", ["?protocol" => $protocol, "?dst-port" => $port]);
         return isset($walledGardenIps[0]) ? $walledGardenIps[0] : null;
@@ -232,67 +292,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
         // Return the result of the operation.
         return $result;
-    }
-
-    /**
-     * Get Config ID of matching server address.
-     * @param string $radiusServer
-     * @return string|null
-     */
-    private function getConfigId($radiusServer)
-    {
-        // Fetch all current RADIUS configurations from the RouterOS
-        $radiusConfigs = $this->routerOsApi->comm("/radius/print");
-
-        // Loop through the fetched configurations.
-        foreach ($radiusConfigs as $config) {
-            // If a matching server address is found, return its configuration ID.
-            if (isset($config['address']) && $config['address'] === $radiusServer) {
-                return $config[".id"];
-            }
-        }
-
-        // If no matching server address is found, return null.
-        return null;
-    }
-
-    /**
-     * Prepares the configuration data for RADIUS.
-     * @param string $radiusServer
-     * @param string $radiusSecret
-     * @return array The prepared configuration data.
-     */
-    private function prepareConfigData($radiusServer, $radiusSecret)
-    {
-        // Creates and returns an array with the required configuration data
-        return [
-            "address" => $radiusServer,  // The RADIUS server address
-            "secret" => $radiusSecret,  // The secret key for RADIUS authentication
-            "domain" => env('MIKROTIK_NAME'),  // The Mikrotik domain name
-            "service" => "hotspot",  // The service type, which is "hotspot" in this case
-            "authentication-port" => env('MIKROTIK_AUTHENTICATION_PORT'),  // The port for authentication
-            "accounting-port" => env('MIKROTIK_ACCOUNTING_PORT'),  // The port for accounting
-            "timeout" => env('MIKROTIK_TIMEOUT'),  // The timeout value
-            "comment" => "Managed by AZMI. DO NOT EDIT!!!"  // A comment for this configuration
-        ];
-    }
-
-    /**
-     * Get error message if operation fails.
-     * @param string $operation
-     * @param array $resultData
-     * @return string The error message, or an empty string if no error occurred.
-     */
-    private function getErrorMsg($operation, $resultData)
-    {
-        // Checks if there is an error ('!trap') in the result data
-        if (isset($resultData['!trap'])) {
-            // Returns a formatted error message
-            return "Error in {$operation} RADIUS configuration: " . $resultData['!trap'][0]['message'];
-        }
-
-        // If no error was found, returns an empty string
-        return '';
     }
 
     /**
@@ -370,56 +369,153 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         return $result;
     }
 
+    // ***** PRIVATE FUNCTIONS *****
+
     /**
-     * Get NAS by its shortname
-     * @param string $shortName
-     * @return Nas|null
+     * Connects to the Mikrotik device.
+     * @param array $data Contains the Mikrotik device login details.
+     * @return array 'status' indicating success or failure, and 'message' for additional info.
      */
-    public function getNasByShortname($shortName)
+    private function connectToDevice($data)
     {
-        return $this->model->where('shortname', $shortName)->first();
+        // Extract the required data.
+        $username = $data['tempUsername'];
+        $password = $data['tempPassword'];
+        $ipAddress = $data['mikrotikIP'];
+
+        // Try to connect to the Mikrotik device.
+        if (!$this->routerOsApi->connect($ipAddress, $username, $password)) {
+            return ['status' => false, 'message' => "Unable to connect to the Mikrotik device."];
+        }
+
+        return ['status' => true];
     }
 
     /**
-     * Retrieve NAS parameters for the given shortname
-     * @return Nas|null
+     * Sets up the Radius Server.
+     * @param array $data Contains the Radius Server configuration details.
+     * @return array 'status' indicating success or failure, and 'message' for additional info.
      */
-    public function getNasParameters()
+    private function setupRadiusServer($data)
     {
-        // Get NAS by shortname 'megalos' using a separate function (getNasByShortname)
-        $record = $this->getNasByShortname('megalos');
+        // Extract the required data.
+        $radiusServer = $data['serverIP'];
+        $radiusSecret = $data['radiusSecret'];
 
-        // Array of settings we want to retrieve from the database
-        $settings = ['mikrotik_api_username', 'mikrotik_ip', 'mikrotik_api_port', 'server_ip'];
+        // Add RADIUS configuration.
+        $radiusResult = $this->addRadiusConfiguration($radiusServer, $radiusSecret);
 
-        // For each setting in our array
-        foreach ($settings as $setting) {
-            // Retrieve the setting from the database using a separate function (getSetting)
-            // And set it as a property of our $record object
-            $record->$setting = $this->getSetting($setting, '0');
-        }
-
-        // Return the $record object, now with its properties set according to the retrieved settings
-        return $record;
+        return $radiusResult;
     }
 
     /**
-     * Edits the NAS process which includes updating the NAS table and mikrotik API parameters.=
-     * @return bool|string Returns true on success, error message on exception.
+     * Sets up the User and Group.
+     * @param array $data Contains the User and Group configuration details.
+     * @return array 'status' indicating success or failure, and 'message' for additional info.
      */
-    public function editNasProcess($data)
+    private function setupUserAndGroup($data)
     {
-        try {
-            // Updates NAS table and Mikrotik API parameters.
-            $this->_updateNasTable($data);
-            $this->_editMikrotikApiParameters($data);
-        } catch (\Exception $e) {
-            // In case of exception, return the exception message.
-            return $e->getMessage();
+        // Extract the required data.
+        $usernameForAddUser = $data['username'];
+        $passwordForAddUser = $data['password'];
+
+        // Create user group.
+        $groupResult = $this->createUserGroup();
+        if (!$groupResult['status']) {
+            return $groupResult;
         }
 
-        // If no exception, return true indicating successful operation.
-        return true;
+        // Create user.
+        $userResult = $this->createUser($passwordForAddUser, $usernameForAddUser);
+
+        return $userResult;
+    }
+
+    /**
+     * Sets up the Walled Garden.
+     * @param array $data Contains the Walled Garden configuration details.
+     * @return array 'status' indicating success or failure, and 'message' for additional info.
+     */
+    private function setupWalledGarden($data)
+    {
+        // Extract the required data.
+        $radiusServer = $data['serverIP'];
+
+        // Add Walled Garden IP List.
+        $walledGardenIpListResult = $this->addWalledGardenIpList($radiusServer);
+        if (!$walledGardenIpListResult['status']) {
+            return $walledGardenIpListResult;
+        }
+
+        // Add Walled Garden IP List protocol and port.
+        $wgListProtoPortResult = $this->addWalledGardenListProtocolAndPort();
+        // If there's an error in adding the Walled Garden protocol and port, throw an exception.
+        if (!$wgListProtoPortResult['status']) {
+            return $wgListProtoPortResult;
+        }
+
+        return ['status' => true];
+    }
+
+    /**
+     * Get Config ID of matching server address.
+     * @param string $radiusServer
+     * @return string|null
+     */
+    private function getConfigId($radiusServer)
+    {
+        // Fetch all current RADIUS configurations from the RouterOS
+        $radiusConfigs = $this->routerOsApi->comm("/radius/print");
+
+        // Loop through the fetched configurations.
+        foreach ($radiusConfigs as $config) {
+            // If a matching server address is found, return its configuration ID.
+            if (isset($config['address']) && $config['address'] === $radiusServer) {
+                return $config[".id"];
+            }
+        }
+
+        // If no matching server address is found, return null.
+        return null;
+    }
+
+    /**
+     * Prepares the configuration data for RADIUS.
+     * @param string $radiusServer
+     * @param string $radiusSecret
+     * @return array The prepared configuration data.
+     */
+    private function prepareConfigData($radiusServer, $radiusSecret)
+    {
+        // Creates and returns an array with the required configuration data
+        return [
+            "address" => $radiusServer,  // The RADIUS server address
+            "secret" => $radiusSecret,  // The secret key for RADIUS authentication
+            "domain" => env('MIKROTIK_NAME'),  // The Mikrotik domain name
+            "service" => "hotspot",  // The service type, which is "hotspot" in this case
+            "authentication-port" => env('MIKROTIK_AUTHENTICATION_PORT'),  // The port for authentication
+            "accounting-port" => env('MIKROTIK_ACCOUNTING_PORT'),  // The port for accounting
+            "timeout" => env('MIKROTIK_TIMEOUT'),  // The timeout value
+            "comment" => "Managed by AZMI. DO NOT EDIT!!!"  // A comment for this configuration
+        ];
+    }
+
+    /**
+     * Get error message if operation fails.
+     * @param string $operation
+     * @param array $resultData
+     * @return string The error message, or an empty string if no error occurred.
+     */
+    private function getErrorMsg($operation, $resultData)
+    {
+        // Checks if there is an error ('!trap') in the result data
+        if (isset($resultData['!trap'])) {
+            // Returns a formatted error message
+            return "Error in {$operation} RADIUS configuration: " . $resultData['!trap'][0]['message'];
+        }
+
+        // If no error was found, returns an empty string
+        return '';
     }
 
     /**
@@ -458,32 +554,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
             // Update the setting in the database using the data provided
             $this->updateSetting($dbSetting, '0', $data[$providedSetting]);
         }
-    }
-
-    /**
-     * Retrieves a setting based on the setting name and module ID.
-     * @param string $settingName The setting name.
-     * @param string $moduleId The module id.
-     * @return string Returns the setting value.
-     */
-    public function getSetting($settingName, $moduleId)
-    {
-        // Retrieves the setting value based on setting name and module id.
-        $query = $this->setting->where('module_id', $moduleId)->where('setting', $settingName)->first();
-        return $query->value ?? "";
-    }
-
-    /**
-     * Updates a setting based on the setting name, module ID, and new value.
-     * @param string $settingName The setting name.
-     * @param string $moduleId The module id.
-     * @param string $value The new value.
-     * @return int The number of affected rows.
-     */
-    public function updateSetting($settingName, $moduleId, $value)
-    {
-        // Updates the setting value in the database and returns the number of affected rows.
-        return $this->setting->where('module_id', $moduleId)->where('setting', $settingName)->update(['value' => $value]);
     }
 
 }

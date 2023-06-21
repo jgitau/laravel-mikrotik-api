@@ -173,7 +173,7 @@ class Edit extends Component
             $this->firstName = $client->first_name;
             $this->lastName = $client->last_name;
             $this->placeOfBirth = $client->birth_place;
-            $this->dateOfBirth = ($client->birth_date != 0 || !empty($client->birth_date)) ? date('Y-m-d H:i', $client->birth_date) : null;
+            $this->dateOfBirth = (strtotime($client->birth_date) != 0 || !empty($client->birth_date)) ? date('Y-m-d H:i', $client->birth_date) : null;
             $this->phone = $client->phone;
             $this->address = $client->address;
             $this->notes = $client->note;

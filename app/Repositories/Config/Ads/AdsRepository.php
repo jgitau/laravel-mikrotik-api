@@ -13,7 +13,6 @@ interface AdsRepository extends Repository{
      */
     public function getAdsParameters();
 
-
     /**
      * updateAdsSettings
      *

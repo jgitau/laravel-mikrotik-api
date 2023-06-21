@@ -19,4 +19,24 @@ interface ClientService extends BaseService{
      * @return DataTables Yajra JSON response.
      */
     public function getDatatables();
+
+    /**
+     * Define validation rules for client creation.
+     * @return array Array of validation rules
+     */
+    public function getRules();
+
+    /**
+     * Define validation messages for client creation.
+     * @return array Array of validation messages
+     */
+    public function getMessages();
+
+    /**
+     * Stores a new client using the provided request data.
+     * @param array $request The data used to create the new client.
+     * @return Model|mixed The newly created client.
+     * @throws \Exception if an error occurs while creating the client.
+     */
+    public function storeNewClient($request);
 }

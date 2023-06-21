@@ -6,6 +6,7 @@ $configData = Helper::appClasses();
 @section('title', 'List Clients')
 @push('styles')
 <link rel="stylesheet" href="{{ asset('assets/datatable/datatables.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
 @endpush
 
 @section('content')
@@ -49,6 +50,24 @@ $configData = Helper::appClasses();
     @endif
 
     @push('scripts')
+    <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
+    <script>
+            var validFrom = document.querySelector("#validFrom");
+            var validTo = document.querySelector("#validTo");
+            var dateOfBirth = document.querySelector("#dateOfBirth");
+
+            validFrom.flatpickr({
+                enableTime: true,
+                dateFormat: "Y-m-d H:i"
+            });
+            validTo.flatpickr({
+                enableTime: true,
+                dateFormat: "Y-m-d H:i"
+            });
+            dateOfBirth.flatpickr({
+                monthSelectorType: "static"
+            });
+    </script>
     <script>
         // Hide Modal
             window.addEventListener('hide-modal', () => {
@@ -97,12 +116,12 @@ $configData = Helper::appClasses();
 {{-- TODO: --}}
 @if($permissions['isAllowedToEditClient'])
 {{-- START FORM CREATE CLIENT --}}
-{{-- @livewire('backend.client.create') --}}
+@livewire('backend.client.list.create')
 {{-- END FORM CREATE CLIENT --}}
 @endif
 @if($permissions['isAllowedToDeleteClient'])
 {{-- START FORM EDIT CLIENT --}}
-{{-- @livewire('backend.client.edit') --}}
+{{-- @livewire('backend.client.list.edit') --}}
 {{-- END FORM EDIT CLIENT --}}
 @endif
 

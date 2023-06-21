@@ -68,7 +68,7 @@ class ClientServiceImplement extends Service implements ClientService
      * @param string|null $clientUid Client UID for uniqueness checks. If not provided, a create operation is assumed.
      * @return array Array of validation rules
      */
-    public function getRules($clientUid)
+    public function getRules($clientUid = null)
     {
         try {
             return $this->mainRepository->getRules($clientUid);

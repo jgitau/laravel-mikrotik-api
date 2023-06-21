@@ -163,7 +163,7 @@ class Edit extends Component
             $this->idService = $client->service_id;
             $this->username = $client->username;
             $this->password = $client->password;
-            $this->simultaneousUse = $client->simultaneousUse;
+            $this->simultaneousUse = $client->simultaneous_use;
             $this->validFrom = date('Y-m-d H:i', $client->validfrom);
             $this->validTo = date('Y-m-d H:i', $client->valid_until);
             $this->identificationNo = $client->identification;

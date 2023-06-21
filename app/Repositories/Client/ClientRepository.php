@@ -33,7 +33,7 @@ interface ClientRepository extends Repository{
      * @param string|null $clientUid Client UID for uniqueness checks. If not provided, a create operation is assumed.
      * @return array Array of validation rules
      */
-    public function getRules($clientUid);
+    public function getRules($clientUid = null);
 
     /**
      * Define validation messages for client creation.

@@ -51,79 +51,8 @@ $configData = Helper::appClasses();
 
     @push('scripts')
     <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
-    <script>
-            // For Create New Client
-            var validFrom = document.querySelector("#validFrom");
-            var validTo = document.querySelector("#validTo");
-            var dateOfBirth = document.querySelector("#dateOfBirth");
-            validFrom.flatpickr({
-                enableTime: true,
-                dateFormat: "Y-m-d H:i"
-            });
-            validTo.flatpickr({
-                enableTime: true,
-                dateFormat: "Y-m-d H:i"
-            });
-            dateOfBirth.flatpickr({
-                monthSelectorType: "static"
-            });
-            // FOr Update Client
-            var validFromUpdate = document.querySelector("#validFromUpdate");
-            var validToUpdate = document.querySelector("#validToUpdate");
-            var dateOfBirthUpdate = document.querySelector("#dateOfBirthUpdate");
-            validFromUpdate.flatpickr({
-                enableTime: true,
-                dateFormat: "Y-m-d H:i"
-            });
-            validToUpdate.flatpickr({
-                enableTime: true,
-                dateFormat: "Y-m-d H:i"
-            });
-            dateOfBirthUpdate.flatpickr({
-                monthSelectorType: "static"
-            });
-    </script>
-    <script>
-        // Hide Modal
-            window.addEventListener('hide-modal', () => {
-                $('#createNewClient').modal('hide');
-                $('#updateClientModal').modal('hide');
-            });
-            window.addEventListener('show-modal', () => {
-                $('#updateClientModal').modal('show');
-            });
-
-            // Function to confirm Batch Delete
-            function confirmDeleteBatch() {
-                // Get all checked client_uid
-                let client_uids = Array.from(document.querySelectorAll(".client-checkbox:checked")).map(el => el.value);
-
-                // Check if at least one checkbox is checked
-                if (client_uids.length > 0) {
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You will not be able to restore this data!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#7367f0',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Emit an event to delete the checked clients
-                            Livewire.emit('deleteBatch', client_uids);
-                        }
-                    });
-                } else {
-                    // If no checkbox is checked, show an error message
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'You must select at least one client to delete!',
-                    });
-                }
-            }
-    </script>
+    <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
+    <script src="{{ asset('assets/js/backend/client/client-management.js') }}"></script>
     @endpush
 </div>
 @endif

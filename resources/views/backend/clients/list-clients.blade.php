@@ -57,13 +57,12 @@ $configData = Helper::appClasses();
 </div>
 @endif
 
-{{-- TODO: --}}
-@if($permissions['isAllowedToEditClient'])
+@if($permissions['isAllowedToAddNewClient'])
 {{-- START FORM CREATE CLIENT --}}
 @livewire('backend.client.list.create')
 {{-- END FORM CREATE CLIENT --}}
 @endif
-@if($permissions['isAllowedToDeleteClient'])
+@if($permissions['isAllowedToEditClient'])
 {{-- START FORM EDIT CLIENT --}}
 @livewire('backend.client.list.edit')
 {{-- END FORM EDIT CLIENT --}}

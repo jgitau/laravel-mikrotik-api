@@ -1,8 +1,11 @@
 // Helper function to initialize a flatpickr instance with common settings
 function initializeFlatpickr(elementId, isDateTime = true) {
   const element = document.querySelector(`#${elementId}`);
-  const config = isDateTime ? { enableTime: true, dateFormat: 'Y-m-d H:i' } : { monthSelectorType: 'static' };
-  return element.flatpickr(config);
+  // Ensure the element actually exists in the document
+  if (element) {
+    const config = isDateTime ? { enableTime: true, dateFormat: 'Y-m-d H:i' } : { monthSelectorType: 'static' };
+    return element.flatpickr(config);
+  }
 }
 
 // Helper function to show a Swal dialog

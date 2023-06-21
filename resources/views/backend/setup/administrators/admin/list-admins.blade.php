@@ -52,12 +52,12 @@ $configData = Helper::appClasses();
 </div>
 @endif
 
-@if($permissions['isAllowedToEditAdmin'])
+@if($permissions['isAllowedToAddNewAdmin'])
 {{-- START FORM CREATE ADMIN --}}
 @livewire('backend.setup.administrator.admin.create')
 {{-- END FORM CREATE ADMIN --}}
 @endif
-@if($permissions['isAllowedToDeleteAdmin'])
+@if($permissions['isAllowedToEditAdmin'])
 {{-- START FORM EDIT ADMIN --}}
 @livewire('backend.setup.administrator.admin.edit')
 {{-- END FORM EDIT ADMIN --}}

@@ -13,9 +13,6 @@
     </div>
 </footer>
 <!--/ Footer-->
-
-FOR TOAST VUEUXY :
-
 @push('styles')
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
 <style>

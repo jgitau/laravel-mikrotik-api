@@ -117,8 +117,8 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
     {
         try {
             // Updates NAS table and Mikrotik API parameters.
-            $this->_updateNasTable($data);
-            $this->_editMikrotikApiParameters($data);
+            $this->updateNasTable($data);
+            $this->updateMikrotikApiParameters($data);
         } catch (\Exception $e) {
             // In case of exception, return the exception message.
             return $e->getMessage();
@@ -521,7 +521,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * Updates NAS table with the provided data.
      * @param array $data The data to update.
      */
-    private function _updateNasTable($data)
+    private function updateNasTable($data)
     {
         // Maps provided data to the database column names.
         $nasData = [
@@ -537,7 +537,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
      * Edits Mikrotik API parameters with the provided data.
      * @param array $data The data to update.
      */
-    private function _editMikrotikApiParameters($data)
+    private function updateMikrotikApiParameters($data)
     {
         // Array of settings we want to update
         $settings = [

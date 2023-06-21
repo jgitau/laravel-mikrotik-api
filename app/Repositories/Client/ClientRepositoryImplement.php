@@ -297,9 +297,11 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
      */
     private function createClient($data)
     {
+        // If the client's first name and last name are provided, create a full name.
         if ($data['firstName'] && $data['lastName']) {
             $fullName = $data['firstName'] . ' ' . $data['lastName'];
         }
+        // If the simultaneous use is not provided, set it to 0.
         $simultaneousUse = ($data['simultaneousUse'] == "" || empty($data['simultaneousUse'])) ? 0 : $data['simultaneousUse'];
         return $this->model->create([
             'service_id'        => $data['idService'],
@@ -415,9 +417,11 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
      */
     private function updateClientData($client, $data)
     {
+        // If the client's first name and last name are provided, create a full name.
         if ($data['firstName'] && $data['lastName']) {
             $fullName = $data['firstName'] . ' ' . $data['lastName'];
         }
+        // If the simultaneous use is not provided, set it to 0.
         $simultaneousUse = ($data['simultaneousUse'] == "" || empty($data['simultaneousUse'])) ? 0 : $data['simultaneousUse'];
         // Update the client's data and save the client.
         $client->service_id = $data['idService'];

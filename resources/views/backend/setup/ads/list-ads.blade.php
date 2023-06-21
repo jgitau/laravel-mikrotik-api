@@ -30,7 +30,6 @@ $configData = Helper::appClasses();
     @if($permissions['isAllowedToListAds'])
     {{-- Start List DataTable --}}
     <div class="card-body">
-        {{-- TODO: --}}
         @livewire('backend.setup.ads.data-table')
     </div>
     {{-- End List DataTable --}}
@@ -39,7 +38,6 @@ $configData = Helper::appClasses();
     @push('scripts')
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
     <script src="{{ asset('assets/js/backend/setup/ads/list-ads-management.js') }}"></script>
-    {{-- TODO: --}}
     <script>
         // Hide Modal
         window.addEventListener('hide-modal', () => {
@@ -54,13 +52,11 @@ $configData = Helper::appClasses();
 </div>
 @endif
 
-{{-- TODO: --}}
-@if($permissions['isAllowedToEditAd'])
-{{-- TODO: --}}
+@if($permissions['isAllowedToAddAd'])
 @livewire('backend.setup.ads.create')
 @endif
-@if($permissions['isAllowedToDeleteAd'])
-{{-- TODO: --}}
+
+@if($permissions['isAllowedToEditAd'])
 @livewire('backend.setup.ads.edit')
 @endif
 

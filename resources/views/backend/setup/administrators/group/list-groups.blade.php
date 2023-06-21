@@ -43,14 +43,25 @@ $configData = Helper::appClasses();
 <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
 <script src="{{ asset('assets/js/backend/setup/administrator/group/group-management.js') }}"></script>
 @if (session()->has('success'))
+<div id="successToastGroup" class="bs-toast toast toast-ex animate__animated my-2 fade animate__fadeInUp bg-white"
+    role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+    <div class="toast-header bg-white">
+        <i class="ti ti-check ti-sm me-2 text-success"></i>
+        <div class="me-auto fw-semibold" style="color: #1d1d1d">Success</div>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div id="toastBody" class="toast-body" style="color: #1d1d1d"></div>
+</div>
 <script>
-    Swal.fire({
-        position: 'top-end',
-        icon: 'success',
-        title: '{{ session('success') }}',
-        showConfirmButton: false,
-        timer: 1500
-    });
+    // Display a success toast notification
+    var $toast = $('#successToastGroup');
+    $('#toastBody').text("{{ session('success') }}");
+
+    $toast.addClass('show showing');
+
+    setTimeout(function() {
+    $toast.removeClass('show showing');
+    }, 3000);
 </script>
 @endif
 

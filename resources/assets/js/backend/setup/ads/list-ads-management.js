@@ -31,7 +31,7 @@ function initializeDataTable() {
     serverSide: true,
     responsive: true,
     autoWidth: false,
-    order: [[2, 'asc']],
+    order: [[0]],
     ajax: document.getElementById('myTable').dataset.route, // This route should point to the getDatatables method
     columns: [
       { data: 'DT_RowIndex', name: 'DT_RowIndex', width: '10px', orderable: false, searchable: false },

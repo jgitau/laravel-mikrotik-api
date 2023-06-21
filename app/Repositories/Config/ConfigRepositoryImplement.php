@@ -40,15 +40,18 @@ class ConfigRepositoryImplement extends Eloquent implements ConfigRepository
             ->whereIn('name', $flagModules)
             ->get();
 
-        // Get the raw data and convert it to an array
-        $rawData = $data->toArray();
+        // Get the raw data and convert it to a collection
+        $data = $data->collect();
 
-        // Add the 'Router' row to the end of the rawData array
-        $rawData[] = [
+        // Add the 'Router' row to the end of the rawData collection
+        $data->push([
             'id' => -1, // Set an arbitrary negative ID to distinguish it from real records
             'title' => 'Router',
             'name' => 'edit_router'
-        ];
+        ]);
+
+        // Convert it back to an array
+        $rawData = $data->toArray();
 
         // Initialize DataTables using the rawData array
         $dataTables = DataTables::of($rawData)

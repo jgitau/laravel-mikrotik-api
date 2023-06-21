@@ -52,10 +52,10 @@ $configData = Helper::appClasses();
     @push('scripts')
     <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
     <script>
+            // For Create New Client
             var validFrom = document.querySelector("#validFrom");
             var validTo = document.querySelector("#validTo");
             var dateOfBirth = document.querySelector("#dateOfBirth");
-
             validFrom.flatpickr({
                 enableTime: true,
                 dateFormat: "Y-m-d H:i"
@@ -65,6 +65,21 @@ $configData = Helper::appClasses();
                 dateFormat: "Y-m-d H:i"
             });
             dateOfBirth.flatpickr({
+                monthSelectorType: "static"
+            });
+            // FOr Update Client
+            var validFromUpdate = document.querySelector("#validFromUpdate");
+            var validToUpdate = document.querySelector("#validToUpdate");
+            var dateOfBirthUpdate = document.querySelector("#dateOfBirthUpdate");
+            validFromUpdate.flatpickr({
+                enableTime: true,
+                dateFormat: "Y-m-d H:i"
+            });
+            validToUpdate.flatpickr({
+                enableTime: true,
+                dateFormat: "Y-m-d H:i"
+            });
+            dateOfBirthUpdate.flatpickr({
                 monthSelectorType: "static"
             });
     </script>
@@ -121,7 +136,7 @@ $configData = Helper::appClasses();
 @endif
 @if($permissions['isAllowedToDeleteClient'])
 {{-- START FORM EDIT CLIENT --}}
-{{-- @livewire('backend.client.list.edit') --}}
+@livewire('backend.client.list.edit')
 {{-- END FORM EDIT CLIENT --}}
 @endif
 

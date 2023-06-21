@@ -21,17 +21,32 @@ class ClientServiceImplement extends Service implements ClientService
     }
 
     /**
-     * Retrieve all client records and associated service names.
+     * Retrieve client records and associated service names.
      * Conditionally applies a WHERE clause if provided.
      * @param array|null $conditions
      * @return array
      */
-    public function getAllWithService($conditions = null)
+    public function getClientWithService($conditions = null)
     {
         try {
-            return $this->mainRepository->getAllWithService($conditions);
+            return $this->mainRepository->getClientWithService($conditions);
         } catch (Exception $exception) {
             throw new Exception("Error getting data clients : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Retrieve client by uid.
+     * Conditionally applies a WHERE clause if provided.
+     * @param array|null $clientUid
+     * @return array
+     */
+    public function getClientByUid($clientUid)
+    {
+        try {
+            return $this->mainRepository->getClientByUid($clientUid);
+        } catch (Exception $exception) {
+            throw new Exception("Error getting data client by uid : " . $exception->getMessage());
         }
     }
 
@@ -50,12 +65,13 @@ class ClientServiceImplement extends Service implements ClientService
 
     /**
      * Define validation rules for client creation.
+     * @param string|null $clientUid Client UID for uniqueness checks. If not provided, a create operation is assumed.
      * @return array Array of validation rules
      */
-    public function getRules()
+    public function getRules($clientUid)
     {
         try {
-            return $this->mainRepository->getRules();
+            return $this->mainRepository->getRules($clientUid);
         } catch (Exception $exception) {
             throw new Exception("Error getting rules clients : " . $exception->getMessage());
         }
@@ -84,6 +100,35 @@ class ClientServiceImplement extends Service implements ClientService
     {
         try {
             return $this->mainRepository->StoreNewClient($request);
+        } catch (Exception $exception) {
+            throw new Exception("Error creating client : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Updates an existing client using the provided data.
+     * @param string $clientUid The UID of the client to update.
+     * @param array $data The data used to update the client.
+     * @return Model|mixed The updated client.
+     * @throws \Exception if an error occurs while updating the client.
+     */
+    public function updateClient($clientUid, $data)
+    {
+        try {
+            return $this->mainRepository->updateClient($clientUid, $data);
+        } catch (Exception $exception) {
+            throw new Exception("Error updating client : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Delete client data from the `clients`, `radcheck`, `radacct`, and `radusergroup` tables based on the client UID.
+     * @param string $clientUid The UID of the client to delete.
+     */
+    public function deleteClientData($clientUid)
+    {
+        try {
+            return $this->mainRepository->deleteClientData($clientUid);
         } catch (Exception $exception) {
             throw new Exception("Error creating client : " . $exception->getMessage());
         }

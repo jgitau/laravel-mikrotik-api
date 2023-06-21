@@ -102,6 +102,8 @@ class Clients extends Component
      */
     public function closeModal()
     {
+        // Reset the form for the next client
+        $this->resetFields();
         // Dispatch the 'closeModal' browser event
         $this->dispatchBrowserEvent('closeModal');
     }

@@ -155,6 +155,8 @@ class SocialPlugins extends Component
      */
     public function closeModal()
     {
+        // Reset the form for the next client
+        $this->resetFields();
         $this->emit('closeModal');
     }
 

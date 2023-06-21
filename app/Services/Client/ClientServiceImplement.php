@@ -47,4 +47,45 @@ class ClientServiceImplement extends Service implements ClientService
             throw new Exception("Error getting data to datatable : " . $exception->getMessage());
         }
     }
+
+    /**
+     * Define validation rules for client creation.
+     * @return array Array of validation rules
+     */
+    public function getRules()
+    {
+        try {
+            return $this->mainRepository->getRules();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting rules clients : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Define validation messages for client creation.
+     * @return array Array of validation messages
+     */
+    public function getMessages()
+    {
+        try {
+            return $this->mainRepository->getMessages();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting messages rules clients : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Stores a new client using the provided request data.
+     * @param array $request The data used to create the new client.
+     * @return Model|mixed The newly created client.
+     * @throws \Exception if an error occurs while creating the client.
+     */
+    public function storeNewClient($request)
+    {
+        try {
+            return $this->mainRepository->StoreNewClient($request);
+        } catch (Exception $exception) {
+            throw new Exception("Error creating client : " . $exception->getMessage());
+        }
+    }
 }

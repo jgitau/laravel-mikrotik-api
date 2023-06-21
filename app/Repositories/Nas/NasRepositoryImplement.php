@@ -154,7 +154,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         return $this->setting->where('module_id', $moduleId)->where('setting', $settingName)->update(['value' => $value]);
     }
 
-    // ***** PROTECTED FUNCTIONS *****
+    // 👇 **** PROTECTED FUNCTIONS **** 👇
 
     /**
      * Adds an IP address to the Walled Garden IP List.
@@ -368,7 +368,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         return $result;
     }
 
-    // ***** PRIVATE FUNCTIONS *****
+    // 👇 **** PRIVATE FUNCTIONS **** 👇
 
     /**
      * Connects to the Mikrotik device.

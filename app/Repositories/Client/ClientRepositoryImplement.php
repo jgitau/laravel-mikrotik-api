@@ -157,7 +157,6 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
         ];
     }
 
-
     /**
      * Define validation messages for client creation.
      * @return array Array of validation messages
@@ -257,24 +256,37 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
     /**
      * Delete client data from the `clients`, `radcheck`, `radacct`, and `radusergroup` tables based on the client UID.
      * @param string $clientUid The UID of the client to delete.
+     * @throws \Exception if an error occurs while deleting the client.
      */
     public function deleteClientData($clientUid)
     {
-        // Retrieve the client from the database.
-        $client = $this->model->where('client_uid', $clientUid)->first();
+        try {
+            // Retrieve the client from the database.
+            $client = $this->model->where('client_uid', $clientUid)->first();
 
-        // If the client exists, delete its associated data from all related tables.
-        if ($client !== null) {
-            // Delete data from the 'clients' table.
-            $client->delete();
+            // If the client exists, delete its associated data from all related tables.
+            if ($client !== null) {
+                // Delete data from the 'clients' table.
+                $client->delete();
 
-            // Delete data from the 'radcheck', 'radacct', and 'radusergroup' tables based on the client's username.
-            $username = $client->username;
-            $this->radCheckModel->where('username', $username)->delete();
-            $this->radAcctModel->where('username', $username)->delete();
-            $this->radUserGroupModel->where('username', $username)->delete();
+                // Delete data from the 'radcheck', 'radacct', and 'radusergroup' tables based on the client's username.
+                $username = $client->username;
+                $this->radCheckModel->where('username', $username)->delete();
+                $this->radAcctModel->where('username', $username)->delete();
+                $this->radUserGroupModel->where('username', $username)->delete();
+            } else {
+                throw new \Exception("Client with UID $clientUid not found.");
+            }
+        } catch (\Exception $e) {
+            // If an exception occurred during the deletion process, log the error message.
+            Log::error("Failed to delete client data : " . $e->getMessage());
+            // Rethrow the exception to be caught in the Livewire component.
+            throw $e;
         }
     }
+
+
+    // 👇 **** PRIVATE FUNCTIONS **** 👇
 
     /**
      * Creates a new client using the provided data.

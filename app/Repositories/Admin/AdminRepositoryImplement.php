@@ -247,7 +247,7 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
         return $admin;
     }
 
-    // -------------------------------- *** PRIVATE FUNCTIONS BELOW THIS LINE *** ----------------------------------------------------------- //
+    // 👇 **** PRIVATE FUNCTIONS **** 👇
 
     /**
      * Prepare session data.

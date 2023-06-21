@@ -261,9 +261,7 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
     //     }
     // }
 
-    /**
-     ******* GET request to the Mikrotik router. WITH CURL **
-     */
+    // 👇 ***** GET Request to the Mikrotik router. WITH CURL ***** 👇
 
     /**
      * Fetches active hotspot data from a Mikrotik device using cURL.
@@ -468,6 +466,8 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
             ->make(true);
     }
 
+    // 👇 ***** PROTECTED FUNCTIONS ***** 👇
+
     /**
      * Process system resource data.
      * @param array $resourceData
@@ -521,6 +521,8 @@ class MikrotikApiRepositoryImplement extends Eloquent implements MikrotikApiRepo
         // Return the parsed uptime string
         return $uptime;
     }
+
+    // 👇 ***** PRIVATE FUNCTIONS ***** 👇
 
     /**
      * Retrieves the count of IP bindings based on the type.

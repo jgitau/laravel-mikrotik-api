@@ -300,11 +300,12 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
         if ($data['firstName'] && $data['lastName']) {
             $fullName = $data['firstName'] . ' ' . $data['lastName'];
         }
+        $simultaneousUse = ($data['simultaneousUse'] == "" || empty($data['simultaneousUse'])) ? 0 : $data['simultaneousUse'];
         return $this->model->create([
             'service_id'        => $data['idService'],
-            'username'          => $data['username'],
+            'username'          => strtolower($data['username']),
             'password'          => $data['password'],
-            'simultaneous_use'  => $data['simultaneousUse'] ?? 0,
+            'simultaneous_use'  => $simultaneousUse,
             'validfrom'         => strtotime($data['validFrom']),
             'valid_until'       => strtotime($data['validTo']),
             'identification'    => $data['identificationNo'],
@@ -417,11 +418,12 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
         if ($data['firstName'] && $data['lastName']) {
             $fullName = $data['firstName'] . ' ' . $data['lastName'];
         }
+        $simultaneousUse = ($data['simultaneousUse'] == "" || empty($data['simultaneousUse'])) ? 0 : $data['simultaneousUse'];
         // Update the client's data and save the client.
         $client->service_id = $data['idService'];
-        $client->username = $data['username'];
+        $client->username = strtolower($data['username']);
         $client->password = $data['password'];
-        $client->simultaneous_use = $data['simultaneousUse'] ?? 0;
+        $client->simultaneous_use = $simultaneousUse;
         $client->validfrom = strtotime($data['validFrom']);
         $client->valid_until = strtotime($data['validTo']);
         $client->identification = $data['identificationNo'];

@@ -158,20 +158,22 @@ class Edit extends Component
         $client = $clientService->getClientByUid($clientUid);
         // If a client was found
         if ($client) {
+
+
             // Load the client's data into the component's properties
             $this->clientUid = $client->client_uid;
             $this->idService = $client->service_id;
             $this->username = $client->username;
             $this->password = $client->password;
-            $this->simultaneousUse = $client->simultaneous_use;
-            $this->validFrom = date('Y-m-d H:i', $client->validfrom);
-            $this->validTo = date('Y-m-d H:i', $client->valid_until);
+            $this->simultaneousUse = ($client->simultaneous_use != 0 || !empty($client->simultaneous_use)) ? $client->simultaneous_use : null;
+            $this->validFrom = ($client->validfrom != 0 || !empty($client->validfrom) ) ? date('Y-m-d H:i', $client->validfrom) : null ;
+            $this->validTo = ($client->valid_until != 0 || !empty($client->valid_until)) ? date('Y-m-d H:i', $client->valid_until) : null;
             $this->identificationNo = $client->identification;
             $this->emailAddress = $client->email;
             $this->firstName = $client->first_name;
             $this->lastName = $client->last_name;
             $this->placeOfBirth = $client->birth_place;
-            $this->dateOfBirth = date('Y-m-d', strtotime($client->birth_date));
+            $this->dateOfBirth = ($client->birth_date != 0 || !empty($client->birth_date)) ? date('Y-m-d H:i', $client->birth_date) : null;
             $this->phone = $client->phone;
             $this->address = $client->address;
             $this->notes = $client->note;

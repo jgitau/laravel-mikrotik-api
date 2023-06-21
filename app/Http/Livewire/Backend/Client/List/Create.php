@@ -68,7 +68,7 @@ class Create extends Component
         // Validate the form data before submit
         $this->validate($clientService->getRules(), $clientService->getMessages());
 
-        // List of properties to include in the new admin
+        // List of properties to include in the new client
         $properties = [
         'idService', 'username', 'password', 'simultaneousUse', 'validFrom', 'validTo',
         'identificationNo', 'emailAddress', 'firstName', 'lastName', 'placeOfBirth',
@@ -82,7 +82,7 @@ class Create extends Component
         }, []);
 
         try {
-            // Attempt to create the new admin
+            // Attempt to create the new client
             $client = $clientService->storeNewClient($newClient);
 
             // Check if the client was created successfully

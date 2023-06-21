@@ -16,7 +16,7 @@
                                     :options="$services->pluck('service_name', 'id')->toArray()" />
                             </div>
                             <div class="col-lg-6 col-12 mb-3">
-                                <x-input-field id="username" label="Username" model="username"
+                                <x-input-field type="text" id="username" label="Username" model="username"
                                     placeholder="Enter a Username.." required />
                             </div>
                         </div>
@@ -102,8 +102,7 @@
                         {{-- FORM NOTES --}}
                         <div class="row">
                             <div class="col">
-                                <x-textarea type="text" id="notes" label="Notes" model="notes"
-                                    placeholder="Enter a Notes.." />
+                                <x-input-field type="text" id="notes" label="Notes" model="notes" placeholder="Enter a Notes.." />
                             </div>
                         </div>
 

@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Import Livewire DataTables Controllers
+// Import Livewire DataTables SETUP Controllers
 use App\Http\Livewire\Backend\Setup\{
     Administrator\Admin\DataTable as DataTableAdmin,
     Administrator\Group\DataTable as DataTableGroup,
@@ -10,9 +10,12 @@ use App\Http\Livewire\Backend\Setup\{
     Config\DataTable as DataTableConfig,
     Config\HotelRoom\DataTable as DataTableHotelRoom
 };
+
 // Import Livewire DataTables Controllers
-use App\Http\Livewire\Backend\Client\{
-    List\DataTable as DataTableClient,
+use App\Http\Livewire\Backend\{
+    Client\List\DataTable as DataTableClient,
+    Service\List\DataTable as DataTableService,
+    Dashboard\DataTable as DataTableLeasesData
 };
 
 // Grouping routes that require check.session.cookie middleware
@@ -44,6 +47,18 @@ Route::middleware(['check.session.cookie'])->group(function () {
         Route::prefix('client/')->group(function () {
                 // Route for getting datatable data for clients
                 Route::get('getDataTable', [DataTableClient::class, 'getDataTable'])->name('client.getDataTable');
+        });
+
+        Route::prefix('service/')->group(function () {
+                // Route for getting datatable data for clients
+                Route::get('getDataTable', [DataTableService::class, 'getDataTable'])->name('service.getDataTable');
+        });
+
+        // Grouping routes related to getting datatable for both administrator and configurations
+        Route::prefix('dashboard/')->group(function () {
+            // Grouping routes related to getting datatable for administrator
+            // Route for getting datatable data for admins
+            Route::get('leasesData/getDataTable', [DataTableLeasesData::class, 'getDataTable'])->name('leasesData.getDataTable');
         });
 
     });

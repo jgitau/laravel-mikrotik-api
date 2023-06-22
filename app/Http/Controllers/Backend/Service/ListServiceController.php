@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Backend\Client;
+namespace App\Http\Controllers\Backend\Service;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class ListClientController extends Controller
+class ListServiceController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -14,8 +14,8 @@ class ListClientController extends Controller
      */
     public function __construct()
     {
-        // Apply the 'checkPermissions' middleware to this controller with 'clients' as the required permission
-        $this->middleware('checkPermissions:list_clients,add_new_client,edit_client,delete_client')->only('index');
+        // Apply the 'checkPermissions' middleware to this controller with 'services' as the required permission
+        $this->middleware('checkPermissions:list_services,add_new_service,edit_service,delete_service')->only('index');
     }
 
     /**
@@ -30,6 +30,6 @@ class ListClientController extends Controller
         // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
         $permissions = $request->attributes->get('permissions');
         // Return the view with the permissions.
-        return view('backend.clients.list-clients', compact('permissions'));
+        return view('backend.services.list-services', compact('permissions'));
     }
 }

@@ -15,13 +15,13 @@ class ListServiceController extends Controller
     public function __construct()
     {
         // Apply the 'checkPermissions' middleware to this controller with 'services' as the required permission
-        $this->middleware('checkPermissions:list_services,add_new_service,edit_service,delete_service')->only('index');
+        $this->middleware('checkPermissions:list_services,add_new_service')->only('index');
         $this->middleware('checkPermissions:add_new_service')->only('create');
         $this->middleware('checkPermissions:edit_service')->only('edit');
     }
 
     /**
-     * Display the list of admins.
+     * Display the list of services.
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      * This method retrieves permissions from the request's attributes,

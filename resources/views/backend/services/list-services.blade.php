@@ -18,9 +18,6 @@
             <div>
                 {{-- /Start Button for Create New Service --}}
                 @if ($permissions['isAllowedToAddNewService'])
-                {{-- <x-button type="button" color="facebook " data-bs-toggle="modal" data-bs-target="#createNewService">
-                    <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Service
-                </x-button> --}}
                 <a href="{{ route('backend.services.add-new-service') }}" class="btn btn-facebook text-white">
                     <i class="tf-icons fas fa-plus-circle ti-xs me-1"></i>&nbsp; Add New Service
                 </a>
@@ -46,18 +43,6 @@
     {{-- <script src="{{ asset('assets/js/backend/service/service-management.js') }}"></script> --}}
     @endpush
 </div>
-@endif
-
-{{-- TODO: --}}
-@if($permissions['isAllowedToAddNewService'])
-{{-- START FORM CREATE SERVICE --}}
-{{-- @livewire('backend.service.list.create') --}}
-{{-- END FORM CREATE SERVICE --}}
-@endif
-@if($permissions['isAllowedToEditService'])
-{{-- START FORM EDIT SERVICE --}}
-{{-- @livewire('backend.service.list.edit') --}}
-{{-- END FORM EDIT SERVICE --}}
 @endif
 
 @endsection

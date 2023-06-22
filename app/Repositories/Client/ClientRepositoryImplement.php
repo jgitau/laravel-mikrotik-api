@@ -140,7 +140,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
             // REQUIRED
             'idService'        => 'required',
             'username'         => $usernameRule,
-            'password'         => 'required|min:5|max:32',
+            'password'          => ['required', 'min:5', 'max:32', 'regex:/^[\pL\pN\s_-^\#\!\*\@]+$/u'],
             // NULLABLE
             'simultaneousUse'  => 'nullable|integer|min:1',
             'validFrom'        => 'nullable|date_format:Y-m-d H:i',
@@ -173,6 +173,7 @@ class ClientRepositoryImplement extends Eloquent implements ClientRepository
             'password.required'        => 'Password cannot be empty!',
             'password.min'             => 'Password must be at least 5 characters!',
             'password.max'             => 'Password cannot be more than 32 characters!',
+            'password.regex'           => 'Password may only contain alphabet and numeric characters, spaces, "_", "-", "^", "#", "!", "*", and "@"!',
             'simultaneousUse.integer'  => 'Simultaneous Use must be a number!',
             'simultaneousUse.min'      => 'Simultaneous Use field must contain a number greater than zero.!',
             'validFrom.date_format'    => 'Valid From must be a valid datetime (YYYY-MM-DD HH:MM:SS)!',

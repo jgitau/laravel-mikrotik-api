@@ -84,7 +84,7 @@
                         </x-button>
 
                         <x-button type="submit" color="primary">
-                            Save
+                            Save Changes
                         </x-button>
                     </div>
                 </form>

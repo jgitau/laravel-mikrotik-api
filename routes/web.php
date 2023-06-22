@@ -5,9 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     Home\LoginController,
     Backend\DashboardController,
-    Backend\Report\UserController,
-    Backend\Client\ListClientController,
-    Backend\Service\ListServiceController
+    Backend\Report\UserController
 };
 
 // Home / Login Page route
@@ -18,12 +16,6 @@ Route::middleware(['check.session.cookie'])->group(function () {
 
     // Route for dashboard page
     Route::get('dashboard', [DashboardController::class, 'index'])->name('backend.dashboard');
-
-    // Route for clients list page
-    Route::get('clients/list-clients', [ListClientController::class, 'index'])->name('backend.clients.list-clients');
-
-    // Route for services list page
-    Route::get('services/list-services', [ListServiceController::class, 'index'])->name('backend.services.list-services');
 
     // Route for online users list page in reports section
     Route::get('reports/list-online-users', [UserController::class, 'index'])->name('backend.reports.list-online-users');

@@ -80,7 +80,7 @@ class PageSeeder extends Seeder
                 'id' => 8,
                 'page' => 'add_new_service',
                 'title' => 'Add New Service',
-                'url' => 'services/pg/add_new_service',
+                'url' => 'services/add-new-service',
                 'module_id' => 4,
                 'allowed_groups' => '1,2',
                 'show_menu' => 1,

@@ -19,7 +19,8 @@
                                     :options="$groups->pluck('name', 'id')->toArray()" />
                             </div>
                             <div class="col-lg-6 col-12">
-                                <x-input-field id="usernameUpdate" label="Username" model="username" placeholder="Enter a Username.." required />
+                                <x-input-field id="usernameUpdate" label="Username" model="username"
+                                    placeholder="Enter a Username.." required />
                             </div>
                         </div>
 
@@ -37,7 +38,9 @@
                                 @endif
                             </div>
                             <div class="col-lg-6 col-12">
-                                <x-select-field id="statusUpdate" label="Status" model="status" required :options="['1' => 'Active', '0' => 'Not Active']" />
+                                <x-select-field id="statusUpdate" label="Status" model="status" required
+                                    :options="['1' => 'Active', '0' => 'Not Active']"
+                                    tooltip="Not active administrator cannot log in to Megalos." />
                             </div>
                         </div>
 
@@ -50,10 +53,12 @@
                         {{-- FORM INPUT FULL NAME AND EMAIL ADDRESS --}}
                         <div class="row">
                             <div class="col-lg-6 col-12">
-                                <x-input-field id="fullNameUpdate" label="Full Name" model="fullname" placeholder="Enter a Full Name.." required />
+                                <x-input-field id="fullNameUpdate" label="Full Name" model="fullname"
+                                    placeholder="Enter a Full Name.." required />
                             </div>
                             <div class="col-lg-6 col-12">
-                                <x-input-field type="email" id="emailAddressUpdate" label="Email Address" model="email" placeholder="Enter a Email Address.." required />
+                                <x-input-field type="email" id="emailAddressUpdate" label="Email Address" model="email"
+                                    placeholder="Enter a Email Address.." required />
                             </div>
                         </div>
 

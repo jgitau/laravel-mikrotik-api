@@ -5,7 +5,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalCenterTitle">Add New Admin</h5>
-                        <x-button color="close" dismiss="true" click="closeModal"/>
+                    <x-button color="close" dismiss="true" click="closeModal" />
                 </div>
                 <form wire:submit.prevent="storeNewAdmin" method="POST">
                     <div class="modal-body">
@@ -34,7 +34,8 @@
                             </div>
                             <div class="col-lg-4 col-12">
                                 <x-select-field id="status" label="Status" model="status" required
-                                    :options="['1' => 'Active', '0' => 'Not Active']" />
+                                    :options="['1' => 'Active', '0' => 'Not Active']"
+                                    tooltip="Not active administrator cannot log in to Megalos." />
                             </div>
                         </div>
 

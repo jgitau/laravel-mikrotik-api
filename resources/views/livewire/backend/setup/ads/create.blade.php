@@ -59,12 +59,12 @@
                         {{-- FORM INPUT URL FOR IMAGE AND POSITION --}}
                         <div class="row mt-3">
                             <div class="col">
-                                <x-input-field type="date" id="timeToShow" label="From" placeholder="Enter a From.."
+                                <x-input-field type="text" id="timeToShow" label="From" placeholder="From - (YYYY-MM-DD)."
                                     model="timeToShow" />
                             </div>
                             <div class="col">
-                                <x-input-field type="date" id="timeToHide" label="To" model="timeToHide"
-                                    placeholder="Enter a To.." />
+                                <x-input-field type="text" id="timeToHide" label="To" model="timeToHide"
+                                    placeholder="To - (YYYY-MM-DD)" />
                             </div>
                         </div>
 

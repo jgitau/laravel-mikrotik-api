@@ -1,11 +1,8 @@
-@php
-$configData = Helper::appClasses();
-@endphp
-
 @extends('layouts/layoutMaster')
 @section('title', 'List Ads')
 @push('styles')
 <link rel="stylesheet" href="{{ asset('assets/datatable/datatables.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
 @endpush
 
 @section('content')
@@ -36,21 +33,11 @@ $configData = Helper::appClasses();
     @endif
 
     @push('scripts')
+    <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
     <script src="{{ asset('assets/datatable/datatables.min.js') }}"></script>
     <script src="{{ asset('assets/js/backend/setup/ads/list-ads-management.js') }}"></script>
-    <script>
-        // Hide Modal
-        window.addEventListener('hide-modal', () => {
-            $('#createNewAd').modal('hide');
-            $('#updateAdModal').modal('hide');
-        });
-        window.addEventListener('show-modal', () => {
-            $('#updateAdModal').modal('show');
-        });
-    </script>
     @endpush
 </div>
-@endif
 
 @if($permissions['isAllowedToAddAd'])
 @livewire('backend.setup.ads.create')
@@ -60,4 +47,5 @@ $configData = Helper::appClasses();
 @livewire('backend.setup.ads.edit')
 @endif
 
+@endif
 @endsection

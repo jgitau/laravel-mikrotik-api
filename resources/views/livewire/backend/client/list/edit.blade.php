@@ -4,7 +4,7 @@
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalCenterTitle">Add New Client</h5>
+                    <h5 class="modal-title" id="modalCenterTitle">Edit Client</h5>
                     <x-button color="close" dismiss="true" click="closeModal" />
                 </div>
                 <form wire:submit.prevent="updateClient" method="POST">
@@ -16,20 +16,23 @@
                                     :options="$services->pluck('service_name', 'id')->toArray()" />
                             </div>
                             <div class="col-lg-6 col-12 mb-3">
-                                <x-input-field type="text" id="usernameUpdate" label="Username" model="username"
-                                    placeholder="Enter a Username.." required readonly />
+                                <x-input-field type="text" id="usernameUpdate" label="Username" model="username" placeholder="Enter a Username.."
+                                    required readonly
+                                    tooltip="Username length is between 5 and 32. Username may only contain lower case alphabet and numeric characters, '@' sign, dots and underscores." />
                             </div>
                         </div>
 
                         {{-- FORM INPUT PASSWORD AND SIMULTANEOUS USE --}}
                         <div class="row">
                             <div class="col-lg-6 col-12 mb-3">
-                                <x-input-field type="text" id="passwordUpdate" label="Password" model="password"
-                                    placeholder="Enter a Password.." required />
+                                <x-input-field type="text" id="passwordUpdate" label="Password" model="password" placeholder="Enter a Password.."
+                                    required
+                                    tooltip="Password length is between 5 and 32. Password may only contain alphabet and numeric characters, spaces, '_', '-', '^', '#', '!', '*', and '@'." />
                             </div>
                             <div class="col-lg-6 col-12 mb-3">
-                                <x-input-field type="number" id="simultaneousUseUpdate" label="Simultaneous Use"
-                                    model="simultaneousUse" placeholder="Enter a Simultaneous Use.." />
+                                <x-input-field type="number" id="simultaneousUseUpdate" label="Simultaneous Use" model="simultaneousUse"
+                                    placeholder="Enter a Simultaneous Use.."
+                                    tooltip="The maximum number of simultaneous online (logged in to hotspot) devices for one user. Simultaneous use in Service will be ignored." />
                             </div>
                         </div>
 
@@ -37,15 +40,15 @@
                         <div class="row">
                             <div class="col-lg-6 col-12 mb-3">
                                 <x-input-field type="text" id="validFromUpdate" label="Valid From" model="validFrom"
-                                    placeholder="(YYYY-MM-DD HH:MM:SS)" />
+                                    placeholder="(YYYY-MM-DD HH:MM:SS)" tooltip="User can be used after this specified time." />
                             </div>
                             <div class="col-lg-6 col-12 mb-3">
-                                <x-input-field type="text" id="validToUpdate" label="Valid To" model="validTo"
-                                    placeholder="(YYYY-MM-DD HH:MM:SS)" />
+                                <x-input-field type="text" id="validToUpdate" label="Valid To" model="validTo" placeholder="(YYYY-MM-DD HH:MM:SS)"
+                                    tooltip="User can not be used after this specified time." />
                             </div>
                         </div>
 
-                        {{-- TITLE ADMINISTRATOR DETAIL --}}
+                        {{-- TITLE Client Details --}}
                         <div class="row">
                             <hr>
                             <h5>Client Details (Optional)</h5>
@@ -114,7 +117,7 @@
                         </x-button>
 
                         <x-button type="submit" color="primary">
-                            Save
+                            Save Changes
                         </x-button>
                     </div>
                 </form>

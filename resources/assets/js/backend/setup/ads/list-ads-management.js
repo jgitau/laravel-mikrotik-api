@@ -1,3 +1,25 @@
+// Helper function to initialize a flatpickr instance with common settings
+function initializeFlatpickr(elementId, isDateTime = true) {
+  const element = document.querySelector(`#${elementId}`);
+  // Ensure the element actually exists in the document
+  if (element) {
+    const config = isDateTime ? { enableTime: true, dateFormat: 'Y-m-d H:i' } : { monthSelectorType: 'static' };
+    return element.flatpickr(config);
+  }
+}
+// Initialize flatpickr instances
+const datePickers = ['timeToShow', 'timeToHide', 'timeToShowUpdate', 'timeToHideUpdate'];
+datePickers.forEach(id => initializeFlatpickr(id, false));
+
+// Hide Modal
+window.addEventListener('hide-modal', () => {
+  $('#createNewAd').modal('hide');
+  $('#updateAdModal').modal('hide');
+});
+window.addEventListener('show-modal', () => {
+  $('#updateAdModal').modal('show');
+});
+
 // Function to show a modal based on a given id for UPDATE!
 function showAd(id) {
   // Emit an event to show the modal with the given Livewire component id for UPDATE!

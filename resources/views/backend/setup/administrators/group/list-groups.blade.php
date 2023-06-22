@@ -1,7 +1,3 @@
-@php
-$configData = Helper::appClasses();
-@endphp
-
 @extends('layouts/layoutMaster')
 @section('title', 'List Groups')
 @push('styles')
@@ -9,6 +5,7 @@ $configData = Helper::appClasses();
 @endpush
 
 @section('content')
+
 {{-- Is Allowed User To List Groups --}}
 @if($permissions['isAllowedToListGroups'])
 <h4 class="fw-bold py-3 mb-1"><span class="text-primary fw-light">Groups </span>/ List</h4>
@@ -64,8 +61,8 @@ $configData = Helper::appClasses();
     }, 3000);
 </script>
 @endif
+@endpush
 
 @endif
-@endpush
 
 @endsection

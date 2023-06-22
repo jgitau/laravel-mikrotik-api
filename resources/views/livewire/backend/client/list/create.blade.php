@@ -17,7 +17,7 @@
                             </div>
                             <div class="col-lg-6 col-12 mb-3">
                                 <x-input-field type="text" id="username" label="Username" model="username"
-                                    placeholder="Enter a Username.." required />
+                                    placeholder="Enter a Username.." required tooltip="Username length is between 5 and 32. Username may only contain lower case alphabet and numeric characters, '@' sign, dots and underscores." />
                             </div>
                         </div>
 
@@ -25,11 +25,11 @@
                         <div class="row">
                             <div class="col-lg-6 col-12 mb-3">
                                 <x-input-field type="text" id="password" label="Password" model="password"
-                                    placeholder="Enter a Password.." required />
+                                    placeholder="Enter a Password.." required tooltip="Password length is between 5 and 32. Password may only contain alphabet and numeric characters, spaces, '_', '-', '^', '#', '!', '*', and '@'." />
                             </div>
                             <div class="col-lg-6 col-12 mb-3">
                                 <x-input-field type="number" id="simultaneousUse" label="Simultaneous Use"
-                                    model="simultaneousUse" placeholder="Enter a Simultaneous Use.." />
+                                    model="simultaneousUse" placeholder="Enter a Simultaneous Use.." tooltip="The maximum number of simultaneous online (logged in to hotspot) devices for one user. Simultaneous use in Service will be ignored." />
                             </div>
                         </div>
 
@@ -37,15 +37,15 @@
                         <div class="row">
                             <div class="col-lg-6 col-12 mb-3">
                                 <x-input-field type="text" id="validFrom" label="Valid From" model="validFrom"
-                                    placeholder="(YYYY-MM-DD HH:MM:SS)" />
+                                    placeholder="(YYYY-MM-DD HH:MM:SS)" tooltip="User can be used after this specified time." />
                             </div>
                             <div class="col-lg-6 col-12 mb-3">
                                 <x-input-field type="text" id="validTo" label="Valid To" model="validTo"
-                                    placeholder="(YYYY-MM-DD HH:MM:SS)" />
+                                    placeholder="(YYYY-MM-DD HH:MM:SS)" tooltip="User can not be used after this specified time." />
                             </div>
                         </div>
 
-                        {{-- TITLE ADMINISTRATOR DETAIL --}}
+                        {{-- TITLE Client Details --}}
                         <div class="row">
                             <hr>
                             <h5>Client Details (Optional)</h5>

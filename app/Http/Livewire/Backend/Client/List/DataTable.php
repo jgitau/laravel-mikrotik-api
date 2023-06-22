@@ -16,7 +16,7 @@ class DataTable extends Component
         'clientCreated' => 'refreshDataTable',
         'clientUpdated' => 'refreshDataTable',
         'confirmClient' => 'deleteClient',
-        'deleteBatch' => 'deleteBatchClient',
+        'deleteBatch'   => 'deleteBatchClient',
     ];
 
     /**

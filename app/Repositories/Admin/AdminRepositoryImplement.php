@@ -34,14 +34,20 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
      * @param string $password The admin's password.
      * @return array|bool An array containing the session key, session data and the cookie, or false if the credentials are not valid.
      */
-    public function validateAdmin($username,$password)
+    public function validateAdmin($username, $password)
     {
         try {
             // Get Admin
             $admin = $this->model->where('username', strtolower($username))->first();
 
-            // Check if admin data is found, password is correct, and admin status is active
-            if ($admin && Hash::check($password, $admin->password) && $admin->status == 1) {
+            // Check if admin data is found, password is correct
+            if ($admin && Hash::check($password, $admin->password)) {
+
+                // Check if admin status is 1
+                if ($admin->status != 1) {
+                    // Return a message if the account is no longer active
+                    return ['success' => false, 'message' => 'Your account is no longer active'];
+                }
 
                 // Prepare session data
                 $sessionData = $this->prepareSessionData($admin);
@@ -56,15 +62,18 @@ class AdminRepositoryImplement extends Eloquent implements AdminRepository
                 $this->saveLoginLog($username);
 
                 // Return session key, session data, and cookie
-                return ['session_key' => $sessionKey, 'session_data' => $sessionData, 'cookie' => $cookie];
+                return ['success' => true, 'session_key' => $sessionKey, 'session_data' => $sessionData, 'cookie' => $cookie];
             }
         } catch (\Exception $e) {
             // Log the exception message for debugging and return false
-            Log::error("Error in validateAdmin: " . $e->getMessage());
+            Log::error("Error in Validate Account : " . $e->getMessage());
+            throw $e;
         }
         // Invalid login credentials or an error occurred
-        return false;
+        return ['success' => false, 'message' => 'Invalid Username or Password!.'];
     }
+
+
 
     /**
      * logout

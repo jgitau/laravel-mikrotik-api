@@ -25,7 +25,7 @@
                         <div class="row">
                             <div class="col-lg-6 col-12 mb-3">
                                 <x-input-field type="text" id="password" label="Password" model="password"
-                                    placeholder="Enter a Password.." required tooltip="Password length is between 5 and 32. Password may only contain alphabet and numeric characters, spaces, '_', '-', '^', '#', '!', '*', and '@'." />
+                                    placeholder="Enter a Password.." required tooltip="Password length is between 5 and 32." />
                             </div>
                             <div class="col-lg-6 col-12 mb-3">
                                 <x-input-field type="number" id="simultaneousUse" label="Simultaneous Use"

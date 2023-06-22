@@ -1,7 +1,3 @@
-@php
-$configData = Helper::appClasses();
-@endphp
-
 @extends('layouts/layoutMaster')
 @section('title', 'List Clients')
 @push('styles')

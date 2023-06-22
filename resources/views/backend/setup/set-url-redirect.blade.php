@@ -1,7 +1,3 @@
-@php
-$configData = Helper::appClasses();
-@endphp
-
 @extends('layouts/layoutMaster')
 
 @section('title', 'Set URL Redirect')

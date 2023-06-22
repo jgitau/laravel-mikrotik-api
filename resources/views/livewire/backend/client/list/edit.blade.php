@@ -4,7 +4,7 @@
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalCenterTitle">Add New Client</h5>
+                    <h5 class="modal-title" id="modalCenterTitle">Edit Client</h5>
                     <x-button color="close" dismiss="true" click="closeModal" />
                 </div>
                 <form wire:submit.prevent="updateClient" method="POST">

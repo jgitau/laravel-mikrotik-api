@@ -169,17 +169,11 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
             // Create new service entry
             $service = $this->model->create($serviceData);
 
-            if ($service['for_purchase'] > 0) {
-                $this->rateLimitAddLimitAt($service);
-            } else {
-                $this->rateLimit($service);
-            }
+            // Set rate limit according to 'for_purchase' value
+            $this->setRateLimit($service);
 
-            // Call the other methods with the created service.
-            $this->idleTimeout($service);
-            $this->sessionTimeout($service);
-            $this->simultaneousUse($service);
-            $this->timeLimit($service);
+            // Call the other methods with the updated service
+            $this->setServiceParameters($service);
 
             return $service;
         } catch (\Exception $e) {
@@ -198,17 +192,10 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
     public function deleteServiceAndRadGroupReply($serviceId)
     {
         try {
-            // Retrieve the service
-            $service = $this->model->find($serviceId);
-
-            if (!$service) {
-                // The service doesn't exist
-                throw new \Exception('The service with id ' . $serviceId . ' does not exist.');
-            }
-
+            // Check if the service exists
+            $service = $this->getServiceById($serviceId);
             // Delete the related records from the 'radGroupReply' table.
             $this->deleteRadGroupReplyRecords($service);
-
             // Delete the service.
             $service->delete();
         } catch (\Exception $e) {
@@ -230,28 +217,15 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
     {
         try {
             // Check if the service exists
-            $service = $this->model->find($serviceId);
-            if (!$service) {
-                throw new \Exception('Service not found');
-            }
-
+            $service = $this->getServiceById($serviceId);
             // Prepare the service data
             $serviceData = $this->prepareDataServices($request);
             // Update service entry
             $service->update($serviceData);
-
-            // Adjust rate limit depending on 'for_purchase' value
-            if ($service['for_purchase'] > 0) {
-                $this->rateLimitAddLimitAt($service);
-            } else {
-                $this->rateLimit($service);
-            }
-
-            // Call the other methods with the updated service.
-            $this->idleTimeout($service);
-            $this->sessionTimeout($service);
-            $this->simultaneousUse($service);
-            $this->timeLimit($service);
+            // Set rate limit according to 'for_purchase' value
+            $this->setRateLimit($service);
+            // Call the other methods with the updated service
+            $this->setServiceParameters($service);
 
             return $service;
         } catch (\Exception $e) {
@@ -278,7 +252,12 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
      */
     public function getServiceById($serviceId)
     {
-        return $this->model->find($serviceId);
+        $service = $this->model->find($serviceId);
+        if (!$service) {
+            throw new \Exception('Service not found');
+        }
+
+        return $service;
     }
 
     /**
@@ -664,6 +643,31 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
                 'groupname' => $service['service_name'],
                 'attribute' => $attribute
             ])->delete();
+        }
+    }
+
+    /**
+     * Helper function to set service parameters.
+     * @param array $service
+     */
+    private function setServiceParameters($service)
+    {
+        $this->IdleTimeout($service);
+        $this->SessionTimeout($service);
+        $this->SimultaneousUse($service);
+        $this->TimeLimit($service);
+    }
+
+    /**
+     * Helper function to set rate limit.
+     * @param array $service
+     */
+    private function setRateLimit($service)
+    {
+        if ($service['for_purchase'] > 0) {
+            $this->rateLimitAddLimitAt($service);
+        } else {
+            $this->rateLimit($service);
         }
     }
 }

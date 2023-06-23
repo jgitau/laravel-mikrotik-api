@@ -70,9 +70,9 @@ class Create extends Component
 
         // List of properties to include in the new client
         $properties = [
-        'idService', 'username', 'password', 'simultaneousUse', 'validFrom', 'validTo',
-        'identificationNo', 'emailAddress', 'firstName', 'lastName', 'placeOfBirth',
-        'dateOfBirth', 'phone', 'address', 'notes'
+            'idService', 'username', 'password', 'simultaneousUse', 'validFrom', 'validTo',
+            'identificationNo', 'emailAddress', 'firstName', 'lastName', 'placeOfBirth',
+            'dateOfBirth', 'phone', 'address', 'notes'
         ];
 
         // Collect property values into an associative array
@@ -119,7 +119,6 @@ class Create extends Component
 
     /**
      * Reset all fields to their default state.
-     *
      * @return void
      */
     public function resetFields()

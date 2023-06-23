@@ -1,12 +1,13 @@
 {{-- This is the card body section --}}
 <div class="card-body">
     {{-- This is a form which uses a livewire event to prevent the default form submission --}}
-    <form wire:submit.prevent="storeGroup" method="POST">
+    <form wire:submit.prevent="storeNewService" method="POST">
         {{-- FORM INPUT SERVICE NAME AND DESCRIPTION --}}
         <div class="row">
             <div class="col-lg-6 col-md-6 col-12 mb-3">
                 <x-input-field type="text" id="serviceName" label="Service Name" model="serviceName"
-                    placeholder="Enter a Service Name.." required />
+                    placeholder="Enter a Service Name.." required
+                    tooltip="Enter a Service Name. Spaces will be removed and each word will be capitalized, e.g. 'default service' will be saved as 'DefaultService'." />
             </div>
             <div class="col-lg-6 col-md-6 col-12 mb-3">
                 <x-input-field type="text" id="description" label="Description" model="description"
@@ -57,7 +58,7 @@
                         'HKD' => 'HKD',
                         'AUD' => 'AUD',
                         'JPY' => 'JPY'
-                        ]" />
+                        ]" placeholder="false"/>
             </div>
             <div class="col-lg-3 col-md-4 col-6 mb-3">
                 <x-input-field type="number" id="simultaneousUse" label="Simultaneous Use" model="simultaneousUse"
@@ -114,7 +115,7 @@
 
         {{-- FORM INPUT LIMIT TPYE, TIME LIMIT AND UNIT TIME --}}
         <div class="row">
-            <div class="col-lg-6 col-md-6 col-12 mb-3">
+            <div class="col-lg-5 col-md-5 col-12 mb-3">
                 <x-select-field id="limitType" model="limitType" label="Limit Type" :options="[
                         'one_time_continuous' => 'One-Time Continuously',
                         'one_time_gradually' => 'One-Time Gradually'
@@ -126,12 +127,12 @@
                     placeholder="Enter a Time Limit.." required
                     tooltip="Limit usage by time, after this limit is reached the user become invalid." />
             </div>
-            <div class="col-lg-2 col-md-2 col-6 mb-3">
-                <x-select-field id="unitTime" model="unitTime" class="mt-4" :options="[
+            <div class="col-lg-3 col-md-3 col-6 mb-3">
+                <x-select-field id="unitTime" model="unitTime" label="Unit Time" :options="[
                         'minutes' => 'Minutes',
                         'hours' => 'Hours',
                         'days' => 'Days',
-                        ]" placeholder="false" />
+                        ]" placeholder="false"/>
             </div>
         </div>
 
@@ -141,7 +142,7 @@
             <h5>Validity Settings</h5>
         </div>
 
-        {{-- FORM INPUT VALID FROM AND VALID TYPE --}}
+        {{-- FORM INPUT VALID FROM AND VALIDITY TYPE --}}
         <div class="row">
             <div class="col-lg-6 col-md-6 col-12 mb-3">
                 <x-input-field type="text" id="validFrom" label="Valid From" model="validFrom"
@@ -149,11 +150,12 @@
                     tooltip="User can be used after this specified time." />
             </div>
             <div class="col-lg-6 col-md-6 col-12 mb-3">
-                <x-select-field id="validType" model="validType" label="Valid Type" :options="[
-                                'calculated_after_created' => 'Calculated After Created',
-                                'calculated_after_first_login' => 'Calculated After First Login'
+                <x-select-field id="validityType" model="validityType" label="Validity Type" :options="[
+                                'none' => '-- Choose Validity Type --',
+                                'after_created' => 'Calculated After Created',
+                                'after_first_login' => 'Calculated After First Login'
                                 ]" tooltip="After first login validity is counted after the first login to the hotspot. After created validity is counted after user
-                    created." />
+                    created." placeholder="false" />
             </div>
         </div>
 
@@ -166,7 +168,7 @@
             </div>
 
             <div class="col-lg-4 col-md-4 col-6 mb-3">
-                <x-select-field id="unitValidity" model="unitValidity" class="mt-4" :options="[
+                <x-select-field id="unitValidity" model="unitValidity" label="Unit Validity" :options="[
                     'days' => 'Days',
                     'months' => 'Months',
                     'years' => 'Years',
@@ -182,19 +184,18 @@
 
         {{-- FORM INPUT LIMIT TPYE, TIME LIMIT AND UNIT TIME --}}
         <div class="row">
-            <div class="col-lg-8 col-md-8 col-8 mb-3">
-                <x-input-field type="text" id="timeDuration" label="Time Duration" model="timeDuration"
+            <div class="col-lg-8 col-md-6 col-6 mb-3">
+                <x-input-field type="number" id="timeDuration" label="Time Duration" model="timeDuration"
                     placeholder="Enter a Time Duration.." required />
             </div>
-            <div class="col-lg-2 col-md-2 col-4 mb-3">
-                <x-select-field id="unitTimeDuration" model="unitTimeDuration" class="mt-4" :options="[
-                        'minutes' => 'Minutes',
+            <div class="col-lg-2 col-md-6 col-6 mb-3">
+                <x-select-field id="unitTimeDuration" model="unitTimeDuration" label="Unit Time Duration" :options="[
                         'hours' => 'Hours',
                         'days' => 'Days',
                         ]" placeholder="false" />
 
             </div>
-            <div class="col-lg-2 col-md-2 col-6 mb-3">
+            <div class="col-lg-2 col-md-6 col-6 mb-3">
                 <x-select-field id="enableFeature" model="enableFeature" label="Enable Feature" :options="[
                         '0' => 'No',
                         '1' => 'Yes'

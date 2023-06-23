@@ -10,7 +10,11 @@ class Create extends Component
 {
     // Traits LivewireMessageEvents for show modal and toast message
     use LivewireMessageEvents;
-    // Define public variables
+    // Properties Public For Create New Service
+    public $serviceName, $description, $downloadRate, $uploadRate, $idleTimeout, $sessionTimeout,
+        $serviceCost, $currency = "IDR", $simultaneousUse, $downloadBurstRate, $uploadBurstRate,
+        $downloadBurstTime, $uploadBurstTime, $priority, $limitType, $timeLimit, $unitTime = "minutes", $validFrom, $validityType = "none",
+        $validity, $unitValidity = "days", $timeDuration, $unitTimeDuration = "hours", $enableFeature;
 
     // Listeners for refresh component
     protected $listeners = [
@@ -25,7 +29,8 @@ class Create extends Component
     public function updated($property)
     {
         // Every time a property changes, this function will be called
-        $this->validateOnly($property);
+        $serviceMegalosService = app(ServiceMegalosService::class);
+        $this->validateOnly($property, $serviceMegalosService->getRules($this), $serviceMegalosService->getMessages());
     }
 
     /**
@@ -42,24 +47,59 @@ class Create extends Component
      * @param ServiceMegalosService $serviceMegalosService - Service for handling service-related logic.
      * @return redirect - On success, redirects to 'list-services' route with success message.
      */
-    public function storeService(ServiceMegalosService $serviceMegalosService)
+    public function storeNewService(ServiceMegalosService $serviceMegalosService)
     {
         // Validate Form Request
-        $this->validate();
+        $newService = $this->validate($serviceMegalosService->getRules($this), $serviceMegalosService->getMessages());
 
+        // Format serviceName: remove spaces and capitalize each word
+        $newService['serviceName'] = ucwords(strtolower($newService['serviceName']));
         try {
-            // Call the storeNewService function in the repository
             // TODO:
-            // $serviceMegalosService->storeNewService($this->serviceName, $this->permission);
+            // Call the storeNewService function in the repository
+            $serviceMegalosService->storeNewService($newService);
             // Reset the form fields
             $this->resetFields();
             // Emit the 'serviceCreated' event with a true status
             $this->emit('serviceCreated', true);
-            return redirect()->route('backend.setup.admin.list-services')->with('success', 'Service was created successfully.');
-            // // Redirect to the service.index page with a success message
+            return redirect()->route('backend.services.list-services')->with('success', 'Service was created successfully.');
         } catch (\Throwable $th) {
             // Show Message Error
             $this->dispatchErrorEvent('An error occurred while creating service : ' . $th->getMessage());
         }
+    }
+
+
+    /**
+     * Reset all fields to their default state.
+     * @return void
+     */
+    public function resetFields()
+    {
+        // Reset the form fields
+        $this->serviceName = null;
+        $this->description = null;
+        $this->downloadRate = null;
+        $this->uploadRate = null;
+        $this->idleTimeout = null;
+        $this->sessionTimeout = null;
+        $this->serviceCost = null;
+        $this->currency = null;
+        $this->simultaneousUse = null;
+        $this->downloadBurstRate = null;
+        $this->uploadBurstRate = null;
+        $this->downloadBurstTime = null;
+        $this->uploadBurstTime = null;
+        $this->priority = null;
+        $this->limitType = null;
+        $this->timeLimit = null;
+        $this->unitTime = null;
+        $this->validFrom = null;
+        $this->validityType = null;
+        $this->validity = null;
+        $this->unitValidity = null;
+        $this->timeDuration = null;
+        $this->unitTimeDuration = null;
+        $this->enableFeature = null;
     }
 }

@@ -35,6 +35,49 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
     }
 
     /**
+     * Define validation rules for service creation.
+     * @param object $request The rules data used to create the new service.
+     * @param string|null $serviceId Service ID for uniqueness checks. If not provided, a create operation is assumed.
+     * @return array Array of validation rules
+     */
+    public function getRules($request, $serviceId = null)
+    {
+        try {
+            return $this->mainRepository->getRules($request, $serviceId);
+        } catch (Exception $exception) {
+            throw new Exception("Error getting rules : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Define validation messages for service creation.
+     * @return array Array of validation messages
+     */
+    public function getMessages()
+    {
+        try {
+            return $this->mainRepository->getMessages();
+        } catch (Exception $exception) {
+            throw new Exception("Error getting messages : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Stores a new service using the provided request data.
+     * @param array $request The data used to create the new service.
+     * @return Model|mixed The newly created service.
+     * @throws \Exception if an error occurs while creating the service.
+     */
+    public function storeNewService($request)
+    {
+        try {
+            return $this->mainRepository->storeNewService($request);
+        } catch (Exception $exception) {
+            throw new Exception("Error creating new service : " . $exception->getMessage());
+        }
+    }
+
+    /**
      * @return The `getServices()` function is returning the result of calling the `getServices()`
      * method on the `` object.
      */

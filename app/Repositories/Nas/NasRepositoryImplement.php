@@ -6,6 +6,7 @@ use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Nas;
 use App\Models\RouterOsApi;
 use App\Models\Setting;
+use App\Services\Setting\SettingService;
 
 class NasRepositoryImplement extends Eloquent implements NasRepository
 {
@@ -18,12 +19,14 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
     protected $model;
     protected $setting;
     protected $routerOsApi;
+    protected $settingService;
 
-    public function __construct(Nas $model, Setting $setting, RouterOsApi $routerOsApi)
+    public function __construct(Nas $model, Setting $setting, RouterOsApi $routerOsApi, SettingService $settingService)
     {
         $this->model = $model;
         $this->setting = $setting;
         $this->routerOsApi = $routerOsApi;
+        $this->settingService = $settingService;
     }
 
     // ***** PUBLIC FUNCTIONS *****
@@ -102,7 +105,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         foreach ($settings as $setting) {
             // Retrieve the setting from the database using a separate function (getSetting)
             // And set it as a property of our $record object
-            $record->$setting = $this->getSetting($setting, '0');
+            $record->$setting = $this->settingService->getSetting($setting, '0');
         }
 
         // Return the $record object, now with its properties set according to the retrieved settings
@@ -126,32 +129,6 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
 
         // If no exception, return true indicating successful operation.
         return true;
-    }
-
-    /**
-     * Retrieves a setting based on the setting name and module ID.
-     * @param string $settingName The setting name.
-     * @param string $moduleId The module id.
-     * @return string Returns the setting value.
-     */
-    public function getSetting($settingName, $moduleId)
-    {
-        // Retrieves the setting value based on setting name and module id.
-        $query = $this->setting->where('module_id', $moduleId)->where('setting', $settingName)->first();
-        return $query->value ?? "";
-    }
-
-    /**
-     * Updates a setting based on the setting name, module ID, and new value.
-     * @param string $settingName The setting name.
-     * @param string $moduleId The module id.
-     * @param string $value The new value.
-     * @return int The number of affected rows.
-     */
-    public function updateSetting($settingName, $moduleId, $value)
-    {
-        // Updates the setting value in the database and returns the number of affected rows.
-        return $this->setting->where('module_id', $moduleId)->where('setting', $settingName)->update(['value' => $value]);
     }
 
     // 👇 **** PROTECTED FUNCTIONS **** 👇
@@ -551,7 +528,7 @@ class NasRepositoryImplement extends Eloquent implements NasRepository
         // For each setting in our array
         foreach ($settings as $dbSetting => $providedSetting) {
             // Update the setting in the database using the data provided
-            $this->updateSetting($dbSetting, '0', $data[$providedSetting]);
+            $this->settingService->updateSetting($dbSetting, '0', $data[$providedSetting]);
         }
     }
 

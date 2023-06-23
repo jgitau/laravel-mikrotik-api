@@ -2,6 +2,7 @@
 @section('title', 'Add New Service')
 @push('styles')
 <link rel="stylesheet" href="{{ asset('assets/datatable/datatables.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
 @endpush
 
 @section('content')
@@ -32,6 +33,26 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
+<script>
+    // Helper function to initialize a flatpickr instance with common settings
+    function initializeFlatpickr(elementId, isDateTime = true) {
+        const element = document.querySelector(`#${elementId}`);
+    // Ensure the element actually exists in the document
+        if (element) {
+            const config = isDateTime ? { enableTime: true, dateFormat: 'Y-m-d H:i' } : { monthSelectorType: 'static' };
+            return element.flatpickr(config);
+        }
+    }
+    // Initialize flatpickr instances
+    const datetimePickers = ['validFrom'];
+    datetimePickers.forEach(id => initializeFlatpickr(id));
+
+</script>
+@endpush
+
 @endif
 
 @endsection

@@ -169,17 +169,11 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
             // Create new service entry
             $service = $this->model->create($serviceData);
 
-            if ($service['for_purchase'] > 0) {
-                $this->rateLimitAddLimitAt($service);
-            } else {
-                $this->rateLimit($service);
-            }
+            // Set rate limit according to 'for_purchase' value
+            $this->setRateLimit($service);
 
-            // Call the other methods with the created service.
-            $this->idleTimeout($service);
-            $this->sessionTimeout($service);
-            $this->simultaneousUse($service);
-            $this->timeLimit($service);
+            // Call the other methods with the updated service
+            $this->setServiceParameters($service);
 
             return $service;
         } catch (\Exception $e) {
@@ -234,24 +228,14 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
             if (!$service) {
                 throw new \Exception('Service not found');
             }
-
             // Prepare the service data
             $serviceData = $this->prepareDataServices($request);
             // Update service entry
             $service->update($serviceData);
-
-            // Adjust rate limit depending on 'for_purchase' value
-            if ($service['for_purchase'] > 0) {
-                $this->rateLimitAddLimitAt($service);
-            } else {
-                $this->rateLimit($service);
-            }
-
-            // Call the other methods with the updated service.
-            $this->idleTimeout($service);
-            $this->sessionTimeout($service);
-            $this->simultaneousUse($service);
-            $this->timeLimit($service);
+            // Set rate limit according to 'for_purchase' value
+            $this->setRateLimit($service);
+            // Call the other methods with the updated service
+            $this->setServiceParameters($service);
 
             return $service;
         } catch (\Exception $e) {
@@ -664,6 +648,31 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
                 'groupname' => $service['service_name'],
                 'attribute' => $attribute
             ])->delete();
+        }
+    }
+
+    /**
+     * Helper function to set service parameters.
+     * @param array $service
+     */
+    private function setServiceParameters($service)
+    {
+        $this->IdleTimeout($service);
+        $this->SessionTimeout($service);
+        $this->SimultaneousUse($service);
+        $this->TimeLimit($service);
+    }
+
+    /**
+     * Helper function to set rate limit.
+     * @param array $service
+     */
+    private function setRateLimit($service)
+    {
+        if ($service['for_purchase'] > 0) {
+            $this->rateLimitAddLimitAt($service);
+        } else {
+            $this->rateLimit($service);
         }
     }
 }

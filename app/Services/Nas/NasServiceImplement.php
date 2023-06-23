@@ -70,38 +70,6 @@ class NasServiceImplement extends Service implements NasService
     }
 
     /**
-     * getSetting
-     *
-     * @param  mixed $shortName
-     * @return void
-     */
-    public function getSetting($settingName, $moduleId)
-    {
-        try {
-            return $this->mainRepository->getSetting($settingName, $moduleId);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-            return [];
-        }
-    }
-
-    /**
-     * updateSetting
-     *
-     * @param  mixed $shortName
-     * @return void
-     */
-    public function updateSetting($settingName, $moduleId, $value)
-    {
-        try {
-            return $this->mainRepository->updateSetting($settingName, $moduleId, $value);
-        } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
-            return [];
-        }
-    }
-
-    /**
      * setupProcess
      *
      * @param  mixed $record

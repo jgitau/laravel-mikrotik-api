@@ -7,7 +7,7 @@ use App\Models\Ad;
 use App\Models\Module;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Setting;
-use App\Services\Nas\NasService;
+use App\Services\Setting\SettingService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
@@ -23,16 +23,16 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
     protected $model;
     protected $adModel;
     protected $moduleModel;
-    protected $nasService;
+    protected $settingService;
 
     protected $moduleId;
 
-    public function __construct(Setting $model, Ad $adModel, Module $moduleModel, NasService $nasService)
+    public function __construct(Setting $model, Ad $adModel, Module $moduleModel, SettingService $settingService)
     {
         $this->model = $model;
         $this->adModel = $adModel;
         $this->moduleModel = $moduleModel;
-        $this->nasService = $nasService;
+        $this->settingService = $settingService;
     }
 
     /**
@@ -358,7 +358,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function adsMaxWidth()
     {
-        return $this->nasService->getSetting('ads_max_width', $this->moduleId());
+        return $this->settingService->getSetting('ads_max_width', $this->moduleId());
     }
 
     /**
@@ -367,7 +367,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function adsMaxHeight()
     {
-        return $this->nasService->getSetting('ads_max_height', $this->moduleId());
+        return $this->settingService->getSetting('ads_max_height', $this->moduleId());
     }
 
     /**
@@ -376,7 +376,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function adsMaxSize()
     {
-        return $this->nasService->getSetting('ads_max_size', $this->moduleId());
+        return $this->settingService->getSetting('ads_max_size', $this->moduleId());
     }
 
     /**
@@ -385,7 +385,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function mobileAdsMaxWidth()
     {
-        return $this->nasService->getSetting('mobile_ads_max_width', $this->moduleId());
+        return $this->settingService->getSetting('mobile_ads_max_width', $this->moduleId());
     }
 
     /**
@@ -394,7 +394,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function mobileAdsMaxHeight()
     {
-        return $this->nasService->getSetting('mobile_ads_max_height', $this->moduleId());
+        return $this->settingService->getSetting('mobile_ads_max_height', $this->moduleId());
     }
 
     /**
@@ -403,7 +403,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function mobileAdsMaxSize()
     {
-        return $this->nasService->getSetting('mobile_ads_max_size', $this->moduleId());
+        return $this->settingService->getSetting('mobile_ads_max_size', $this->moduleId());
     }
 
     /**
@@ -412,7 +412,7 @@ class AdsRepositoryImplement extends Eloquent implements AdsRepository
      */
     public function adsUploadFolder()
     {
-        return $this->nasService->getSetting('ads_upload_folder', $this->moduleId());
+        return $this->settingService->getSetting('ads_upload_folder', $this->moduleId());
     }
 
     /**

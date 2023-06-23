@@ -192,17 +192,10 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
     public function deleteServiceAndRadGroupReply($serviceId)
     {
         try {
-            // Retrieve the service
-            $service = $this->model->find($serviceId);
-
-            if (!$service) {
-                // The service doesn't exist
-                throw new \Exception('The service with id ' . $serviceId . ' does not exist.');
-            }
-
+            // Check if the service exists
+            $service = $this->findService($serviceId);
             // Delete the related records from the 'radGroupReply' table.
             $this->deleteRadGroupReplyRecords($service);
-
             // Delete the service.
             $service->delete();
         } catch (\Exception $e) {
@@ -224,10 +217,7 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
     {
         try {
             // Check if the service exists
-            $service = $this->model->find($serviceId);
-            if (!$service) {
-                throw new \Exception('Service not found');
-            }
+            $service = $this->findService($serviceId);
             // Prepare the service data
             $serviceData = $this->prepareDataServices($request);
             // Update service entry
@@ -649,6 +639,22 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
                 'attribute' => $attribute
             ])->delete();
         }
+    }
+
+    /**
+     * Helper function to find service.
+     * @param int $serviceId
+     * @return Model
+     * @throws \Exception
+     */
+    private function findService($serviceId)
+    {
+        $service = $this->model->find($serviceId);
+        if (!$service) {
+            throw new \Exception('Service not found');
+        }
+
+        return $service;
     }
 
     /**

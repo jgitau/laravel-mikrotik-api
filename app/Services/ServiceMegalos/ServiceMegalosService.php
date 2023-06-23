@@ -35,11 +35,34 @@ interface ServiceMegalosService extends BaseService{
     public function storeNewService($request);
 
     /**
+     * Updates an existing service using the provided request data.
+     * @param array $request The data used to update the service.
+     * @param int $serviceId Service ID for uniqueness checks. If not provided, a create operation is assumed.s
+     * @return Model|mixed The updated service.
+     * @throws \Exception if an error occurs while updating the service.
+     */
+    public function updateService($request, $serviceId);
+
+    /**
+     * Delete an existing service and radgroupreply.
+     * @param int $serviceId The id of the service to be deleted.
+     * @throws \Exception if an error occurs while deleting the service.
+     */
+    public function deleteServiceAndRadGroupReply($serviceId);
+
+    /**
      * getServices
      *
      * @return void
      */
     public function getServices();
+
+    /**
+     * Retrieves a service by its ID.
+     * @param int $serviceId Unique identifier of the service.
+     * @return mixed Single record of the service from the database.
+     */
+    public function getServiceById($serviceId);
 
     /**
      * storeHotelRoomService

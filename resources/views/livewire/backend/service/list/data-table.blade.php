@@ -18,34 +18,6 @@
 
 @push('scripts')
 <script>
-    // TODO:
-    // // Helper function to initialize a flatpickr instance with common settings
-    // function initializeFlatpickr(elementId, isDateTime = true) {
-    //     const element = document.querySelector(`#${elementId}`);
-    //     // Ensure the element actually exists in the document
-    //     if (element) {
-    //         const config = isDateTime ? { enableTime: true, dateFormat: 'Y-m-d H:i' } : { monthSelectorType: 'static' };
-    //         return element.flatpickr(config);
-    //     }
-    // }
-
-    // // Initialize flatpickr instances
-    // const datetimePickers = ['validFrom', 'validTo', 'validFromUpdate', 'validToUpdate'];
-    // const datePickers = ['dateOfBirth', 'dateOfBirthUpdate'];
-
-    // datetimePickers.forEach(id => initializeFlatpickr(id));
-    // datePickers.forEach(id => initializeFlatpickr(id, false));
-
-    // Event listener for hiding modals
-    // window.addEventListener('hide-modal', () => {
-    // ['createNewService', 'updateServiceModal'].forEach(id => $(`#${id}`).modal('hide'));
-    // });
-
-    // // Event listener for showing modals
-    // window.addEventListener('show-modal', () => {
-    // $('#updateServiceModal').modal('show');
-    // });
-
     // Helper function to show a Swal dialog
     function showSwalDialog(title, text, callback) {
         Swal.fire({

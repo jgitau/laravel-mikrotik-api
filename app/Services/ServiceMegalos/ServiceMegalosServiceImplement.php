@@ -78,6 +78,36 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
     }
 
     /**
+     * Updates an existing service using the provided request data.
+     * @param array $request The data used to update the service.
+     * @param int $serviceId Service ID for uniqueness checks. If not provided, a create operation is assumed.s
+     * @return Model|mixed The updated service.
+     * @throws \Exception if an error occurs while updating the service.
+     */
+    public function updateService($request, $serviceId)
+    {
+        try {
+            return $this->mainRepository->updateService($request, $serviceId);
+        } catch (Exception $exception) {
+            throw new Exception("Error updating service : " . $exception->getMessage());
+        }
+    }
+
+    /**
+     * Delete an existing service and radgroupreply.
+     * @param int $serviceId The id of the service to be deleted.
+     * @throws \Exception if an error occurs while deleting the service.
+     */
+    public function deleteServiceAndRadGroupReply($serviceId)
+    {
+        try {
+            return $this->mainRepository->deleteServiceAndRadGroupReply($serviceId);
+        } catch (Exception $exception) {
+            throw new Exception("Error deleting service : " . $exception->getMessage());
+        }
+    }
+
+    /**
      * @return The `getServices()` function is returning the result of calling the `getServices()`
      * method on the `` object.
      */
@@ -88,7 +118,20 @@ class ServiceMegalosServiceImplement extends Service implements ServiceMegalosSe
         } catch (Exception $exception) {
             throw new Exception("Error getting services: " . $exception->getMessage());
         }
+    }
 
+    /**
+     * Retrieves a service by its ID.
+     * @param int $serviceId Unique identifier of the service.
+     * @return mixed Single record of the service from the database.
+     */
+    public function getServiceById($serviceId)
+    {
+        try {
+            return $this->mainRepository->getServiceById($serviceId);
+        } catch (Exception $exception) {
+            throw new Exception("Error getting services by id : " . $exception->getMessage());
+        }
     }
 
     /**

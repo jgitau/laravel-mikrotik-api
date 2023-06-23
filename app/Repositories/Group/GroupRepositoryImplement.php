@@ -7,10 +7,7 @@ use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Group;
 use App\Models\Module;
 use App\Models\Page;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redis;
 use Yajra\DataTables\Facades\DataTables;
 
 class GroupRepositoryImplement extends Eloquent implements GroupRepository

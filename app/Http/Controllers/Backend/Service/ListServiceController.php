@@ -59,14 +59,11 @@ class ListServiceController extends Controller
      * This method retrieves permissions from the request's attributes,
      * set by 'checkPermissions' middleware, and returns a view with these permissions.
      */
-    // TODO:
-    // public function edit(ServiceService $serviceService, $id, Request $request)
-    // {
-    //     // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
-    //     $permissions = $request->attributes->get('permissions');
-    //     // Get the service and its associated pages by ID
-    //     $dataService = $serviceService->getServiceAndPagesById($id);
-    //     // Return the view with the permissions and dataService.
-    //     return view('backend.setup.administrators.service.edit-service', compact('permissions', 'dataService'));
-    // }
+    public function edit($serviceId, Request $request)
+    {
+        // Retrieve the permissions from the request's attributes which were set in the 'checkPermissions' middleware
+        $permissions = $request->attributes->get('permissions');
+        // Return the view with the permissions and dataService.
+        return view('backend.services.edit-service', compact('permissions', 'serviceId'));
+    }
 }

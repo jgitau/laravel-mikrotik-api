@@ -6,8 +6,7 @@
         <div class="row">
             <div class="col-lg-6 col-md-6 col-12 mb-3">
                 <x-input-field type="text" id="serviceName" label="Service Name" model="serviceName"
-                    placeholder="Enter a Service Name.." required
-                    tooltip="Enter a Service Name. Spaces will be removed and each word will be capitalized, e.g. 'default service' will be saved as 'DefaultService'." />
+                    placeholder="Enter a Service Name.." required />
             </div>
             <div class="col-lg-6 col-md-6 col-12 mb-3">
                 <x-input-field type="text" id="description" label="Description" model="description"
@@ -58,7 +57,7 @@
                         'HKD' => 'HKD',
                         'AUD' => 'AUD',
                         'JPY' => 'JPY'
-                        ]" placeholder="false"/>
+                        ]" placeholder="false" />
             </div>
             <div class="col-lg-3 col-md-4 col-6 mb-3">
                 <x-input-field type="number" id="simultaneousUse" label="Simultaneous Use" model="simultaneousUse"
@@ -132,7 +131,7 @@
                         'minutes' => 'Minutes',
                         'hours' => 'Hours',
                         'days' => 'Days',
-                        ]" placeholder="false"/>
+                        ]" placeholder="false" />
             </div>
         </div>
 
@@ -214,13 +213,4 @@
             </div>
         </div>
     </form>
-
-    @push('scripts')
-    <script>
-        window.addEventListener('redirect', event => {
-            window.location.href = event.detail.url;
-        });
-    </script>
-    @endpush
-
 </div>

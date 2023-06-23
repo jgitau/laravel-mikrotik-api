@@ -7,6 +7,7 @@ use App\Models\RadGroupCheck;
 use App\Models\RadGroupReply;
 use LaravelEasyRepository\Implementations\Eloquent;
 use App\Models\Services;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -60,13 +61,15 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
                 // Check if the current service is allowed to edit
                 if (AccessControlHelper::isAllowedToPerformAction('edit_service')) {
                     // If service is allowed, show edit button
-                    $editButton = '<button type="button" name="edit" class="edit btn btn-primary btn-sm" onclick="showService(\'' . $data->id . '\')"> <i class="fas fa-edit"></i></button>';
+                    $editButton = '<a href="' . route('backend.services.edit-service', $data->id) . '" class="edit btn btn-primary btn-sm" > <i class="fas fa-edit"></i></a>';
                 }
-
-                // Check if the current service is allowed to delete
-                if (AccessControlHelper::isAllowedToPerformAction('delete_service')) {
-                    // If service is allowed, show delete button
-                    $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteService(\'' . $data->id . '\')"> <i class="fas fa-trash"></i></button>';
+                // If the current service is not the DefaultService
+                if($data->id != 1){
+                    // Check if the current service is allowed to delete
+                    if (AccessControlHelper::isAllowedToPerformAction('delete_service')) {
+                        // If service is allowed, show delete button
+                        $deleteButton = '&nbsp;&nbsp;<button type="button" class="delete btn btn-danger btn-sm" onclick="confirmDeleteService(\'' . $data->id . '\')"> <i class="fas fa-trash"></i></button>';
+                    }
                 }
 
                 return $editButton . $deleteButton;
@@ -83,7 +86,6 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
      */
     public function getRules($request, $serviceId = null)
     {
-        // TODO:
         // Defining the validation rule for the service name.
         $serviceNameRule = 'required|string|min:3|max:40|unique:services,service_name';
         $serviceNameRule .= $serviceId ? ',' . $serviceId . ',id' : '';
@@ -105,30 +107,30 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
         $unitTimeDurationRule = $request->enableFeature == '1' ? 'required|string' : 'nullable|string';
 
         return [
-            'serviceName' => $serviceNameRule,
-            'description' => 'nullable|string|max:200',
-            'downloadRate' => 'required|numeric|max:9999999',
-            'uploadRate' => 'required|numeric|max:9999999',
-            'idleTimeout' => 'nullable|numeric|max:9999999',
-            'sessionTimeout' => 'nullable|numeric|max:9999999',
-            'serviceCost' => 'nullable|numeric',
-            'currency' => 'nullable|string',
-            'simultaneousUse' => 'nullable|integer|gt:0',
-            'downloadBurstRate' => "$burstRule|numeric|max:9999999|gt:downloadRate",
-            'uploadBurstRate' => "$burstRule|numeric|max:9999999|gt:uploadRate",
-            'downloadBurstTime' => "$burstRule|numeric|gt:0|max:9999999",
-            'uploadBurstTime' => "$burstRule|numeric|gt:0|max:9999999",
-            'priority' => $priorityRule,
-            'timeLimit' => 'nullable|numeric|max:9999999999',
-            'unitTime' => 'nullable|string',
-            'limitType' => $limitTypeRule,
-            'validFrom' => "nullable|date_format:Y-m-d H:i",
-            'validityType' => $validityTypeRule,
-            'validity' => 'nullable|numeric|max:9999999999',
-            'unitValidity' => 'nullable|string',
-            'enableFeature' => 'nullable|boolean',
-            'timeDuration' => $timeDurationRule,
-            'unitTimeDuration' => $unitTimeDurationRule,
+            'serviceName'           => $serviceNameRule,
+            'description'           => 'nullable|string|max:200',
+            'downloadRate'          => 'required|numeric|max:9999999',
+            'uploadRate'            => 'required|numeric|max:9999999',
+            'idleTimeout'           => 'nullable|numeric|max:9999999',
+            'sessionTimeout'        => 'nullable|numeric|max:9999999',
+            'serviceCost'           => 'nullable|numeric',
+            'currency'              => 'nullable|string',
+            'simultaneousUse'       => 'nullable|integer|gt:0',
+            'downloadBurstRate'     => "$burstRule|numeric|max:9999999|gt:downloadRate",
+            'uploadBurstRate'       => "$burstRule|numeric|max:9999999|gt:uploadRate",
+            'downloadBurstTime'     => "$burstRule|numeric|gt:0|max:9999999",
+            'uploadBurstTime'       => "$burstRule|numeric|gt:0|max:9999999",
+            'priority'              => $priorityRule,
+            'timeLimit'             => 'nullable|numeric|max:9999999999',
+            'unitTime'              => 'nullable|string',
+            'limitType'             => $limitTypeRule,
+            'validFrom'             => "nullable|date_format:Y-m-d H:i",
+            'validityType'          => $validityTypeRule,
+            'validity'              => 'nullable|numeric|max:9999999999',
+            'unitValidity'          => 'nullable|string',
+            'enableFeature'         => 'nullable|boolean',
+            'timeDuration'          => $timeDurationRule,
+            'unitTimeDuration'      => $unitTimeDurationRule,
         ];
     }
 
@@ -139,17 +141,17 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
     public function getMessages()
     {
         return [
-            'required' => 'The :attribute cannot be empty!',
-            'string' => 'The :attribute must be a string!',
-            'min' => 'The :attribute field must be at least :min characters',
-            'max' => 'The :attribute field may not be greater than :max characters!',
-            'unique' => 'The :attribute already exists!',
-            'numeric' => 'The :attribute must be a number!',
-            'between' => 'The :attribute must be between :min and :max.',
-            'gt' => 'The :attribute must be greater than :value.',
-            'nullable' => 'The :attribute field is optional.',
-            'boolean' => 'The :attribute field must be true or false.',
-            'date_format'    => 'The :attribute must be a valid datetime (YYYY-MM-DD HH:MM:SS)!',
+            'required'      => 'The :attribute cannot be empty!',
+            'string'        => 'The :attribute must be a string!',
+            'min'           => 'The :attribute field must be at least :min characters',
+            'max'           => 'The :attribute field may not be greater than :max characters!',
+            'unique'        => 'The :attribute already exists!',
+            'numeric'       => 'The :attribute must be a number!',
+            'between'       => 'The :attribute must be between :min and :max.',
+            'gt'            => 'The :attribute must be greater than :value.',
+            'nullable'      => 'The :attribute field is optional.',
+            'boolean'       => 'The :attribute field must be true or false.',
+            'date_format'   => 'The :attribute must be a valid datetime (YYYY-MM-DD HH:MM:SS)!',
         ];
     }
 
@@ -189,8 +191,154 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
     }
 
     /**
+     * Delete an existing service and radgroupreply.
+     * @param int $serviceId The id of the service to be deleted.
+     * @throws \Exception if an error occurs while deleting the service.
+     */
+    public function deleteServiceAndRadGroupReply($serviceId)
+    {
+        try {
+            // Retrieve the service
+            $service = $this->model->find($serviceId);
+
+            if (!$service) {
+                // The service doesn't exist
+                throw new \Exception('The service with id ' . $serviceId . ' does not exist.');
+            }
+
+            // Delete the related records from the 'radGroupReply' table.
+            $this->deleteRadGroupReplyRecords($service);
+
+            // Delete the service.
+            $service->delete();
+        } catch (\Exception $e) {
+            // If an exception occurred during the delete process, log the error message.
+            Log::error("Failed to delete the service with id " . $serviceId . " : " . $e->getMessage());
+            // Rethrow the exception.
+            throw $e;
+        }
+    }
+
+    /**
+     * Updates an existing service using the provided request data.
+     * @param object $request The data used to update the service.
+     * @param int $serviceId Service ID for uniqueness checks. If not provided, a create operation is assumed.
+     * @return Model|mixed The updated service.
+     * @throws \Exception if an error occurs while updating the service.
+     */
+    public function updateService($request, $serviceId)
+    {
+        try {
+            // Check if the service exists
+            $service = $this->model->find($serviceId);
+            if (!$service) {
+                throw new \Exception('Service not found');
+            }
+
+            // Prepare the service data
+            $serviceData = $this->prepareDataServices($request);
+            // Update service entry
+            $service->update($serviceData);
+
+            // Adjust rate limit depending on 'for_purchase' value
+            if ($service['for_purchase'] > 0) {
+                $this->rateLimitAddLimitAt($service);
+            } else {
+                $this->rateLimit($service);
+            }
+
+            // Call the other methods with the updated service.
+            $this->idleTimeout($service);
+            $this->sessionTimeout($service);
+            $this->simultaneousUse($service);
+            $this->timeLimit($service);
+
+            return $service;
+        } catch (\Exception $e) {
+            // If an exception occurred during the update process, log the error message.
+            Log::error("Failed to update service : " . $e->getMessage());
+            // Rethrow the exception to be caught in the Livewire component.
+            throw $e;
+        }
+    }
+
+    /**
+     * Get a collection of services with non-null 'cron_type' field and non-empty 'cron' field.
+     * @return \Illuminate\Support\Collection Collection of services with selected fields ('id', 'service_name', 'cron_type', 'cron')
+     */
+    public function getServices()
+    {
+        return $this->model->select('id', 'service_name', 'cron_type', 'cron')->get();
+    }
+
+    /**
+     * Retrieves a service by its ID.
+     * @param int $serviceId Unique identifier of the service.
+     * @return mixed Single record of the service from the database.
+     */
+    public function getServiceById($serviceId)
+    {
+        return $this->model->find($serviceId);
+    }
+
+    /**
+     * Store service for a hotel room.
+     * @param  array $request Input data for updating the service.
+     * @throws \InvalidArgumentException if 'idService' is not present in the request
+     * @throws \RuntimeException if the service does not exist
+     * @return \Illuminate\Database\Eloquent\Model|null Updated service instance
+     */
+    public function storeHotelRoomService($request)
+    {
+        // Check if idService is in the request
+        if (!array_key_exists('idService', $request)) {
+            throw new \InvalidArgumentException("idService is empty in the request");
+        }
+
+        // Update the service
+        $service = $this->model->where('id', $request['idService'])
+            ->update([
+                'cron' => 1,
+                'cron_type' => $request['cronType'],
+            ]);
+
+        // Check if service exists
+        if (!$service) {
+            throw new \RuntimeException("Service with id {$request['idService']} not found");
+        }
+
+        // Return the updated service
+        return $service;
+    }
+
+    /**
+     * Delete a service by setting 'cron' to 0 and 'cron_type' to empty.
+     * @param  int $id The ID of the service to be deleted
+     * @throws \RuntimeException if the service does not exist
+     * @return \Illuminate\Database\Eloquent\Model|null Updated service instance
+     */
+    public function deleteService($id)
+    {
+        // Delete the service
+        $service = $this->model->where('id', $id)
+            ->update([
+                'cron' => 0,
+                'cron_type' => "",
+            ]);
+
+        // Check if service exists
+        if (!$service) {
+            throw new \RuntimeException("Service with id {$id} not found");
+        }
+
+        // Return the updated service
+        return $service;
+    }
+
+    // ***** 👇 PRIVATE FUNCTIONS 👇 *****
+
+    /**
      * Define logic for setting idle timeout.
-     *
      * @param array $service The data of the service.
      */
     private function idleTimeout($service)
@@ -208,7 +356,6 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
 
     /**
      * Define logic for setting session timeout.
-     *
      * @param array $service The data of the service.
      */
     private function sessionTimeout($service)
@@ -226,7 +373,6 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
 
     /**
      * Define logic for setting simultaneous use.
-     *
      * @param array $service The data of the service.
      */
     private function simultaneousUse($service)
@@ -244,7 +390,6 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
 
     /**
      * Define logic for setting time limit.
-     *
      * @param array $service The data of the service.
      */
     private function timeLimit($service)
@@ -338,50 +483,57 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
      * Prepares service data based on provided request.
      * @param array $request The data used to prepare the service data.
      * @return array The prepared service data.
+     * @throws Exception If the data is invalid.
      */
-    public function prepareDataServices($request)
+    private function prepareDataServices($request)
     {
+
         // If 'id' is set, get the existing service
         $service = null;
         if (isset($request['id']) && $request['id'] > 0) {
             $service = $this->model->find($request['id']);
+            if (!$service) {
+                throw new Exception('Service not found for the given id');
+            }
         }
 
-        // Prepare the service data
+        $defaultUnitTimeDuration = "hours";
+        $none = "none";
+        $defaultValidFrom = 0;
+
         $data = [
-            'id' => $request['id'] ?? 0,
-            'service_name' => $service ? $service->service_name : $request['serviceName'],
-            'description' => $request['description'],
-            'dl_rate' => (int) $request['downloadRate'],
-            'ul_rate' => (int) $request['uploadRate'],
-            'idle_timeout' => (int) $request['idleTimeout'],
-            'session_timeout' => (int) $request['sessionTimeout'],
-            'cost' => (int) $request['serviceCost'],
-            'currency' => $request['currency'],
-            'validfrom' => !empty($request['validFrom']) ? strtotime($request['validFrom']) : 0,
-            'simultaneous_use' => (int) $request['simultaneousUse'],
-            'dl_br_rate' => (int) $request['downloadBurstRate'],
-            'ul_br_rate' => (int) $request['uploadBurstRate'],
-            'dl_br_trh' => round((int) $request['downloadRate'] * 0.75),
-            'ul_br_trh' => round((int) $request['uploadRate'] * 0.75),
-            'dl_br_time' => (int) $request['downloadBurstTime'],
-            'ul_br_time' => (int) $request['uploadBurstTime'],
-            'priority' => (int) $request['priority'],
-            'time_limit' => (int) $request['timeLimit'],
-            'unit_time' => $request['unitTime'],
-            'time_limit_type' => (!empty($request['timeLimit'])) ? $request['limitType'] : "none",
-            'validity' => (int) $request['validity'],
-            'validity_type' => (!empty($request['validity'])) ? $request['validityType'] : "none",
-            'unit_validity' => $request['unitValidity'],
-            'for_purchase' => (int) $request['enableFeature'],
-            'purchase_duration' => (int) $request['timeDuration'],
-            'unit_time_purchase' => $request['unitTimeDuration'] ?? "hours"
+            'id'                    => $request['id'] ?? 0,
+            'service_name'          => $service ? $service->service_name : $request['serviceName'] ?? '',
+            'description'           => $request['description'] ?? '',
+            'dl_rate'               => (int) ($request['downloadRate'] ?? 0),
+            'ul_rate'               => (int) ($request['uploadRate'] ?? 0),
+            'idle_timeout'          => (int) ($request['idleTimeout'] ?? 0),
+            'session_timeout'       => (int) ($request['sessionTimeout'] ?? 0),
+            'cost'                  => (int) ($request['serviceCost'] ?? 0),
+            'currency'              => $request['currency'] ?? '',
+            'validfrom'             => !empty($request['validFrom']) ? strtotime($request['validFrom']) : $defaultValidFrom,
+            'simultaneous_use'      => (int) ($request['simultaneousUse'] ?? 0),
+            'dl_br_rate'            => (int) ($request['downloadBurstRate'] ?? 0),
+            'ul_br_rate'            => (int) ($request['uploadBurstRate'] ?? 0),
+            'dl_br_trh'             => round((int) ($request['downloadRate'] ?? 0) * 0.75),
+            'ul_br_trh'             => round((int) ($request['uploadRate'] ?? 0) * 0.75),
+            'dl_br_time'            => (int) ($request['downloadBurstTime'] ?? 0),
+            'ul_br_time'            => (int) ($request['uploadBurstTime'] ?? 0),
+            'priority'              => (int) ($request['priority'] ?? 0),
+            'time_limit'            => (int) ($request['timeLimit'] ?? 0),
+            'unit_time'             => $request['unitTime'] ?? '',
+            'time_limit_type'       => (!empty($request['timeLimit'])) ? $request['limitType'] : $none,
+            'validity'              => (int) ($request['validity'] ?? 0),
+            'validity_type'         => (!empty($request['validity'])) ? $request['validityType'] : $none,
+            'unit_validity'         => $request['unitValidity'] ?? '',
+            'for_purchase'          => (int) ($request['enableFeature'] ?? 0),
+            'purchase_duration'     => (int) ($request['timeDuration'] ?? 0),
+            'unit_time_purchase'    => $request['unitTimeDuration'] ?? $defaultUnitTimeDuration,
         ];
+
         return $data;
     }
 
-
-    // TODO:
     /**
      * Define logic for adding rate limit.
      * @param array $service The data of the service.
@@ -488,69 +640,30 @@ class ServiceMegalosRepositoryImplement extends Eloquent implements ServiceMegal
             'attribute' => $attribute,
             'op' => ':=',
             'value' => $value
-        ];;
+        ];
     }
 
     /**
-     * Get a collection of services with non-null 'cron_type' field and non-empty 'cron' field.
-     * @return \Illuminate\Support\Collection Collection of services with selected fields ('id', 'service_name', 'cron_type', 'cron')
+     * Delete the related records from the 'radGroupReply' table.
+     * @param Model $service The service model instance.
      */
-    public function getServices()
+    private function deleteRadGroupReplyRecords($service)
     {
-        return $this->model->select('id', 'service_name', 'cron_type', 'cron')->get();
-    }
+        // Define the attributes for the records to delete.
+        $attributes = [
+            'Idle-Timeout',
+            'Session-Timeout',
+            'Simultaneous-Use',
+            $this->getAttributeForTimeLimit($service['time_limit_type']),
+            'Mikrotik-Rate-Limit'
+        ];
 
-    /**
-     * Store service for a hotel room.
-     * @param  array $request Input data for updating the service.
-     * @throws \InvalidArgumentException if 'idService' is not present in the request
-     * @throws \RuntimeException if the service does not exist
-     * @return \Illuminate\Database\Eloquent\Model|null Updated service instance
-     */
-    public function storeHotelRoomService($request)
-    {
-        // Check if idService is in the request
-        if (!array_key_exists('idService', $request)) {
-            throw new \InvalidArgumentException("idService is empty in the request");
+        // Delete the records
+        foreach ($attributes as $attribute) {
+            $this->radGroupReply->where([
+                'groupname' => $service['service_name'],
+                'attribute' => $attribute
+            ])->delete();
         }
-
-        // Update the service
-        $service = $this->model->where('id', $request['idService'])
-            ->update([
-                'cron' => 1,
-                'cron_type' => $request['cronType'],
-            ]);
-
-        // Check if service exists
-        if (!$service) {
-            throw new \RuntimeException("Service with id {$request['idService']} not found");
-        }
-
-        // Return the updated service
-        return $service;
-    }
-
-    /**
-     * Delete a service by setting 'cron' to 0 and 'cron_type' to empty.
-     * @param  int $id The ID of the service to be deleted
-     * @throws \RuntimeException if the service does not exist
-     * @return \Illuminate\Database\Eloquent\Model|null Updated service instance
-     */
-    public function deleteService($id)
-    {
-        // Delete the service
-        $service = $this->model->where('id', $id)
-            ->update([
-                'cron' => 0,
-                'cron_type' => "",
-            ]);
-
-        // Check if service exists
-        if (!$service) {
-            throw new \RuntimeException("Service with id {$id} not found");
-        }
-
-        // Return the updated service
-        return $service;
     }
 }

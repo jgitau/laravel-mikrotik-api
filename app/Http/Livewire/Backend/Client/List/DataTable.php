@@ -39,7 +39,7 @@ class DataTable extends Component
     }
 
     /**
-     * Refresh the DataTable when an client is created or updated.
+     * Refresh the DataTable when an client is created, updated and deleted.
      */
     public function refreshDataTable()
     {

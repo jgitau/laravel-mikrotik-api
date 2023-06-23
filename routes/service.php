@@ -14,5 +14,7 @@ Route::middleware(['check.session.cookie'])->group(function () {
         Route::get('list-services', [ListServiceController::class, 'index'])->name('list-services');
         // Route for add new service page
         Route::get('add-new-service', [ListServiceController::class, 'create'])->name('add-new-service');
+        // Route for edit service page
+        Route::get('edit-service/{id}', [ListServiceController::class, 'edit'])->name('edit-service');
     });
 });

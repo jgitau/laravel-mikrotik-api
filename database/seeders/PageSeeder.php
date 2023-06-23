@@ -90,7 +90,7 @@ class PageSeeder extends Seeder
                 'id' => 9,
                 'page' => 'edit_service',
                 'title' => 'Edit Service',
-                'url' => 'services/pg/edit_service',
+                'url' => 'services/edit-service',
                 'module_id' => 4,
                 'allowed_groups' => '1,2',
                 'show_menu' => 0,

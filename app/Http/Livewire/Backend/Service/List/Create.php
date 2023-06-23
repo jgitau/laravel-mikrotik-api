@@ -55,7 +55,6 @@ class Create extends Component
         // Format serviceName: remove spaces and capitalize each word
         $newService['serviceName'] = ucwords(strtolower($newService['serviceName']));
         try {
-            // TODO:
             // Call the storeNewService function in the repository
             $serviceMegalosService->storeNewService($newService);
             // Reset the form fields
@@ -68,7 +67,6 @@ class Create extends Component
             $this->dispatchErrorEvent('An error occurred while creating service : ' . $th->getMessage());
         }
     }
-
 
     /**
      * Reset all fields to their default state.

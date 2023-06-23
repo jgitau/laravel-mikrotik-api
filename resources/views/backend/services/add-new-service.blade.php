@@ -46,11 +46,10 @@
             return element.flatpickr(config);
         }
     }
-
     // Initialize flatpickr instances
     const datetimePickers = ['validFrom'];
-
     datetimePickers.forEach(id => initializeFlatpickr(id));
+
 </script>
 @endpush
 

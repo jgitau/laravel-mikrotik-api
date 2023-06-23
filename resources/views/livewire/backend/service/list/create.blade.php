@@ -214,12 +214,13 @@
             </div>
         </div>
     </form>
+
     @push('scripts')
     <script>
         window.addEventListener('redirect', event => {
             window.location.href = event.detail.url;
         });
     </script>
-
     @endpush
+
 </div>

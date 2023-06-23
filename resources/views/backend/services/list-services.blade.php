@@ -60,7 +60,7 @@
         $toast.addClass('show showing');
 
         setTimeout(function() {
-        $toast.removeClass('show showing');
+            $toast.removeClass('show showing');
         }, 3000);
 </script>
 @endif
